@@ -1,15 +1,25 @@
 package com.malevich.server.entity;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @javax.persistence.Table(name = "orders")
 public class Order implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "table_id")
     private Table table;
+
+    @Column(name = "status", nullable = false)
     private String status;
-    private String type;
+
+    @Column(name = "date", nullable = false)
     private String date;
 
     public Order() {
@@ -38,14 +48,6 @@ public class Order implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getDate() {

@@ -1,18 +1,34 @@
 package com.malevich.server.entity;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "dishes")
 public class Dish implements Serializable{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private int id;
+
+    @Column(name = "category", nullable = false)
     private String category;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "description", nullable = false)
     private String description;
+
+    @Column(name = "imageURL")
     private String imageURL;
+
+    @Column(name = "price", nullable = false)
     private float price;
+
+    @Column(name = "rating")
     private float rating;
 
     public Dish() {

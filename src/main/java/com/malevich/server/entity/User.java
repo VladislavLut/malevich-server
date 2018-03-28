@@ -1,16 +1,30 @@
 package com.malevich.server.entity;
 
-import javax.persistence.Entity;
+import org.springframework.data.annotation.Id;
+
+import javax.persistence.*;
 import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "dishes")
 public class User implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private int id;
+
+    @Column(name = "type", nullable = false)
     private String type;
+
+    @Column(name = "login", nullable = false)
     private String login;
+
+    @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "name", nullable = false)
     private String name;
 
     public User() {

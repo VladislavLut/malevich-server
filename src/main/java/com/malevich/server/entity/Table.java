@@ -1,12 +1,17 @@
 package com.malevich.server.entity;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @javax.persistence.Table(name = "dishes")
 public class Table implements Serializable {
+
+    @Id
+    @Column(name = "id")
     private int id;
+
+    @Column(name = "is_opened", nullable = false)
     private boolean isOpened;
 
     public Table() {

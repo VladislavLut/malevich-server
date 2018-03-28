@@ -1,19 +1,40 @@
 package com.malevich.server.entity;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "ordered_dishes")
 public class OrderedDish implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "dish_id", nullable = false)
     private Dish dish;
+
+    @ManyToOne
+    @JoinColumn(name = "kitchener_id", nullable = false)
     private User kitchener;
+
+    @Column(name = "status", nullable = false)
     private String status;
+
+    @Column(name = "quantity", nullable = false)
     private int quantity;
+
+    @Column(name = "time", nullable = false)
     private String time;
+
+    @Column(name = "comment")
     private String comment;
 
     public OrderedDish() {
