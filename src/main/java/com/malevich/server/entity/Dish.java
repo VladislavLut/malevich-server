@@ -7,6 +7,7 @@ public class Dish {
     private String description;
     private String imageURL;
     private float price;
+    private float rating;
 
     public Dish() {
     }
@@ -58,5 +59,13 @@ public class Dish {
 
     public void setPrice(float price) {
         this.price = price;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
     }
 }

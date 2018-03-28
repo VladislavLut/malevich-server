@@ -8,6 +8,7 @@ public class OrderedDish {
     private String status;
     private int quantity;
     private String time;
+    private String comment;
 
     public OrderedDish() {
     }
@@ -67,5 +68,13 @@ public class OrderedDish {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

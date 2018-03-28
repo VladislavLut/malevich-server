@@ -6,7 +6,6 @@ public class Order {
     private String status;
     private String type;
     private String date;
-    private String comment;
 
     public Order() {
     }
@@ -52,11 +51,4 @@ public class Order {
         this.date = date;
     }
 
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
 }
