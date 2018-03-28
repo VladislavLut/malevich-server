@@ -16,7 +16,12 @@ public class Comment implements Serializable {
     @Column(name = "comment")
     private String comment;
 
-    public Comment() {
+    protected Comment() {
+    }
+
+    public Comment(Order order, String comment) {
+        this.order = order;
+        this.comment = comment;
     }
 
     public Order getOrder() {

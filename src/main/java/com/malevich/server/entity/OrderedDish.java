@@ -37,7 +37,17 @@ public class OrderedDish implements Serializable {
     @Column(name = "comment")
     private String comment;
 
-    public OrderedDish() {
+    protected OrderedDish() {
+    }
+
+    public OrderedDish(Order order, Dish dish, User kitchener, String status, int quantity, String time, String comment) {
+        this.order = order;
+        this.dish = dish;
+        this.kitchener = kitchener;
+        this.status = status;
+        this.quantity = quantity;
+        this.time = time;
+        this.comment = comment;
     }
 
     public int getId() {

@@ -27,8 +27,15 @@ public class User implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
-    public User() {
+    protected User() {
 
+    }
+
+    public User(String type, String login, String password, String name) {
+        this.type = type;
+        this.login = login;
+        this.password = password;
+        this.name = name;
     }
 
     public int getId() {

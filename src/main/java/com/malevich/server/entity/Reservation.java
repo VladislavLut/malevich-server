@@ -31,7 +31,16 @@ public class Reservation implements Serializable {
     @Column(name = "comment")
     private String comment;
 
-    public Reservation() {
+    protected Reservation() {
+    }
+
+    public Reservation(Table table, String date, String time, String phone, String name, String comment) {
+        this.table = table;
+        this.date = date;
+        this.time = time;
+        this.phone = phone;
+        this.name = name;
+        this.comment = comment;
     }
 
     public int getId() {

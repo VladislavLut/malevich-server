@@ -31,7 +31,16 @@ public class Dish implements Serializable{
     @Column(name = "rating")
     private float rating;
 
-    public Dish() {
+    protected Dish() {
+    }
+
+    public Dish(String category, String name, String description, String imageURL, float price, float rating) {
+        this.category = category;
+        this.name = name;
+        this.description = description;
+        this.imageURL = imageURL;
+        this.price = price;
+        this.rating = rating;
     }
 
     public int getId() {

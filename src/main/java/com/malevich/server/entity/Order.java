@@ -22,7 +22,13 @@ public class Order implements Serializable {
     @Column(name = "date", nullable = false)
     private String date;
 
-    public Order() {
+    protected Order() {
+    }
+
+    public Order(Table table, String status, String date) {
+        this.table = table;
+        this.status = status;
+        this.date = date;
     }
 
     public int getId() {

@@ -14,7 +14,12 @@ public class Table implements Serializable {
     @Column(name = "is_opened", nullable = false)
     private boolean isOpened;
 
-    public Table() {
+    protected Table() {
+    }
+
+    public Table(int id, boolean isOpened) {
+        this.id = id;
+        this.isOpened = isOpened;
     }
 
     public int getId() {
