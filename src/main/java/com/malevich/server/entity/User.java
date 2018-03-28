@@ -1,6 +1,12 @@
 package com.malevich.server.entity;
 
-public class User {
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.io.Serializable;
+
+@Entity
+@Table(name = "dishes")
+public class User implements Serializable {
     private int id;
     private String type;
     private String login;

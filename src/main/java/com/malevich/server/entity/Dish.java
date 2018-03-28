@@ -1,6 +1,12 @@
 package com.malevich.server.entity;
 
-public class Dish {
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.io.Serializable;
+
+@Entity
+@Table(name = "dishes")
+public class Dish implements Serializable{
     private int id;
     private String category;
     private String name;

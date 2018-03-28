@@ -1,6 +1,11 @@
 package com.malevich.server.entity;
 
-public class Order {
+import javax.persistence.Entity;
+import java.io.Serializable;
+
+@Entity
+@javax.persistence.Table(name = "orders")
+public class Order implements Serializable {
     private int id;
     private Table table;
     private String status;

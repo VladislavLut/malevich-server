@@ -1,6 +1,12 @@
 package com.malevich.server.entity;
 
-public class OrderedDish {
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.io.Serializable;
+
+@Entity
+@Table(name = "ordered_dishes")
+public class OrderedDish implements Serializable {
     private int id;
     private Order order;
     private Dish dish;

@@ -1,6 +1,11 @@
 package com.malevich.server.entity;
 
-public class Table {
+import javax.persistence.Entity;
+import java.io.Serializable;
+
+@Entity
+@javax.persistence.Table(name = "dishes")
+public class Table implements Serializable {
     private int id;
     private boolean isOpened;
 

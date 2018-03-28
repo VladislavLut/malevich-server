@@ -1,6 +1,11 @@
 package com.malevich.server.entity;
 
-public class Reservation {
+import javax.persistence.Entity;
+import java.io.Serializable;
+
+@Entity
+@javax.persistence.Table(name = "reserved")
+public class Reservation implements Serializable {
     private int id;
     private Table table;
     private String date;
