@@ -1,5 +1,6 @@
 package com.malevich.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ public class User implements Serializable {
     @Column(name = "login", nullable = false)
     private String login;
 
+    @JsonIgnore
     @Column(name = "password", nullable = false)
     private String password;
 
