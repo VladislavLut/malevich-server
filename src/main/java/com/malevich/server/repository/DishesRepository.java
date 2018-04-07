@@ -4,11 +4,13 @@ import com.malevich.server.entity.Dish;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DishesRepository extends CrudRepository<Dish, Integer> {
-    List<Dish> findAllByIdIsNotNull();
 
-    Dish findDishBy(int id);
+    Optional<Dish> findDishBy(int id);
+
+    List<Dish> findAllByIdIsNotNull();
 
     List<Dish> findAllByCategory(String category);
 

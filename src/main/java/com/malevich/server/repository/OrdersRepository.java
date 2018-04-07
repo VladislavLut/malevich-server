@@ -5,12 +5,13 @@ import com.malevich.server.entity.Table;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrdersRepository extends CrudRepository<Order, Integer> {
 
-    Order findOrderById(int id);
+    Optional<Order> findOrderById(int id);
 
-    Order findOrderByTable(Table table);
+    Optional<Order> findOrderByTable(Table table);
 
     List<Order> findAllByIdIsNotNull();
 
