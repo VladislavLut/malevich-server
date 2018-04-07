@@ -8,10 +8,11 @@ import org.springframework.core.Ordered;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderedDishesRepository extends CrudRepository<OrderedDish, Integer> {
 
-    OrderedDish findOrderedDishById(int id);
+    Optional<OrderedDish> findOrderedDishById(int id);
 
     List<OrderedDish> findAllByIdIsNotNull();
 

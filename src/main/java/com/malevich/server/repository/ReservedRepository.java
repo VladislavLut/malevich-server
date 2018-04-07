@@ -4,12 +4,13 @@ import com.malevich.server.entity.Reservation;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ReservedRepository extends CrudRepository<Reservation, Integer> {
 
-    Reservation findReservationById(int id);
+    Optional<Reservation> findReservationById(int id);
 
-    Reservation findByPhoneAndDate(String phone, String date);
+    Optional<Reservation> findByPhoneAndDate(String phone, String date);
 
     List<Reservation> findAllByNameAndDate(String name, String date);
 

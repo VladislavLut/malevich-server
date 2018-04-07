@@ -4,12 +4,13 @@ import com.malevich.server.entity.Table;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TablesRepository extends CrudRepository<Table, Integer> {
 
-    List<Table> findAllByOpenedIsTrue();
+    Optional<Table> findTableById(int id);
 
-    Table findTableById(int id);
+    List<Table> findAllByOpenedIsTrue();
 
     List<Table> findAllByIdIsNotNull();
 }
