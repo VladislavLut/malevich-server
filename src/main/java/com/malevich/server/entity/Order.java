@@ -4,17 +4,17 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@javax.persistence.Table(name = "orders")
+@Table(name = "orders")
 public class Order implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "id")
     private int id;
 
     @ManyToOne
     @JoinColumn(name = "table_id")
-    private Table table;
+    private TableItem tableItem;
 
     @Column(name = "status", nullable = false)
     private String status;
@@ -25,8 +25,8 @@ public class Order implements Serializable {
     protected Order() {
     }
 
-    public Order(Table table, String status, String date) {
-        this.table = table;
+    public Order(TableItem tableItem, String status, String date) {
+        this.tableItem = tableItem;
         this.status = status;
         this.date = date;
     }
@@ -40,12 +40,12 @@ public class Order implements Serializable {
         this.id = id;
     }
 
-    public Table getTable() {
-        return table;
+    public TableItem getTableItem() {
+        return tableItem;
     }
 
-    public void setTable(Table table) {
-        this.table = table;
+    public void setTableItem(TableItem tableItem) {
+        this.tableItem = tableItem;
     }
 
     public String getStatus() {
