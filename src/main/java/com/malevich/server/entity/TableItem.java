@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@javax.persistence.Table(name = "dishes")
-public class Table implements Serializable {
+@Table(name = "dishes")
+public class TableItem implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -14,10 +14,10 @@ public class Table implements Serializable {
     @Column(name = "is_opened", nullable = false)
     private boolean isOpened;
 
-    protected Table() {
+    protected TableItem() {
     }
 
-    public Table(int id, boolean isOpened) {
+    public TableItem(int id, boolean isOpened) {
         this.id = id;
         this.isOpened = isOpened;
     }
