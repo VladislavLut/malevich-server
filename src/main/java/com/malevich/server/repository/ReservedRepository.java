@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface ReservedRepository extends JpaRepository<Reservation, Integer> {
 
-    Optional<Reservation> findReservationById(int id);
-
 //    Optional<Reservation> findByPhoneAndDate(String phone, String date);
 //
 //    List<Reservation> findAllByNameAndDate(String name, String date);
