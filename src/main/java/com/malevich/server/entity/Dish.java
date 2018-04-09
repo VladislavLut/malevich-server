@@ -3,13 +3,14 @@ package com.malevich.server.entity;
 import javax.persistence.*;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "dishes")
 public class Dish implements Serializable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "id")
     private int id;
 
@@ -26,7 +27,7 @@ public class Dish implements Serializable{
     private String imageURL;
 
     @Column(name = "price", nullable = false)
-    private float price;
+    private BigDecimal price;
 
     @Column(name = "rating")
     private float rating;
@@ -34,7 +35,7 @@ public class Dish implements Serializable{
     protected Dish() {
     }
 
-    public Dish(String category, String name, String description, String imageURL, float price, float rating) {
+    public Dish(String category, String name, String description, String imageURL, BigDecimal price, float rating) {
         this.category = category;
         this.name = name;
         this.description = description;
@@ -84,11 +85,11 @@ public class Dish implements Serializable{
         this.imageURL = imageURL;
     }
 
-    public float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

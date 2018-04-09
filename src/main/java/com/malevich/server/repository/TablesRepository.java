@@ -1,16 +1,17 @@
 package com.malevich.server.repository;
 
-import com.malevich.server.entity.Table;
-import org.springframework.data.repository.CrudRepository;
+import com.malevich.server.entity.TableItem;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface TablesRepository extends CrudRepository<Table, Integer> {
+public interface TablesRepository extends JpaRepository<TableItem, Integer> {
 
-    Optional<Table> findTableById(int id);
+    Optional<TableItem> findTableById(int id);
 
-    List<Table> findAllByOpenedIsTrue();
-
-    List<Table> findAllByIdIsNotNull();
+//    List<TableItem> findAllByOpenedIsTrue();
+//
+//    List<TableItem> findAllByIdIsNotNull();
+//
 }

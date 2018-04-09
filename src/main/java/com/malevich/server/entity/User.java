@@ -1,26 +1,31 @@
 package com.malevich.server.entity;
 
-import org.springframework.data.annotation.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import javax.persistence.Id;
 
 import javax.persistence.*;
 import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "dishes")
+@Table(name = "users")
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "id")
     private int id;
 
     @Column(name = "type", nullable = false)
     private String type;
 
-    @Column(name = "login", nullable = false)
+    @Column(name = "login", nullable = false, unique = true)
     private String login;
 
+    @JsonIgnore
+    @JsonDeserialize
     @Column(name = "password", nullable = false)
     private String password;
 

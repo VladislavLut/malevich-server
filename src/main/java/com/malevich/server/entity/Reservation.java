@@ -2,19 +2,20 @@ package com.malevich.server.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import javax.persistence.Table;
 
 @Entity
-@javax.persistence.Table(name = "reserved")
+@Table(name = "reserved")
 public class Reservation implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "id")
     private int id;
 
     @ManyToOne
     @JoinColumn(name = "table_id", nullable = false)
-    private Table table;
+    private TableItem table;
 
     @Column(name = "date", nullable = false)
     private String date;
@@ -34,7 +35,7 @@ public class Reservation implements Serializable {
     protected Reservation() {
     }
 
-    public Reservation(Table table, String date, String time, String phone, String name, String comment) {
+    public Reservation(TableItem table, String date, String time, String phone, String name, String comment) {
         this.table = table;
         this.date = date;
         this.time = time;
@@ -52,11 +53,11 @@ public class Reservation implements Serializable {
         this.id = id;
     }
 
-    public Table getTable() {
+    public TableItem getTable() {
         return table;
     }
 
-    public void setTable(Table table) {
+    public void setTable(TableItem table) {
         this.table = table;
     }
 
