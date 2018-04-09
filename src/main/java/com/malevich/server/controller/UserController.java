@@ -47,7 +47,11 @@ public class UserController {
     @PostMapping("/update")
     public ResponseEntity<?> updateUser(@RequestBody final User user) {
         validateUser(user.getLogin());
-        usersRepository.save(user);
+
+
+        //usersRepository.save(user);
+        //TODO: create update query in repository
+
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -79,7 +83,7 @@ class UserNotFoundException extends RuntimeException {
     }
 }
 
-@ResponseStatus(HttpStatus.CONFLICT)
+@ResponseStatus(HttpStatus.BAD_REQUEST)
 class UserAlreadyExistException extends RuntimeException {
 
     public UserAlreadyExistException(String login) {
