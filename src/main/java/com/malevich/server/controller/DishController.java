@@ -31,12 +31,12 @@ public class DishController {
     @GetMapping("/{id}/")
     public Optional<Dish> getDishItem(@PathVariable int id) {
         validateDish(id);
-        return this.dishesRepository.findDishById(id);
+        return this.dishesRepository.findById(id);
     }
 
     @PostMapping("/add")
     public ResponseEntity<?> saveDish(@RequestBody final Dish dish) {
-        if (this.dishesRepository.findDishById(dish.getId()).isPresent()) {
+        if (this.dishesRepository.findById(dish.getId()).isPresent()) {
             throw new DishAlreadyExistException(dish.getId());
         }
 
@@ -57,7 +57,7 @@ public class DishController {
     //TODO: update method
 
     private void validateDish(int id) {
-        this.dishesRepository.findDishById(id)
+        this.dishesRepository.findById(id)
                 .orElseThrow( () -> new DishNotFoundException(id));
     }
 }
