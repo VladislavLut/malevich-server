@@ -20,10 +20,14 @@ public interface OrderedDishesRepository extends JpaRepository<OrderedDish, Inte
 //    List<OrderedDish> findAllByStatus(String status);
 
     @Modifying(clearAutomatically = true)
-    @Query("update ordered_dishes od set od.status = :status where u.id = :id")
+    @Query("update OrderedDish od set od.status = :status where od.id = :id")
     int updateStatus(@Param("id") int id, @Param("status") String status);
 
     @Modifying(clearAutomatically = true)
-    @Query("update ordered_dishes od set od.status = :status, od.kitchener_id = :kitchener_id where u.id = :id")
-    int updateKitchenerAndStatus(@Param("id") int id, @Param("status") String status, @Param("kitchener_id")int kitchenerId);
+    @Query("update OrderedDish od set od.status = :status, od.kitchener = :kitchener where od.id = :id")
+    int updateKitchenerAndStatus(
+            @Param("id") int id,
+            @Param("status") String status,
+            @Param("kitchener")int kitchener
+    );
 }

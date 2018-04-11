@@ -20,15 +20,17 @@ public interface DishesRepository extends JpaRepository<Dish, Integer> {
 //
 //    List<Dish> findAllByRatingGreaterThan(float rating);
 
+
     @Modifying(clearAutomatically = true)
-    @Query("update dishes d " +
-            "set d.price = :price, d.imageURL = :imageURL, d.rating = :rating, d.description = :descriprion " +
+    @Query("update Dish d " +
+            "set d.price = :price, d.imageURL = :imageURL, d.rating = :rating, d.description = :description " +
             "where d.id = :id")
-    int updatePrice(@Param("id") int id,
-                    @Param("price")BigDecimal price,
-                    @Param("imageURL") String imageURL,
-                    @Param("rating")float rating,
-                    @Param("description")String description
+    int update(
+            @Param("id")int id,
+            @Param("price")BigDecimal price,
+            @Param("imageURL")String imageURL,
+            @Param("rating")float rating,
+            @Param("description")String description
     );
 
 
