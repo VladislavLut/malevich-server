@@ -16,6 +16,6 @@ public interface TablesRepository extends JpaRepository<TableItem, Integer> {
     List<TableItem> findAllByOpenedIsTrue();
 
     @Modifying(clearAutomatically = true)
-    @Query("update tables t set t.isOpened = :isOpened where t.id = :id")
-    int updateIsOpened(@Param("id") int id, @Param("isOpened") String isOpened);
+    @Query("update TableItem t set t.opened = :opened where t.id = :id")
+    int changeStatus(@Param("id") int id, @Param("opened") String opened);
 }

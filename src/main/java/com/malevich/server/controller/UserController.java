@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.Optional;
 
 import java.util.List;
@@ -44,21 +46,32 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<?> updateUser(@RequestBody final User user) {
+    @PostMapping("/update_name")
+    @Transactional
+    public ResponseEntity<?> updateName(@Valid @RequestBody final User user) {
         validateUser(user.getLogin());
+        this.usersRepository.updateName(user.getId(), user.getName());
 
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
-        //usersRepository.save(user);
-        //TODO: create update query in repository
-
+    @PostMapping("/update_pass")
+    @Transactional
+    public ResponseEntity<?> updatePassword(@Valid @RequestBody final User user) {
+        validateUser(user.getLogin());
+        this.usersRepository.updatePassword(user.getId(), user.getPassword());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/remove")
-    public ResponseEntity<?> removeUserById(@RequestBody final User user) {
+    public ResponseEntity<?> removeUser(@RequestBody final User user) {
         validateUser(user.getLogin());
+
+        if (user.getId() == 0) {
+            user.setId(this.usersRepository.findUserByLogin(user.getLogin()).get().getId());
+        }
+
         usersRepository.deleteById(user.getId());
 
         return new ResponseEntity<>(HttpStatus.OK);

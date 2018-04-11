@@ -23,11 +23,11 @@ public interface UsersRepository extends JpaRepository<User, Integer> {
 //    List<User> findAllByName(String name);
 
     @Modifying(clearAutomatically = true)
-    @Query("update users u set u.name = :name where u.id = :id")
+    @Query("update User u set u.name = :name where u.id = :id")
     int updateName(@Param("id") int id, @Param("name") String name);
 
     @Modifying(clearAutomatically = true)
-    @Query("update users u set u.password = :password where u.id = :id")
+    @Query("update User u set u.password = :password where u.id = :id")
     int updatePassword(@Param("id") int id, @Param("password") String password);
 
 }

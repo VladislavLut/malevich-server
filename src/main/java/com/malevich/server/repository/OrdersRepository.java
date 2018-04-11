@@ -24,7 +24,7 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
 //    List<Order> findAllByStatus(String status);
 
     @Modifying(clearAutomatically = true)
-    @Query("update orders o set o.status = :status where o.id = :id")
+    @Query("update Order o set o.status = :status where o.id = :id")
     int updateStatus(@Param("id") int id, @Param("status") String status);
 
 }
