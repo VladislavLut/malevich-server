@@ -2,12 +2,14 @@ package com.malevich.server.controller;
 
 import com.malevich.server.entity.Dish;
 import com.malevich.server.repository.DishesRepository;
-import org.apache.catalina.LifecycleState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sun.security.timestamp.HttpTimestamper;
 
+import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,13 +42,13 @@ public class DishController {
             throw new DishAlreadyExistException(dish.getId());
         }
 
-        dishesRepository.save(dish);
+        this.dishesRepository.save(dish);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/remove")
-    public ResponseEntity<?> removeDishById(@RequestBody final Dish dish) {
+    public ResponseEntity<?> removeDish(@RequestBody final Dish dish) {
         validateDish(dish.getId());
 
         dishesRepository.deleteById(dish.getId());
@@ -54,11 +56,26 @@ public class DishController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //TODO: update method
+    @PostMapping("/update")
+    @Transactional
+    public ResponseEntity<?> update(@Valid @RequestBody final Dish dish) {
+        validateDish(dish.getId());
+        this.dishesRepository.update(
+                dish.getId(),
+                dish.getPrice(),
+                dish.getImageURL(),
+                dish.getRating(),
+                dish.getDescription()
+        );
+
+//        this.dishesRepository.
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     private void validateDish(int id) {
         this.dishesRepository.findById(id)
-                .orElseThrow( () -> new DishNotFoundException(id));
+                .orElseThrow(() -> new DishNotFoundException(id));
     }
 }
 

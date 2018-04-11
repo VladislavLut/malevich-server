@@ -4,22 +4,22 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "dishes")
+@Table(name = "tables")
 public class TableItem implements Serializable {
 
     @Id
     @Column(name = "id")
     private int id;
 
-    @Column(name = "is_opened", nullable = false)
-    private boolean isOpened;
+    @Column(name = "opened", nullable = false)
+    private boolean opened;
 
     protected TableItem() {
     }
 
-    public TableItem(int id, boolean isOpened) {
+    public TableItem(int id, boolean opened) {
         this.id = id;
-        this.isOpened = isOpened;
+        this.opened = opened;
     }
 
     public int getId() {
@@ -32,10 +32,10 @@ public class TableItem implements Serializable {
     }
 
     public boolean isOpened() {
-        return isOpened;
+        return opened;
     }
 
     public void setOpened(boolean opened) {
-        isOpened = opened;
+        this.opened = opened;
     }
 }
