@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,5 +18,5 @@ public interface TablesRepository extends JpaRepository<TableItem, Integer> {
 
     @Modifying(clearAutomatically = true)
     @Query("update TableItem t set t.opened = :opened where t.id = :id")
-    int changeStatus(@Param("id") int id, @Param("opened") String opened);
+    int updateStatus(@Param("id") int id, @Param("opened") boolean opened);
 }

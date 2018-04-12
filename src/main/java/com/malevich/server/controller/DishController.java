@@ -31,7 +31,7 @@ public class DishController {
     }
 
     @GetMapping("/{id}/")
-    public Optional<Dish> getDishItem(@PathVariable int id) {
+    public Optional<Dish> getDish(@PathVariable int id) {
         validateDish(id);
         return this.dishesRepository.findById(id);
     }
@@ -67,8 +67,6 @@ public class DishController {
                 dish.getRating(),
                 dish.getDescription()
         );
-
-//        this.dishesRepository.
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
