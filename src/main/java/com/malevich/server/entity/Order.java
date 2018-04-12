@@ -22,6 +22,11 @@ public class Order implements Serializable {
     @Column(name = "date", nullable = false)
     private String date;
 
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "order")
+    private Comment comment;
+
     protected Order() {
     }
 
@@ -64,4 +69,11 @@ public class Order implements Serializable {
         this.date = date;
     }
 
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
 }

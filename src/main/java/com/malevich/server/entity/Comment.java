@@ -9,7 +9,11 @@ import java.io.Serializable;
 public class Comment implements Serializable {
 
     @Id
-    @OneToOne
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    @Column(name = "id")
+    private int id;
+
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
@@ -40,4 +44,20 @@ public class Comment implements Serializable {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+//    public int getId() {
+//        return id;
+//    }
+//
+//    public void setId(int id) {
+//        this.id = id;
+//    }
 }
