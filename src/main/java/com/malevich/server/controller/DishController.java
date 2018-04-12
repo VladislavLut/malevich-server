@@ -31,7 +31,7 @@ public class DishController {
     }
 
     @GetMapping("/{id}/")
-    public Optional<Dish> getDish(@PathVariable int id) {
+    public Optional<Dish> findDishById(@PathVariable int id) {
         validateDish(id);
         return this.dishesRepository.findById(id);
     }
@@ -89,6 +89,6 @@ class DishNotFoundException extends RuntimeException {
 class DishAlreadyExistException extends RuntimeException {
 
     public DishAlreadyExistException(int id) {
-        super("user with login '" + id + "' already exist.");
+        super("dish with id '" + id + "' already exist.");
     }
 }
