@@ -1,5 +1,6 @@
 package com.malevich.server.repository;
 
+import com.malevich.server.entity.Order;
 import com.malevich.server.entity.TableItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

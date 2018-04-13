@@ -9,12 +9,13 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
+
 public interface CommentsRepository extends JpaRepository<Comment, Integer> {
 
     Optional<Comment> findCommentByOrder_Id(int id);
 
     @Modifying(clearAutomatically = true)
     @Query("update Comment c set c.comment = :comment where c.order = :orderItem")
-    int changeStatus(@Param("id") int id, @Param("orderItem") Order order);
+    int updateComment(@Param("orderItem") int orderId, @Param("comment") String comment);
 
 }
