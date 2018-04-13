@@ -1,7 +1,7 @@
 package com.malevich.server.entity;
 
 import javax.persistence.*;
-import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -25,13 +25,17 @@ public class OrderedDish implements Serializable {
     @JoinColumn(name = "kitchener_id", nullable = false)
     private User kitchener;
 
-    @Column(name = "status", nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    @Column(name = "status")
+    private Status status;
 
-    @Column(name = "quantity", nullable = false)
+    @NotNull
+    @Column(name = "quantity")
     private int quantity;
 
-    @Column(name = "time", nullable = false)
+    @NotNull
+    @Column(name = "time")
     private String time;
 
     @Column(name = "comment")
@@ -40,7 +44,7 @@ public class OrderedDish implements Serializable {
     protected OrderedDish() {
     }
 
-    public OrderedDish(Order order, Dish dish, User kitchener, String status, int quantity, String time, String comment) {
+    public OrderedDish(Order order, Dish dish, User kitchener, Status status, int quantity, String time, String comment) {
         this.order = order;
         this.dish = dish;
         this.kitchener = kitchener;
@@ -83,11 +87,11 @@ public class OrderedDish implements Serializable {
         this.kitchener = kitchener;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
