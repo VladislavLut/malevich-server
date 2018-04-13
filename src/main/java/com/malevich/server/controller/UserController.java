@@ -103,3 +103,6 @@ class UserAlreadyExistException extends RuntimeException {
         super("user with login '" + login + "' already exist.");
     }
 }
+
+
+//TODO: create generic exceptions and validation
