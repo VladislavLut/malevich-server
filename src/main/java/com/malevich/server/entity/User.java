@@ -3,10 +3,8 @@ package com.malevich.server.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import javax.persistence.Id;
-
 import javax.persistence.*;
-import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -18,18 +16,22 @@ public class User implements Serializable {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "type", nullable = false)
+    @NotNull
+    @Column(name = "type")
     private String type;
 
-    @Column(name = "login", nullable = false, unique = true)
+    @NotNull
+    @Column(name = "login", unique = true)
     private String login;
 
     @JsonIgnore
     @JsonDeserialize
-    @Column(name = "password", nullable = false)
+    @NotNull
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "name", nullable = false)
+    @NotNull
+    @Column(name = "name")
     private String name;
 
     protected User() {
@@ -83,3 +85,5 @@ public class User implements Serializable {
         this.name = name;
     }
 }
+
+//TODO: refactor all entities

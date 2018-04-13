@@ -1,8 +1,8 @@
 package com.malevich.server.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "reserved")
@@ -17,16 +17,20 @@ public class Reservation implements Serializable {
     @JoinColumn(name = "table_id", nullable = false)
     private TableItem table;
 
-    @Column(name = "date", nullable = false)
+    @NotNull
+    @Column(name = "date")
     private String date;
 
-    @Column(name = "time", nullable = false)
+    @NotNull
+    @Column(name = "time")
     private String time;
 
-    @Column(name = "phone", nullable = false)
+    @NotNull
+    @Column(name = "phone")
     private String phone;
 
-    @Column(name = "name", nullable = false)
+    @NotNull
+    @Column(name = "name")
     private String name;
 
     @Column(name = "comment")
