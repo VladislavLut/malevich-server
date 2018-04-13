@@ -1,6 +1,7 @@
 package com.malevich.server.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -16,16 +17,24 @@ public class Order implements Serializable {
     @JoinColumn(name = "table_id")
     private TableItem tableItem;
 
-    @Column(name = "status", nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    @Column(name = "status")
+    private Status status;
 
-    @Column(name = "date", nullable = false)
+    @NotNull
+    @Column(name = "date")
     private String date;
+
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "order")
+    private Comment comment;
 
     protected Order() {
     }
 
-    public Order(TableItem tableItem, String status, String date) {
+    public Order(TableItem tableItem, Status status, String date) {
         this.tableItem = tableItem;
         this.status = status;
         this.date = date;
@@ -48,11 +57,11 @@ public class Order implements Serializable {
         this.tableItem = tableItem;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -64,4 +73,11 @@ public class Order implements Serializable {
         this.date = date;
     }
 
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
 }

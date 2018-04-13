@@ -1,7 +1,9 @@
 package com.malevich.server.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "tables")
@@ -11,8 +13,12 @@ public class TableItem implements Serializable {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "opened", nullable = false)
+    @NotNull
+    @Column(name = "opened")
     private boolean opened;
+
+    @OneToMany(mappedBy = "tableItem", cascade = CascadeType.ALL)
+    private Set<Order> orders;
 
     protected TableItem() {
     }
@@ -37,5 +43,13 @@ public class TableItem implements Serializable {
 
     public void setOpened(boolean opened) {
         this.opened = opened;
+    }
+
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
     }
 }

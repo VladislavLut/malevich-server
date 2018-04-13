@@ -1,7 +1,7 @@
 package com.malevich.server.entity;
 
 import javax.persistence.*;
-import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -14,19 +14,23 @@ public class Dish implements Serializable{
     @Column(name = "id")
     private int id;
 
-    @Column(name = "category", nullable = false)
+    @NotNull
+    @Column(name = "category")
     private String category;
 
-    @Column(name = "name", nullable = false)
+    @NotNull
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "description", nullable = false)
+    @NotNull
+    @Column(name = "description")
     private String description;
 
     @Column(name = "imageURL")
     private String imageURL;
 
-    @Column(name = "price", nullable = false)
+    @NotNull
+    @Column(name = "price")
     private BigDecimal price;
 
     @Column(name = "rating")
