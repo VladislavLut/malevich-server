@@ -85,5 +85,3 @@ public class User implements Serializable {
         this.name = name;
     }
 }
-
-//TODO: refactor all entities

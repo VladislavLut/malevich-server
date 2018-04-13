@@ -1,5 +1,7 @@
 package com.malevich.server.controller;
 
+import com.malevich.server.controller.exception.EntityAlreadyExistException;
+import com.malevich.server.controller.exception.EntityNotFoundException;
 import com.malevich.server.entity.Reservation;
 import com.malevich.server.repository.ReservedRepository;
 import com.sun.org.apache.regexp.internal.RE;
@@ -39,7 +41,7 @@ public class ReservationController {
     @PostMapping("/add")
     public ResponseEntity<?> addReservation(@RequestBody Reservation reservation) {
         if (this.reservedRepository.findById(reservation.getId()).isPresent()) {
-            throw new ReservationAlreadyExistException(reservation.getId());
+            throw new EntityAlreadyExistException(this.getClass(), reservation.getId());
         }
 
         this.reservedRepository.save(reservation);
@@ -66,20 +68,6 @@ public class ReservationController {
 
     private void validateReservation(int id) {
         this.reservedRepository.findById(id)
-                .orElseThrow( () -> new ReservationNotFoundException(id));
-    }
-}
-
-@ResponseStatus(HttpStatus.NOT_FOUND)
-class ReservationNotFoundException extends RuntimeException {
-    public ReservationNotFoundException(int id) {
-        super("could not find reservation '" + id + "'.");
-    }
-}
-
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-class ReservationAlreadyExistException extends RuntimeException {
-    public ReservationAlreadyExistException(int id) {
-        super("reservation with id '" + id + "' already exist.");
+                .orElseThrow( () -> new EntityNotFoundException(this.getClass(), id));
     }
 }

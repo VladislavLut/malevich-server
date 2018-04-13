@@ -1,5 +1,7 @@
 package com.malevich.server.controller;
 
+import com.malevich.server.controller.exception.EntityAlreadyExistException;
+import com.malevich.server.controller.exception.EntityNotFoundException;
 import com.malevich.server.entity.Order;
 import com.malevich.server.entity.TableItem;
 import com.malevich.server.repository.TablesRepository;
@@ -42,20 +44,20 @@ public class TableController {
         validateTable(id);
 
         List<Order> orders = this.tablesRepository.findTableById(id).get().getOrders();
+
         return orders.get(orders.size() - 1);
     }
 
 
     @PostMapping("/add")
     public ResponseEntity<?> saveTable(@RequestBody TableItem tableItem) {
-        try {
-            validateTable(tableItem.getId());
-        } catch (TableNotFoundException e) {
-            this.tablesRepository.save(tableItem);
-            return new ResponseEntity<>(HttpStatus.OK);
+        if (this.tablesRepository.findById(tableItem.getId()).isPresent()) {
+            throw new EntityAlreadyExistException(this.getClass(), tableItem.getId());
         }
 
-        throw new TableAlreadyExistException(tableItem.getId());
+        this.tablesRepository.save(tableItem);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/update")
@@ -79,21 +81,7 @@ public class TableController {
 
     private void validateTable(int id) {
         this.tablesRepository.findTableById(id)
-                .orElseThrow( () -> new TableNotFoundException(id));
+                .orElseThrow(() -> new EntityNotFoundException(this.getClass(), id));
     }
 
-}
-
-@ResponseStatus(HttpStatus.NOT_FOUND)
-class TableNotFoundException extends RuntimeException {
-    public TableNotFoundException(int id) {
-        super("could not found table '" + id + "'.");
-    }
-}
-
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-class TableAlreadyExistException extends RuntimeException {
-    public TableAlreadyExistException(int id) {
-        super("table already exist '" + id + "'.");
-    }
 }

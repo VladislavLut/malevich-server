@@ -1,5 +1,6 @@
 package com.malevich.server.controller;
 
+import com.malevich.server.controller.exception.*;
 import com.malevich.server.entity.Dish;
 import com.malevich.server.repository.DishesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class DishController {
     @PostMapping("/add")
     public ResponseEntity<?> saveDish(@RequestBody final Dish dish) {
         if (this.dishesRepository.findById(dish.getId()).isPresent()) {
-            throw new DishAlreadyExistException(dish.getId());
+            throw new EntityAlreadyExistException(this.getClass(), dish.getId());
         }
 
         this.dishesRepository.save(dish);
@@ -73,22 +74,6 @@ public class DishController {
 
     private void validateDish(int id) {
         this.dishesRepository.findById(id)
-                .orElseThrow(() -> new DishNotFoundException(id));
-    }
-}
-
-@ResponseStatus(HttpStatus.NOT_FOUND)
-class DishNotFoundException extends RuntimeException {
-
-    public DishNotFoundException(int id) {
-        super("could not find dish '" + id + "'.");
-    }
-}
-
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-class DishAlreadyExistException extends RuntimeException {
-
-    public DishAlreadyExistException(int id) {
-        super("dish with id '" + id + "' already exist.");
+                .orElseThrow(() -> new EntityNotFoundException(this.getClass(), id));
     }
 }
