@@ -5,11 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class EntityAlreadyExistException extends RuntimeException {
-    public EntityAlreadyExistException(Object entity, int id) {
-        super(entity.getClass() + "dish with id '" + id + "' already exist.");
-    }
-
-    public EntityAlreadyExistException(Object entity, String login) {
-        super(entity.getClass() + "dish with login '" + login + "' already exist.");
+    public EntityAlreadyExistException(Object entity, String message) {
+        super("entity '" + entity.getClass() + "' with " + message + " already exist.");
     }
 }
