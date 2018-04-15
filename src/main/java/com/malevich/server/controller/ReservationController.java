@@ -4,13 +4,12 @@ import com.malevich.server.controller.exception.EntityAlreadyExistException;
 import com.malevich.server.controller.exception.EntityNotFoundException;
 import com.malevich.server.entity.Reservation;
 import com.malevich.server.repository.ReservedRepository;
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sun.java2d.x11.X11SurfaceDataProxy;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,10 +37,30 @@ public class ReservationController {
         return this.reservedRepository.findById(id);
     }
 
+    @PostMapping("/find")
+    public List<Reservation> find(@RequestBody Reservation reservation) {
+        if (reservation.getId() != 0) {
+            validateReservation(reservation.getId());
+            return Arrays.asList(this.reservedRepository.findById(reservation.getId()).get());
+        }
+        return this.reservedRepository.selectByParams(
+                reservation.getDate(),
+                reservation.getTime(),
+                reservation.getName(),
+                reservation.getPhone()
+        ).orElseThrow( () -> new EntityNotFoundException(
+                this.getClass(),
+                "date '" + reservation.getDate() + "' " +
+                        "time '" + reservation.getTime() + "' " +
+                        "name '" + reservation.getName() + "' " +
+                        "phone '" + reservation.getPhone() + "'.")
+        );
+    }
+
     @PostMapping("/add")
     public ResponseEntity<?> addReservation(@RequestBody Reservation reservation) {
         if (this.reservedRepository.findById(reservation.getId()).isPresent()) {
-            throw new EntityAlreadyExistException(this.getClass(), reservation.getId());
+            throw new EntityAlreadyExistException(this.getClass(), "id '" + reservation.getId() + "'");
         }
 
         this.reservedRepository.save(reservation);
@@ -68,6 +87,7 @@ public class ReservationController {
 
     private void validateReservation(int id) {
         this.reservedRepository.findById(id)
-                .orElseThrow( () -> new EntityNotFoundException(this.getClass(), id));
+                .orElseThrow(() -> new EntityNotFoundException(this.getClass(), "id '" + id + "'."));
     }
+
 }

@@ -41,7 +41,7 @@ public class UserController {
     @PostMapping("/add")
     public ResponseEntity<?> saveUser(@RequestBody final User user) {
         if(usersRepository.findUserByLogin(user.getLogin()).isPresent()) {
-            throw new EntityAlreadyExistException(this.getClass(), user.getLogin());
+            throw new EntityAlreadyExistException(this.getClass(), "login '" +  user.getLogin() + "'");
         }
         usersRepository.save(user);
 
@@ -82,7 +82,7 @@ public class UserController {
     private void validateUser(String login)
     {
          this.usersRepository.findUserByLogin(login)
-                 .orElseThrow( () -> new EntityNotFoundException(this.getClass(), login));
+                 .orElseThrow( () -> new EntityNotFoundException(this.getClass(), "login '" + login + "."));
 
     }
 

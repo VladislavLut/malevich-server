@@ -40,7 +40,7 @@ public class DishController {
     @PostMapping("/add")
     public ResponseEntity<?> saveDish(@RequestBody final Dish dish) {
         if (this.dishesRepository.findById(dish.getId()).isPresent()) {
-            throw new EntityAlreadyExistException(this.getClass(), dish.getId());
+            throw new EntityAlreadyExistException(this.getClass(), "id '" + dish.getId() + "'");
         }
 
         this.dishesRepository.save(dish);
@@ -74,6 +74,6 @@ public class DishController {
 
     private void validateDish(int id) {
         this.dishesRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(this.getClass(), id));
+                .orElseThrow(() -> new EntityNotFoundException(this.getClass(), "id '" + id + "'."));
     }
 }

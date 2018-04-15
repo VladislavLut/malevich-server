@@ -52,7 +52,7 @@ public class TableController {
     @PostMapping("/add")
     public ResponseEntity<?> saveTable(@RequestBody TableItem tableItem) {
         if (this.tablesRepository.findById(tableItem.getId()).isPresent()) {
-            throw new EntityAlreadyExistException(this.getClass(), tableItem.getId());
+            throw new EntityAlreadyExistException(this.getClass(), "id '" + tableItem.getId() + "'");
         }
 
         this.tablesRepository.save(tableItem);
@@ -81,7 +81,7 @@ public class TableController {
 
     private void validateTable(int id) {
         this.tablesRepository.findTableById(id)
-                .orElseThrow(() -> new EntityNotFoundException(this.getClass(), id));
+                .orElseThrow(() -> new EntityNotFoundException(this.getClass(), "id '" + id + "'."));
     }
 
 }
