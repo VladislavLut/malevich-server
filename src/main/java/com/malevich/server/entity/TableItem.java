@@ -1,5 +1,8 @@
 package com.malevich.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -17,8 +20,13 @@ public class TableItem implements Serializable {
     @Column(name = "opened")
     private boolean opened;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "tableItem", cascade = CascadeType.ALL)
     private List<Order> orders;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "tableItem", cascade = CascadeType.ALL)
+    private List<Reservation> reservations;
 
     protected TableItem() {
     }
@@ -51,5 +59,13 @@ public class TableItem implements Serializable {
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
     }
 }
