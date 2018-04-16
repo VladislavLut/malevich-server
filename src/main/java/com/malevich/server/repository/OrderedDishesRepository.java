@@ -19,6 +19,8 @@ public interface OrderedDishesRepository extends JpaRepository<OrderedDish, Inte
 //
 //    List<OrderedDish> findAllByStatus(String status);
 
+    List<OrderedDish> findAllByOrder_Id(int id);
+
     @Modifying(clearAutomatically = true)
     @Query("update OrderedDish od set od.status = :status where od.id = :id")
     int updateStatus(@Param("id") int id, @Param("status") String status);
