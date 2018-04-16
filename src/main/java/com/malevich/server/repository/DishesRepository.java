@@ -12,13 +12,6 @@ import java.util.Optional;
 
 public interface DishesRepository extends JpaRepository<Dish, Integer> {
 
-//    List<Dish> findAllByCategory(String category);
-//
-//    List<Dish> findAllByNameContaining(String name);
-//
-//    List<Dish> findAllByDescriptionContaining(String description);
-//
-//    List<Dish> findAllByRatingGreaterThan(float rating);
 
 
     @Modifying(clearAutomatically = true)
