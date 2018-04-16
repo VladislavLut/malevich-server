@@ -48,7 +48,7 @@ public class ReservationController {
                 reservation.getTime(),
                 reservation.getName(),
                 reservation.getPhone()
-        ).orElseThrow( () -> new EntityNotFoundException(
+        ).orElseThrow(() -> new EntityNotFoundException(
                 this.getClass(),
                 "date '" + reservation.getDate() + "' " +
                         "time '" + reservation.getTime() + "' " +
@@ -57,16 +57,22 @@ public class ReservationController {
         );
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addReservation(@RequestBody Reservation reservation) {
-        if (this.reservedRepository.findById(reservation.getId()).isPresent()) {
-            throw new EntityAlreadyExistException(this.getClass(), "id '" + reservation.getId() + "'");
-        }
-
-        this.reservedRepository.save(reservation);
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @PostMapping("/add")
+//    public ResponseEntity<?> addReservation(@RequestBody Reservation reservation) {
+////        if (this.reservedRepository.selectByParams(
+////                reservation.getDate(),
+////                reservation.getTime(),
+////                reservation.getTableItem()
+////        ).isPresent()) {
+////            throw new EntityAlreadyExistException(
+////                    this.getClass(),
+////                    "date '" + reservation.getDate() + "', time '" + reservation.getTime() + "', ");
+////        }
+//
+//        this.reservedRepository.save(reservation);
+//
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
     @PostMapping("/update")
     public ResponseEntity<?> updateReservation(Reservation reservation) {
