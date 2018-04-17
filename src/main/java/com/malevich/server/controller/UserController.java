@@ -1,5 +1,7 @@
 package com.malevich.server.controller;
 
+import com.malevich.server.controller.exception.EntityAlreadyExistException;
+import com.malevich.server.controller.exception.EntityNotFoundException;
 import com.malevich.server.entity.User;
 import com.malevich.server.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,7 @@ public class UserController {
     @PostMapping("/add")
     public ResponseEntity<?> saveUser(@RequestBody final User user) {
         if(usersRepository.findUserByLogin(user.getLogin()).isPresent()) {
-            throw new UserAlreadyExistException(user.getLogin());
+            throw new EntityAlreadyExistException(this.getClass(), "login '" +  user.getLogin() + "'");
         }
         usersRepository.save(user);
 
@@ -80,7 +82,7 @@ public class UserController {
     private void validateUser(String login)
     {
          this.usersRepository.findUserByLogin(login)
-                 .orElseThrow( () -> new UserNotFoundException(login));
+                 .orElseThrow( () -> new EntityNotFoundException(this.getClass(), "login '" + login + "."));
 
     }
 
@@ -88,18 +90,3 @@ public class UserController {
 
 }
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-class UserNotFoundException extends RuntimeException {
-
-    public UserNotFoundException(String login) {
-        super("could not find user '" + login + "'.");
-    }
-}
-
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-class UserAlreadyExistException extends RuntimeException {
-
-    public UserAlreadyExistException(String login) {
-        super("user with login '" + login + "' already exist.");
-    }
-}
