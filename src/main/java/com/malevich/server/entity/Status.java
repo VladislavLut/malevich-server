@@ -1,4 +1,4 @@
-package com.malevich.server.model;
+package com.malevich.server.entity;
 
 public enum Status {
     WAITING,

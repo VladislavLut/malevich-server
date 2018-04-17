@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -34,11 +33,6 @@ public class User implements Serializable {
     @NotNull
     @Column(name = "name")
     private String name;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "kitchener", cascade = CascadeType.ALL)
-    private List<OrderedDish> orderedDishes;
-
 
     protected User() {
 
@@ -89,14 +83,6 @@ public class User implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<OrderedDish> getOrderedDishes() {
-        return orderedDishes;
-    }
-
-    public void setOrderedDishes(List<OrderedDish> orderedDishes) {
-        this.orderedDishes = orderedDishes;
     }
 }
 

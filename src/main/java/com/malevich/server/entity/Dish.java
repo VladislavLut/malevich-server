@@ -1,12 +1,9 @@
 package com.malevich.server.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @Table(name = "dishes")
@@ -38,10 +35,6 @@ public class Dish implements Serializable{
 
     @Column(name = "rating")
     private float rating;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)
-    private List<OrderedDish> orderedDishes;
 
     protected Dish() {
     }
@@ -110,13 +103,5 @@ public class Dish implements Serializable{
 
     public void setRating(float rating) {
         this.rating = rating;
-    }
-
-    public List<OrderedDish> getOrderedDishes() {
-        return orderedDishes;
-    }
-
-    public void setOrderedDishes(List<OrderedDish> orderedDishes) {
-        this.orderedDishes = orderedDishes;
     }
 }
