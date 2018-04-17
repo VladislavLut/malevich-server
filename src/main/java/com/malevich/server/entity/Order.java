@@ -1,8 +1,12 @@
 package com.malevich.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.malevich.server.utils.Status;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -26,10 +30,13 @@ public class Order implements Serializable {
     @Column(name = "date")
     private String date;
 
-    @OneToOne(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "order")
+    @JsonIgnore
+    @OneToOne(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Comment comment;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderedDish> orderedDishes;
 
     protected Order() {
     }
@@ -80,4 +87,13 @@ public class Order implements Serializable {
     public void setComment(Comment comment) {
         this.comment = comment;
     }
+
+    public List<OrderedDish> getOrderedDishes() {
+        return orderedDishes;
+    }
+
+    public void setOrderedDishes(List<OrderedDish> orderedDishes) {
+        this.orderedDishes = orderedDishes;
+    }
+
 }
