@@ -1,8 +1,8 @@
 package com.malevich.server.controller;
 
 
-import com.malevich.server.controller.exception.EntityAlreadyExistException;
-import com.malevich.server.controller.exception.EntityNotFoundException;
+import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
+import com.malevich.server.http.response.status.exception.EntityNotFoundException;
 import com.malevich.server.entity.Order;
 import com.malevich.server.repository.OrdersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
