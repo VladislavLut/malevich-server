@@ -87,13 +87,12 @@ public class ReservationController {
     }
 
     private void validateReservationForAdding(Reservation reservation) {
-        TimeUtil timeUtil = new TimeUtil();
         try {
             if (this.reservedRepository
                     .findAllByDateAndTimeBetween(
                             reservation.getDate(),
-                            timeUtil.shiftTime(reservation.getTime(), -RESERVATION_RANGE),
-                            timeUtil.shiftTime(reservation.getTime(), RESERVATION_RANGE))
+                            TimeUtil.shiftTime(reservation.getTime(), -RESERVATION_RANGE),
+                            TimeUtil.shiftTime(reservation.getTime(), RESERVATION_RANGE))
                     .isPresent()) {
                 throw new EntityAlreadyExistException(
                         reservation, "date '" + reservation.getDate()
