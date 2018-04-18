@@ -1,14 +1,12 @@
 package com.malevich.server.controller;
 
-import com.malevich.server.controller.exception.EntityAlreadyExistException;
-import com.malevich.server.controller.exception.EntityNotFoundException;
 import com.malevich.server.entity.Order;
 import com.malevich.server.entity.TableItem;
+import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
+import com.malevich.server.http.response.status.exception.EntityNotFoundException;
+import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.TablesRepository;
-import org.aspectj.apache.bcel.generic.TABLESWITCH;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -27,7 +25,7 @@ public class TableController {
         this.tablesRepository = tablesRepository;
     }
 
-    @GetMapping("/")
+    @GetMapping("/all")
     public List<TableItem> findAllTables() {
         return this.tablesRepository.findAll();
     }
@@ -39,8 +37,11 @@ public class TableController {
         return this.tablesRepository.findTableById(id);
     }
 
-    @GetMapping("/{id}/lastOrder")
+    @GetMapping("/{id}/last-order")
     public Order findLastOrder(@PathVariable int id) {
+
+//todo: replace this shit with something adequate :/
+
         validateTable(id);
 
         List<Order> orders = this.tablesRepository.findTableById(id).get().getOrders();
@@ -50,33 +51,33 @@ public class TableController {
 
 
     @PostMapping("/add")
-    public ResponseEntity<?> saveTable(@RequestBody TableItem tableItem) {
+    public void saveTable(@RequestBody TableItem tableItem) {
         if (this.tablesRepository.findById(tableItem.getId()).isPresent()) {
             throw new EntityAlreadyExistException(this.getClass(), "id '" + tableItem.getId() + "'");
         }
 
         this.tablesRepository.save(tableItem);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("table saved in the database");
     }
 
     @PostMapping("/update")
     @Transactional
-    public ResponseEntity<?> updateTable(@RequestBody TableItem tableItem) {
+    public void updateTable(@RequestBody TableItem tableItem) {
         validateTable(tableItem.getId());
 
         this.tablesRepository.updateStatus(tableItem.getId(), tableItem.isOpened());
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("table updated");
     }
 
     @PostMapping("/remove")
-    public ResponseEntity<?> removeTable(@RequestBody TableItem tableItem) {
+    public void removeTable(@RequestBody TableItem tableItem) {
         validateTable(tableItem.getId());
 
         this.tablesRepository.deleteById(tableItem.getId());
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("reservation removed from the database");
     }
 
     private void validateTable(int id) {
