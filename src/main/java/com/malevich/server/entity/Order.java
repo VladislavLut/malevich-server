@@ -1,7 +1,12 @@
 package com.malevich.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.malevich.server.utils.Status;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -16,16 +21,27 @@ public class Order implements Serializable {
     @JoinColumn(name = "table_id")
     private TableItem tableItem;
 
-    @Column(name = "status", nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    @Column(name = "status")
+    private Status status;
 
-    @Column(name = "date", nullable = false)
+    @NotNull
+    @Column(name = "date")
     private String date;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Comment comment;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderedDish> orderedDishes;
 
     protected Order() {
     }
 
-    public Order(TableItem tableItem, String status, String date) {
+    public Order(TableItem tableItem, Status status, String date) {
         this.tableItem = tableItem;
         this.status = status;
         this.date = date;
@@ -48,11 +64,11 @@ public class Order implements Serializable {
         this.tableItem = tableItem;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -62,6 +78,22 @@ public class Order implements Serializable {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
+
+    public List<OrderedDish> getOrderedDishes() {
+        return orderedDishes;
+    }
+
+    public void setOrderedDishes(List<OrderedDish> orderedDishes) {
+        this.orderedDishes = orderedDishes;
     }
 
 }

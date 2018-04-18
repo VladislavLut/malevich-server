@@ -1,20 +1,20 @@
 package com.malevich.server.controller;
 
 import com.malevich.server.entity.User;
+import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
+import com.malevich.server.http.response.status.exception.EntityNotFoundException;
+import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
@@ -37,35 +37,35 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> saveUser(@RequestBody final User user) {
+    public void saveUser(@RequestBody final User user) {
         if(usersRepository.findUserByLogin(user.getLogin()).isPresent()) {
-            throw new UserAlreadyExistException(user.getLogin());
+            throw new EntityAlreadyExistException(this.getClass(), "login '" +  user.getLogin() + "'");
         }
         usersRepository.save(user);
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        throw new OkException("user saved in the database");
     }
 
-    @PostMapping("/update_name")
+    @PostMapping("/update-name")
     @Transactional
-    public ResponseEntity<?> updateName(@Valid @RequestBody final User user) {
+    public void updateName(@Valid @RequestBody final User user) {
         validateUser(user.getLogin());
         this.usersRepository.updateName(user.getId(), user.getName());
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("user name updated");
     }
 
-    @PostMapping("/update_pass")
+    @PostMapping("/update-pass")
     @Transactional
-    public ResponseEntity<?> updatePassword(@Valid @RequestBody final User user) {
+    public void updatePassword(@Valid @RequestBody final User user) {
         validateUser(user.getLogin());
         this.usersRepository.updatePassword(user.getId(), user.getPassword());
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("user password updated");
     }
 
     @PostMapping("/remove")
-    public ResponseEntity<?> removeUser(@RequestBody final User user) {
+    public void removeUser(@RequestBody final User user) {
         validateUser(user.getLogin());
 
         if (user.getId() == 0) {
@@ -74,32 +74,16 @@ public class UserController {
 
         usersRepository.deleteById(user.getId());
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("user removed from the database");
     }
 
     private void validateUser(String login)
     {
          this.usersRepository.findUserByLogin(login)
-                 .orElseThrow( () -> new UserNotFoundException(login));
-
+                 .orElseThrow( () -> new EntityNotFoundException(this.getClass(), "login '" + login + "."));
     }
 
     //TODO: authorization
 
 }
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-class UserNotFoundException extends RuntimeException {
-
-    public UserNotFoundException(String login) {
-        super("could not find user '" + login + "'.");
-    }
-}
-
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-class UserAlreadyExistException extends RuntimeException {
-
-    public UserAlreadyExistException(String login) {
-        super("user with login '" + login + "' already exist.");
-    }
-}

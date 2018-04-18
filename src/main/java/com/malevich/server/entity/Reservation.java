@@ -1,8 +1,8 @@
 package com.malevich.server.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "reserved")
@@ -15,18 +15,22 @@ public class Reservation implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "table_id", nullable = false)
-    private TableItem table;
+    private TableItem tableItem;
 
-    @Column(name = "date", nullable = false)
+    @NotNull
+    @Column(name = "date")
     private String date;
 
-    @Column(name = "time", nullable = false)
+    @NotNull
+    @Column(name = "time")
     private String time;
 
-    @Column(name = "phone", nullable = false)
+    @NotNull
+    @Column(name = "phone")
     private String phone;
 
-    @Column(name = "name", nullable = false)
+    @NotNull
+    @Column(name = "name")
     private String name;
 
     @Column(name = "comment")
@@ -35,13 +39,13 @@ public class Reservation implements Serializable {
     protected Reservation() {
     }
 
-    public Reservation(TableItem table, String date, String time, String phone, String name, String comment) {
-        this.table = table;
-        this.date = date;
-        this.time = time;
-        this.phone = phone;
-        this.name = name;
-        this.comment = comment;
+    public Reservation(TableItem tableItem, String date, String time, String name, String phone, String comment) {
+        this.tableItem = tableItem;
+        this.date = date == null ? "" : date;
+        this.time = time == null ? "" : time;
+        this.name = name == null ? "" : name;
+        this.phone = phone == null ? "" : phone;
+        this.comment = comment == null ? "" : comment;
     }
 
     public int getId() {
@@ -53,12 +57,12 @@ public class Reservation implements Serializable {
         this.id = id;
     }
 
-    public TableItem getTable() {
-        return table;
+    public TableItem getTableItem() {
+        return tableItem;
     }
 
-    public void setTable(TableItem table) {
-        this.table = table;
+    public void setTableItem(TableItem tableItem) {
+        this.tableItem = tableItem;
     }
 
     public String getDate() {

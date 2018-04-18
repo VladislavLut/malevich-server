@@ -1,9 +1,12 @@
 package com.malevich.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
-import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "dishes")
@@ -14,23 +17,31 @@ public class Dish implements Serializable{
     @Column(name = "id")
     private int id;
 
-    @Column(name = "category", nullable = false)
+    @NotNull
+    @Column(name = "category")
     private String category;
 
-    @Column(name = "name", nullable = false)
+    @NotNull
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "description", nullable = false)
+    @NotNull
+    @Column(name = "description")
     private String description;
 
     @Column(name = "imageURL")
     private String imageURL;
 
-    @Column(name = "price", nullable = false)
+    @NotNull
+    @Column(name = "price")
     private BigDecimal price;
 
     @Column(name = "rating")
     private float rating;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)
+    private List<OrderedDish> orderedDishes;
 
     protected Dish() {
     }
@@ -99,5 +110,13 @@ public class Dish implements Serializable{
 
     public void setRating(float rating) {
         this.rating = rating;
+    }
+
+    public List<OrderedDish> getOrderedDishes() {
+        return orderedDishes;
+    }
+
+    public void setOrderedDishes(List<OrderedDish> orderedDishes) {
+        this.orderedDishes = orderedDishes;
     }
 }

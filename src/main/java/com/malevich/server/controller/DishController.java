@@ -1,12 +1,12 @@
 package com.malevich.server.controller;
 
 import com.malevich.server.entity.Dish;
+import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
+import com.malevich.server.http.response.status.exception.EntityNotFoundException;
+import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.DishesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sun.security.timestamp.HttpTimestamper;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -31,34 +31,34 @@ public class DishController {
     }
 
     @GetMapping("/{id}/")
-    public Optional<Dish> getDishItem(@PathVariable int id) {
+    public Optional<Dish> findDishById(@PathVariable int id) {
         validateDish(id);
         return this.dishesRepository.findById(id);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> saveDish(@RequestBody final Dish dish) {
+    public void saveDish(@RequestBody final Dish dish) {
         if (this.dishesRepository.findById(dish.getId()).isPresent()) {
-            throw new DishAlreadyExistException(dish.getId());
+            throw new EntityAlreadyExistException(this.getClass(), "id '" + dish.getId() + "'");
         }
 
         this.dishesRepository.save(dish);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("dish saved in the database");
     }
 
     @PostMapping("/remove")
-    public ResponseEntity<?> removeDish(@RequestBody final Dish dish) {
+    public void removeDish(@RequestBody final Dish dish) {
         validateDish(dish.getId());
 
         dishesRepository.deleteById(dish.getId());
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("dish from the database");
     }
 
     @PostMapping("/update")
     @Transactional
-    public ResponseEntity<?> update(@Valid @RequestBody final Dish dish) {
+    public void update(@Valid @RequestBody final Dish dish) {
         validateDish(dish.getId());
         this.dishesRepository.update(
                 dish.getId(),
@@ -68,29 +68,11 @@ public class DishController {
                 dish.getDescription()
         );
 
-//        this.dishesRepository.
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("dish was updated");
     }
 
     private void validateDish(int id) {
         this.dishesRepository.findById(id)
-                .orElseThrow(() -> new DishNotFoundException(id));
-    }
-}
-
-@ResponseStatus(HttpStatus.NOT_FOUND)
-class DishNotFoundException extends RuntimeException {
-
-    public DishNotFoundException(int id) {
-        super("could not find dish '" + id + "'.");
-    }
-}
-
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-class DishAlreadyExistException extends RuntimeException {
-
-    public DishAlreadyExistException(int id) {
-        super("user with login '" + id + "' already exist.");
+                .orElseThrow(() -> new EntityNotFoundException(this.getClass(), "id '" + id + "'."));
     }
 }

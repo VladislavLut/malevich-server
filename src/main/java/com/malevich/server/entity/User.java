@@ -3,11 +3,10 @@ package com.malevich.server.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import javax.persistence.Id;
-
 import javax.persistence.*;
-import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -18,19 +17,27 @@ public class User implements Serializable {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "type", nullable = false)
+    @NotNull
+    @Column(name = "type")
     private String type;
 
-    @Column(name = "login", nullable = false, unique = true)
+    @NotNull
+    @Column(name = "login", unique = true)
     private String login;
 
     @JsonIgnore
     @JsonDeserialize
-    @Column(name = "password", nullable = false)
+    @NotNull
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "name", nullable = false)
+    @NotNull
+    @Column(name = "name")
     private String name;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "kitchener", cascade = CascadeType.ALL)
+    private List<OrderedDish> orderedDishes;
 
     protected User() {
 
@@ -81,5 +88,13 @@ public class User implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<OrderedDish> getOrderedDishes() {
+        return orderedDishes;
+    }
+
+    public void setOrderedDishes(List<OrderedDish> orderedDishes) {
+        this.orderedDishes = orderedDishes;
     }
 }
