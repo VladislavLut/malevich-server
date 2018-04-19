@@ -1,11 +1,10 @@
 package com.malevich.server.repository;
 
 import com.malevich.server.entity.Order;
-import com.malevich.server.entity.TableItem;
+import com.malevich.server.utils.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -22,11 +21,11 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findAllByDate(String date);
 
-    List<Order> findAllByStatusIgnoreCase(String status);
+    List<Order> findAllByStatus(Status status);
 
-    List<Order> findAllByStatusNotLikeIgnoreCase(String status);
+    List<Order> findAllByStatusNotLike(Status status);
 
-    Optional<Order> findFirstByTableAndStatusNotLikeIgnoreCase(int tableId, String status);
+    Optional<Order> findFirstByTableItemAndStatusNotLike(int tableId, Status status);
 
     @Modifying(clearAutomatically = true)
     @Query("update Order o set o.status = :status where o.id = :id")
