@@ -13,15 +13,20 @@ import java.util.Optional;
 
 public interface OrdersRepository extends JpaRepository<Order, Integer> {
 
-    Optional<Order> findOrderById(int id);
 
     //Optional<Order> findOrderByTable(int tableId);
 
-//    List<Order> findAllByIdIsNotNull();
+    //List<Order> findAllByIdIsNotNull();
 
-//    List<Order> findAllByDate(String date);
+    //Optional<Order> findFirstByTableAndStatusIgnoreCase(int tableId, String status);
 
-//    List<Order> findAllByStatus(String status);
+    List<Order> findAllByDate(String date);
+
+    List<Order> findAllByStatusIgnoreCase(String status);
+
+    List<Order> findAllByStatusNotLikeIgnoreCase(String status);
+
+    Optional<Order> findFirstByTableAndStatusNotLikeIgnoreCase(int tableId, String status);
 
     @Modifying(clearAutomatically = true)
     @Query("update Order o set o.status = :status where o.id = :id")
