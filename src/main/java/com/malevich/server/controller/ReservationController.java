@@ -1,21 +1,24 @@
 package com.malevich.server.controller;
 
-import com.malevich.server.controller.exception.EntityAlreadyExistException;
-import com.malevich.server.controller.exception.EntityNotFoundException;
 import com.malevich.server.entity.Reservation;
+import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
+import com.malevich.server.http.response.status.exception.EntityNotFoundException;
+import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.ReservedRepository;
+import com.malevich.server.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
+import java.text.ParseException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/reserved")
 public class ReservationController {
+
+    public final int RESERVATION_RANGE = 2;
 
     @Autowired
     private final ReservedRepository reservedRepository;
@@ -25,7 +28,7 @@ public class ReservationController {
         this.reservedRepository = reservedRepository;
     }
 
-    @GetMapping("/")
+    @GetMapping("/all")
     public List<Reservation> findAll() {
         return this.reservedRepository.findAll();
     }
@@ -41,53 +44,40 @@ public class ReservationController {
     public List<Reservation> find(@RequestBody Reservation reservation) {
         if (reservation.getId() != 0) {
             validateReservation(reservation.getId());
-            return Arrays.asList(this.reservedRepository.findById(reservation.getId()).get());
+            return Collections.singletonList(this.reservedRepository.findById(reservation.getId()).get());
         }
-        return this.reservedRepository.selectByParams(
+
+        return this.reservedRepository.findAllByDateAndTimeAndNameAndPhone(
                 reservation.getDate(),
                 reservation.getTime(),
                 reservation.getName(),
                 reservation.getPhone()
         ).orElseThrow(() -> new EntityNotFoundException(
-                this.getClass(),
-                "date '" + reservation.getDate() + "' " +
-                        "time '" + reservation.getTime() + "' " +
-                        "name '" + reservation.getName() + "' " +
+                reservation,
+                "date '" + reservation.getDate() + "', " +
+                        "time '" + reservation.getTime() + "', " +
+                        "name '" + reservation.getName() + "', " +
                         "phone '" + reservation.getPhone() + "'.")
         );
     }
 
-//    @PostMapping("/add")
-//    public ResponseEntity<?> addReservation(@RequestBody Reservation reservation) {
-////        if (this.reservedRepository.selectByParams(
-////                reservation.getDate(),
-////                reservation.getTime(),
-////                reservation.getTableItem()
-////        ).isPresent()) {
-////            throw new EntityAlreadyExistException(
-////                    this.getClass(),
-////                    "date '" + reservation.getDate() + "', time '" + reservation.getTime() + "', ");
-////        }
-//
-//        this.reservedRepository.save(reservation);
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+    @PostMapping("/add")
+    public void addReservation(@RequestBody Reservation reservation) {
 
-    @PostMapping("/update")
-    public ResponseEntity<?> updateReservation(Reservation reservation) {
-        //TODO: create update query in ReservedRepository
+        validateReservationForAdding(reservation);
 
-        return null;
+        this.reservedRepository.save(reservation);
+
+        throw new OkException("reservation saved in the database");
     }
 
     @PostMapping("/remove")
-    public ResponseEntity<?> removeReservation(Reservation reservation) {
+    public void removeReservation(@RequestBody Reservation reservation) {
         validateReservation(reservation.getId());
 
         this.reservedRepository.deleteById(reservation.getId());
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("reservation removed from the database");
     }
 
 
@@ -95,5 +85,25 @@ public class ReservationController {
         this.reservedRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(this.getClass(), "id '" + id + "'."));
     }
+
+    private void validateReservationForAdding(Reservation reservation) {
+        try {
+            if (this.reservedRepository
+                    .findAllByDateAndTimeBetween(
+                            reservation.getDate(),
+                            TimeUtil.shiftTime(reservation.getTime(), -RESERVATION_RANGE),
+                            TimeUtil.shiftTime(reservation.getTime(), RESERVATION_RANGE))
+                    .isPresent()) {
+                throw new EntityAlreadyExistException(
+                        reservation, "date '" + reservation.getDate()
+                        + "', time '" + reservation.getTime() + "'.");
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
 }

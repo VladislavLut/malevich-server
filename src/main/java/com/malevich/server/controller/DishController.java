@@ -1,12 +1,11 @@
 package com.malevich.server.controller;
 
-import com.malevich.server.controller.exception.EntityAlreadyExistException;
-import com.malevich.server.controller.exception.EntityNotFoundException;
 import com.malevich.server.entity.Dish;
+import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
+import com.malevich.server.http.response.status.exception.EntityNotFoundException;
+import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.DishesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -38,28 +37,28 @@ public class DishController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> saveDish(@RequestBody final Dish dish) {
+    public void saveDish(@RequestBody final Dish dish) {
         if (this.dishesRepository.findById(dish.getId()).isPresent()) {
             throw new EntityAlreadyExistException(this.getClass(), "id '" + dish.getId() + "'");
         }
 
         this.dishesRepository.save(dish);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("dish saved in the database");
     }
 
     @PostMapping("/remove")
-    public ResponseEntity<?> removeDish(@RequestBody final Dish dish) {
+    public void removeDish(@RequestBody final Dish dish) {
         validateDish(dish.getId());
 
         dishesRepository.deleteById(dish.getId());
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("dish from the database");
     }
 
     @PostMapping("/update")
     @Transactional
-    public ResponseEntity<?> update(@Valid @RequestBody final Dish dish) {
+    public void update(@Valid @RequestBody final Dish dish) {
         validateDish(dish.getId());
         this.dishesRepository.update(
                 dish.getId(),
@@ -69,7 +68,7 @@ public class DishController {
                 dish.getDescription()
         );
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("dish was updated");
     }
 
     private void validateDish(int id) {
