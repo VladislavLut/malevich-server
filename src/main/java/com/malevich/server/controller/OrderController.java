@@ -39,12 +39,12 @@ public class OrderController {
 
     @GetMapping("/active-orders")
     public List<Order> findAllActiveOrders() {
-        return this.ordersRepository.findAllByStatusNotLikeIgnoreCase(Status.CLOSED.name());
+        return this.ordersRepository.findAllByStatusNotLike(Status.CLOSED);
     }
 
     @GetMapping("/{status}/orders-by-status")
     public List<Order> findOrdersByStatusIgnoreCase(@PathVariable String status) {
-        return this.ordersRepository.findAllByStatusIgnoreCase(status);
+        return this.ordersRepository.findAllByStatus(Status.valueOf(status));
     }
 
     @GetMapping("/{date}/orders-by-date")
@@ -55,7 +55,7 @@ public class OrderController {
     @GetMapping("/{tableItem}/active-order")
     public Optional<Order> findActiveOrderAtTable(@PathVariable int tableId) {
         //TableController.validateTable(id);
-        return this.ordersRepository.findFirstByTableAndStatusNotLikeIgnoreCase(tableId, Status.CLOSED.name());
+        return this.ordersRepository.findFirstByTableItemAndStatusNotLike(tableId, Status.CLOSED);
     }
 
     @PostMapping("/add")
