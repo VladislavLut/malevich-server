@@ -19,27 +19,12 @@ public interface ReservedRepository extends JpaRepository<Reservation, Integer> 
             "and r.time like %:time% " +
             "and r.name like %:name% " +
             "and r.phone like %:phone%")
-    Optional<List<Reservation>> selectByParams(
+    Optional<List<Reservation>> findAllByDateAndTimeAndNameAndPhone(
             @Param("date") String date,
             @Param("time") String time,
             @Param("name") String name,
             @Param("phone") String phone);
 
-//    @Query(value = "select * " +
-//            "from reserved r " +
-//            "where r.date like %:date% " +
-//            "and r.time between :from_time and : to_time " +
-//            "and r.table_id = :table_id ", nativeQuery = true)
-//    Optional<List<Reservation>> selectByParams(
-//            @Param("date") String date,
-//            @Param("from_time") String fromTime,
-//            @Param("to_time") String toTime,
-//            @Param("table_id") int tableId);
-    /*
-     * There is no need in update query for Reserved table
-     * */
+    Optional<List<Reservation>> findAllByDateAndTimeBetween(String date, String timeFrom, String timeTo);
 
-//    @Modifying(clearAutomatically = true)
-//    @Query("update Reservation r set ")
-//    int updateReservation();
 }
