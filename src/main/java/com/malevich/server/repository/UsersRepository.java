@@ -1,6 +1,7 @@
 package com.malevich.server.repository;
 
 import com.malevich.server.entity.User;
+import com.malevich.server.utils.UserType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +15,7 @@ public interface UsersRepository extends JpaRepository<User, Integer> {
 
     Optional<User>findUserByLogin(String login);
 
-    Optional<List<User>> findAllByType(String type);
+    Optional<List<User>> findAllByType(UserType type);
 
     @Modifying(clearAutomatically = true)
     @Query("update User u set u.name = :name where u.id = :id")
