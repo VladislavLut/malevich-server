@@ -35,6 +35,9 @@ public class User implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "birth_day")
+    private String birthDay;
+
     @JsonIgnore
     @OneToMany(mappedBy = "kitchener", cascade = CascadeType.ALL)
     private List<OrderedDish> orderedDishes;
@@ -43,11 +46,12 @@ public class User implements Serializable {
 
     }
 
-    public User(String type, String login, String password, String name) {
+    public User(String type, String login, String password, String name, String birthDay) {
         this.type = type;
         this.login = login;
         this.password = password;
         this.name = name;
+        this.birthDay = birthDay;
     }
 
     public int getId() {
@@ -88,6 +92,14 @@ public class User implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(String birthDay) {
+        this.birthDay = birthDay;
     }
 
     public List<OrderedDish> getOrderedDishes() {
