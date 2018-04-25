@@ -40,7 +40,7 @@ public class Reservation implements Serializable {
     private String phone;
 
     @NotNull
-    @Column(name = PHONE_COLUMN)
+    @Column(name = NAME_COLUMN)
     private String name;
 
     @Column(name = COMMENT_COLUMN)
