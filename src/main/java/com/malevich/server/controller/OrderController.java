@@ -1,6 +1,7 @@
 package com.malevich.server.controller;
 
 
+import com.malevich.server.entity.TableItem;
 import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
 import com.malevich.server.http.response.status.exception.EntityNotFoundException;
 import com.malevich.server.entity.Order;
@@ -52,10 +53,9 @@ public class OrderController {
         return this.ordersRepository.findAllByDate(date);
     }
 
-    @GetMapping("/{tableItem}/active-order")
-    public Optional<Order> findActiveOrderAtTable(@PathVariable int tableId) {
-        //TableController.validateTable(id);
-        return this.ordersRepository.findFirstByTableItemAndStatusNotLike(tableId, Status.CLOSED);
+    @PostMapping("/active-order")
+    public Optional<Order> findActiveOrderAtTable(@RequestBody final TableItem tableItem) {
+        return this.ordersRepository.findFirstByTableItemAndStatusNotLike(tableItem , Status.CLOSED);
     }
 
     @PostMapping("/add")
@@ -84,7 +84,7 @@ public class OrderController {
         validateOrder(order.getId());
         this.ordersRepository.updateStatus(
                 order.getId(),
-                order.getStatus().name()
+                order.getStatus()
         );
 
         throw new OkException("order was updated");
