@@ -8,10 +8,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.malevich.server.entity.Dish.TABLE_NAME;
-
 @Entity
-@Table(name = TABLE_NAME)
+@Table(name = Dish.TABLE_NAME)
 public class Dish implements Serializable{
 
     public static final String TABLE_NAME = "dishes";
@@ -20,7 +18,7 @@ public class Dish implements Serializable{
     public static final String CATEGORY_COLUMN = "category";
     public static final String NAME_COLUMN = "name";
     public static final String DESCRIPTION_COLUMN = "description";
-    public static final String IMAGE_URL_COLUMN = "imageURL";
+    public static final String IMAGE_URL_COLUMN = "imageurl";
     public static final String PRICE_COLUMN = "price";
     public static final String RATING_COLUMN = "rating";
 

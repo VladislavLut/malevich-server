@@ -3,10 +3,8 @@ package com.malevich.server.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 
-import static com.malevich.server.entity.Comment.TABLE_NAME;
-
 @Entity
-@Table(name = TABLE_NAME)
+@Table(name = Comment.TABLE_NAME)
 public class Comment implements Serializable {
 
     public static final String TABLE_NAME = "comments";

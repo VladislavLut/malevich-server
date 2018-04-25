@@ -14,7 +14,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
-import static com.malevich.server.entity.User.*;
 import static com.malevich.server.http.response.status.exception.OkException.*;
 
 @RestController
@@ -51,7 +50,9 @@ public class UserController {
     @PostMapping("/add")
     public void saveUser(@RequestBody final User user) throws OkException {
         if(usersRepository.findUserByLogin(user.getLogin()).isPresent()) {
-            throw new EntityAlreadyExistException(this.getClass().toString(), LOGIN_COLUMN + SPACE_QUOTE +  user.getLogin() + QUOTE);
+            throw new EntityAlreadyExistException(
+                    this.getClass().toString(),
+                    User.LOGIN_COLUMN + SPACE_QUOTE +  user.getLogin() + QUOTE);
         }
         usersRepository.save(user);
 
@@ -64,7 +65,7 @@ public class UserController {
         validateUser(user.getLogin());
         this.usersRepository.updateName(user.getId(), user.getName());
 
-        throw new OkException(UPDATED, this.getClass().toString(), NAME_COLUMN);
+        throw new OkException(UPDATED, this.getClass().toString(), User.NAME_COLUMN);
     }
 
     @PostMapping("/update-pass")
@@ -73,7 +74,7 @@ public class UserController {
         validateUser(user.getLogin());
         this.usersRepository.updatePassword(user.getId(), user.getPassword());
 
-        throw new OkException(UPDATED, this.getClass().toString(), PASSWORD_COLUMN);
+        throw new OkException(UPDATED, this.getClass().toString(), User.PASSWORD_COLUMN);
     }
 
     @PostMapping("/update-birth-day")
@@ -82,7 +83,7 @@ public class UserController {
         validateUser(user.getLogin());
         this.usersRepository.updateBirthDay(user.getId(), user.getBirthDay());
 
-        throw new OkException(UPDATED, this.getClass().toString(), BIRTH_DAY_COLUMN);
+        throw new OkException(UPDATED, this.getClass().toString(), User.BIRTH_DAY_COLUMN);
     }
 
     @PostMapping("/remove")
@@ -103,7 +104,7 @@ public class UserController {
          this.usersRepository.findUserByLogin(login)
                  .orElseThrow(
                          () -> new EntityNotFoundException(
-                                 this.getClass().toString(), LOGIN_COLUMN + SPACE_QUOTE + login + QUOTE));
+                                 this.getClass().toString(), User.LOGIN_COLUMN + SPACE_QUOTE + login + QUOTE));
     }
 
     //TODO: authorization

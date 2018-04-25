@@ -6,10 +6,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
-import static com.malevich.server.entity.OrderedDish.TABLE_NAME;
-
 @Entity
-@Table(name = TABLE_NAME)
+@Table(name = OrderedDish.TABLE_NAME)
 public class OrderedDish implements Serializable {
 
     public static final String TABLE_NAME = "ordered_dishes";

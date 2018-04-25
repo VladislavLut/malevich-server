@@ -9,7 +9,6 @@ import com.malevich.server.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.Query;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +16,6 @@ import java.util.Optional;
 
 import static com.malevich.server.controller.UserController.QUOTE;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
-import static com.malevich.server.entity.Reservation.*;
 import static com.malevich.server.http.response.status.exception.OkException.REMOVED;
 import static com.malevich.server.http.response.status.exception.OkException.SAVED;
 
@@ -63,10 +61,10 @@ public class ReservationController {
                 reservation.getPhone()
         ).orElseThrow(() -> new EntityNotFoundException(
                 this.getClass().toString(),
-                DATE_COLUMN + SPACE_QUOTE+ reservation.getDate() + UserController.QUOTE +
-                        TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE + COMA_SPACE +
-                        NAME_COLUMN + SPACE_QUOTE + reservation.getName() + QUOTE + COMA_SPACE +
-                        PHONE_COLUMN + SPACE_QUOTE + reservation.getPhone() + QUOTE)
+                Reservation.DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + UserController.QUOTE +
+                        Reservation.TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE + COMA_SPACE +
+                        Reservation.NAME_COLUMN + SPACE_QUOTE + reservation.getName() + QUOTE + COMA_SPACE +
+                        Reservation.PHONE_COLUMN + SPACE_QUOTE + reservation.getPhone() + QUOTE)
         );
     }
 
@@ -93,7 +91,7 @@ public class ReservationController {
     private void validateReservation(int id) {
         this.reservedRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        this.getClass().toString(), ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+                        this.getClass().toString(), Reservation.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 
     private void validateReservationForAdding(Reservation reservation) {
@@ -105,15 +103,14 @@ public class ReservationController {
                             TimeUtil.shiftTime(reservation.getTime(), RESERVATION_RANGE))
                     .isPresent()) {
                 throw new EntityAlreadyExistException(
-                        this.getClass().toString(), DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + COMA_SPACE
-                        + TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE);
+                        this.getClass().toString(),
+                        Reservation.DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + COMA_SPACE
+                                + Reservation.TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE);
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
-
-
 
 
 }

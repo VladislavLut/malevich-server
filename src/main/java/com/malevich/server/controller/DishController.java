@@ -15,7 +15,6 @@ import java.util.Optional;
 
 import static com.malevich.server.controller.UserController.QUOTE;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
-import static com.malevich.server.entity.Dish.ID_COLUMN;
 import static com.malevich.server.http.response.status.exception.OkException.*;
 
 @RestController
@@ -45,7 +44,7 @@ public class DishController {
     public void saveDish(@RequestBody final Dish dish) {
         if (this.dishesRepository.findById(dish.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
-                    this.getClass().toString(), ID_COLUMN + SPACE_QUOTE + dish.getId() + QUOTE);
+                    this.getClass().toString(), Dish.ID_COLUMN + SPACE_QUOTE + dish.getId() + QUOTE);
         }
 
         this.dishesRepository.save(dish);
@@ -74,12 +73,12 @@ public class DishController {
                 dish.getDescription()
         );
 
-    throw new OkException(UPDATED, this.getClass().toString(), ID_COLUMN + SPACE_QUOTE + dish.getId() + QUOTE);
+        throw new OkException(UPDATED, this.getClass().toString(), Dish.ID_COLUMN + SPACE_QUOTE + dish.getId() + QUOTE);
     }
 
     private void validateDish(int id) {
         this.dishesRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        this.getClass().toString(), ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+                        this.getClass().toString(), Dish.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 }

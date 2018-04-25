@@ -9,10 +9,8 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
-import static com.malevich.server.entity.User.TABLE_NAME;
-
 @Entity
-@Table(name = TABLE_NAME)
+@Table(name = User.TABLE_NAME)
 public class User implements Serializable {
 
     public static final String TABLE_NAME = "users";

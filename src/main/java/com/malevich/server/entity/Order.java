@@ -11,7 +11,7 @@ import java.util.List;
 import static com.malevich.server.entity.Order.TABLE_NAME;
 
 @Entity
-@Table(name = TABLE_NAME)
+@Table(name = Order.TABLE_NAME)
 public class Order implements Serializable {
 
     public static final String TABLE_NAME = "orders";

@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Entity
-@Table(name = "tables")
+@Table(name = TableItem.TABLE_NAME)
 public class TableItem implements Serializable {
 
     public static final String TABLE_NAME = "tables";
@@ -17,7 +17,7 @@ public class TableItem implements Serializable {
     public static final String OPENED_COLUMN = "opened";
 
     @Id
-    @Column(name = TABLE_NAME)
+    @Column(name = ID_COLUMN)
     private int id;
 
     @NotNull

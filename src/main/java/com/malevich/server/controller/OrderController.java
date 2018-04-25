@@ -1,14 +1,13 @@
 package com.malevich.server.controller;
 
 
+import com.malevich.server.entity.Order;
 import com.malevich.server.entity.TableItem;
 import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
 import com.malevich.server.http.response.status.exception.EntityNotFoundException;
-import com.malevich.server.entity.Order;
 import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.OrdersRepository;
 import com.malevich.server.utils.Status;
-import com.sun.prism.shader.Solid_Color_AlphaTest_Loader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +18,7 @@ import java.util.Optional;
 
 import static com.malevich.server.controller.UserController.QUOTE;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
-import static com.malevich.server.entity.Order.ID_COLUMN;
-import static com.malevich.server.http.response.status.exception.OkException.REMOVED;
-import static com.malevich.server.http.response.status.exception.OkException.SAVED;
-import static com.malevich.server.http.response.status.exception.OkException.UPDATED;
+import static com.malevich.server.http.response.status.exception.OkException.*;
 
 @RestController
 @RequestMapping("/order")
@@ -63,14 +59,14 @@ public class OrderController {
 
     @PostMapping("/active-order")
     public Optional<Order> findActiveOrderAtTable(@RequestBody final TableItem tableItem) {
-        return this.ordersRepository.findFirstByTableItemAndStatusNotLike(tableItem , Status.CLOSED);
+        return this.ordersRepository.findFirstByTableItemAndStatusNotLike(tableItem, Status.CLOSED);
     }
 
     @PostMapping("/add")
     public void saveOrder(@RequestBody final Order order) {
         if (this.ordersRepository.findById(order.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
-                    this.getClass().toString(), ID_COLUMN + SPACE_QUOTE + order.getId() + QUOTE);
+                    this.getClass().toString(), Order.ID_COLUMN + SPACE_QUOTE + order.getId() + QUOTE);
         }
 
         this.ordersRepository.save(order);
@@ -96,12 +92,15 @@ public class OrderController {
                 order.getStatus()
         );
 
-        throw new OkException(UPDATED, this.getClass().toString(), ID_COLUMN + SPACE_QUOTE + order.getId() + QUOTE);
+        throw new OkException(
+                UPDATED,
+                this.getClass().toString(),
+                Order.ID_COLUMN + SPACE_QUOTE + order.getId() + QUOTE);
     }
 
     private void validateOrder(int id) {
         this.ordersRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        this.getClass().toString(), ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+                        this.getClass().toString(), Order.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 }

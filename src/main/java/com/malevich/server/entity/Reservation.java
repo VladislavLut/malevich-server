@@ -4,10 +4,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
-import static com.malevich.server.entity.Reservation.TABLE_NAME;
-
 @Entity
-@Table(name = TABLE_NAME)
+@Table(name = Reservation.TABLE_NAME)
 public class Reservation implements Serializable {
 
     public static final String TABLE_NAME = "reserved";
