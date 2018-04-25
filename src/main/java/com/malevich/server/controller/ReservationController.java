@@ -14,9 +14,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.malevich.server.controller.UserController.QUOTE;
+import static com.malevich.server.controller.UserController.SPACE_QUOTE;
+import static com.malevich.server.http.response.status.exception.OkException.REMOVED;
+import static com.malevich.server.http.response.status.exception.OkException.SAVED;
+
 @RestController
 @RequestMapping("/reserved")
 public class ReservationController {
+
+    public static final String COMA_SPACE = ", ";
 
     public final int RESERVATION_RANGE = 2;
 
@@ -53,11 +60,11 @@ public class ReservationController {
                 reservation.getName(),
                 reservation.getPhone()
         ).orElseThrow(() -> new EntityNotFoundException(
-                reservation,
-                "date '" + reservation.getDate() + "', " +
-                        "time '" + reservation.getTime() + "', " +
-                        "name '" + reservation.getName() + "', " +
-                        "phone '" + reservation.getPhone() + "'.")
+                this.getClass().toString(),
+                Reservation.DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + UserController.QUOTE +
+                        Reservation.TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE + COMA_SPACE +
+                        Reservation.NAME_COLUMN + SPACE_QUOTE + reservation.getName() + QUOTE + COMA_SPACE +
+                        Reservation.PHONE_COLUMN + SPACE_QUOTE + reservation.getPhone() + QUOTE)
         );
     }
 
@@ -68,7 +75,7 @@ public class ReservationController {
 
         this.reservedRepository.save(reservation);
 
-        throw new OkException("reservation saved in the database");
+        throw new OkException(SAVED, this.getClass().toString());
     }
 
     @PostMapping("/remove")
@@ -77,13 +84,14 @@ public class ReservationController {
 
         this.reservedRepository.deleteById(reservation.getId());
 
-        throw new OkException("reservation removed from the database");
+        throw new OkException(REMOVED, this.getClass().toString());
     }
 
 
     private void validateReservation(int id) {
         this.reservedRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(this.getClass(), "id '" + id + "'."));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        this.getClass().toString(), Reservation.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 
     private void validateReservationForAdding(Reservation reservation) {
@@ -95,15 +103,14 @@ public class ReservationController {
                             TimeUtil.shiftTime(reservation.getTime(), RESERVATION_RANGE))
                     .isPresent()) {
                 throw new EntityAlreadyExistException(
-                        reservation, "date '" + reservation.getDate()
-                        + "', time '" + reservation.getTime() + "'.");
+                        this.getClass().toString(),
+                        Reservation.DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + COMA_SPACE
+                                + Reservation.TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE);
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
-
-
 
 
 }
