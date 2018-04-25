@@ -12,7 +12,11 @@ import java.util.Optional;
 
 public interface CommentsRepository extends JpaRepository<Comment, Integer> {
 
-    Optional<Comment> findCommentByOrder_Id(int id);
+    Optional<Comment> findCommentByOrder(Order order);
+    Optional<Comment> findCommentByOrderId(int orderId);
+   // Optional<Comment> deleteByOrder(Order order);
+
+
 
     @Modifying(clearAutomatically = true)
     @Query("update Comment c set c.comment = :comment where c.order = :orderItem")
