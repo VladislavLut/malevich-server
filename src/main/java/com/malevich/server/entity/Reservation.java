@@ -4,36 +4,48 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+import static com.malevich.server.entity.Reservation.TABLE_NAME;
+
 @Entity
-@Table(name = "reserved")
+@Table(name = TABLE_NAME)
 public class Reservation implements Serializable {
+
+    public static final String TABLE_NAME = "reserved";
+
+    public static final String ID_COLUMN = "id";
+    public static final String TABLE_ID_COLUMN = "table_id";
+    public static final String DATE_COLUMN = "date";
+    public static final String TIME_COLUMN = "time";
+    public static final String PHONE_COLUMN = "phone";
+    public static final String NAME_COLUMN = "name";
+    public static final String COMMENT_COLUMN = "comment";
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    @Column(name = "id")
+    @Column(name = ID_COLUMN)
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "table_id", nullable = false)
+    @JoinColumn(name = TABLE_ID_COLUMN, nullable = false)
     private TableItem tableItem;
 
     @NotNull
-    @Column(name = "date")
+    @Column(name = DATE_COLUMN)
     private String date;
 
     @NotNull
-    @Column(name = "time")
+    @Column(name = TIME_COLUMN)
     private String time;
 
     @NotNull
-    @Column(name = "phone")
+    @Column(name = PHONE_COLUMN)
     private String phone;
 
     @NotNull
-    @Column(name = "name")
+    @Column(name = PHONE_COLUMN)
     private String name;
 
-    @Column(name = "comment")
+    @Column(name = COMMENT_COLUMN)
     private String comment;
 
     protected Reservation() {
@@ -104,4 +116,5 @@ public class Reservation implements Serializable {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
 }

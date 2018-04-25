@@ -8,26 +8,35 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
+import static com.malevich.server.entity.Order.TABLE_NAME;
+
 @Entity
-@Table(name = "orders")
+@Table(name = TABLE_NAME)
 public class Order implements Serializable {
+
+    public static final String TABLE_NAME = "orders";
+
+    public static final String ID_COLUMN = "id";
+    public static final String TABLE_ID_COLUMN = "table_id";
+    public static final String STATUS_COLUMN = "status";
+    public static final String DATE_COLUMN = "date";
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    @Column(name = "id")
+    @Column(name = ID_COLUMN)
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "table_id")
+    @JoinColumn(name = TABLE_ID_COLUMN)
     private TableItem tableItem;
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    @Column(name = "status")
+    @Column(name = STATUS_COLUMN)
     private Status status;
 
     @NotNull
-    @Column(name = "date")
+    @Column(name = DATE_COLUMN)
     private String date;
 
     @JsonIgnore

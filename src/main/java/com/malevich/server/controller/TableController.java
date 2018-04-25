@@ -13,6 +13,11 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static com.malevich.server.controller.UserController.QUOTE;
+import static com.malevich.server.controller.UserController.SPACE_QUOTE;
+import static com.malevich.server.entity.TableItem.ID_COLUMN;
+import static com.malevich.server.http.response.status.exception.OkException.*;
+
 @RestController
 @RequestMapping("/tables")
 public class TableController {
@@ -53,12 +58,12 @@ public class TableController {
     @PostMapping("/add")
     public void saveTable(@RequestBody TableItem tableItem) {
         if (this.tablesRepository.findById(tableItem.getId()).isPresent()) {
-            throw new EntityAlreadyExistException(this.getClass(), "id '" + tableItem.getId() + "'");
+            throw new EntityAlreadyExistException(this.getClass().toString(), ID_COLUMN + SPACE_QUOTE + tableItem.getId() + QUOTE);
         }
 
         this.tablesRepository.save(tableItem);
 
-        throw new OkException("table saved in the database");
+        throw new OkException(SAVED, this.getClass().toString());
     }
 
     @PostMapping("/update")
@@ -68,7 +73,7 @@ public class TableController {
 
         this.tablesRepository.updateStatus(tableItem.getId(), tableItem.isOpened());
 
-        throw new OkException("table updated");
+        throw new OkException(UPDATED, this.getClass().toString());
     }
 
     @PostMapping("/remove")
@@ -77,12 +82,13 @@ public class TableController {
 
         this.tablesRepository.deleteById(tableItem.getId());
 
-        throw new OkException("reservation removed from the database");
+        throw new OkException(REMOVED, this.getClass().toString());
     }
 
     private void validateTable(int id) {
         this.tablesRepository.findTableById(id)
-                .orElseThrow(() -> new EntityNotFoundException(this.getClass(), "id '" + id + "'."));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        this.getClass().toString(), ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 
 }

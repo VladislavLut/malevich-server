@@ -3,20 +3,28 @@ package com.malevich.server.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 
+import static com.malevich.server.entity.Comment.TABLE_NAME;
+
 @Entity
-@Table(name = "comments")
+@Table(name = TABLE_NAME)
 public class Comment implements Serializable {
+
+    public static final String TABLE_NAME = "comments";
+
+    public static final String ID_COLUMN = "id";
+    public static final String ORDER_ID_COLUMN = "order_id";
+    public static final String COMMENT_COLUMN = "comment";
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    @Column(name = "id")
+    @Column(name = ID_COLUMN)
     private int id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = ORDER_ID_COLUMN, nullable = false)
     private Order order;
 
-    @Column(name = "comment")
+    @Column(name = COMMENT_COLUMN)
     private String comment;
 
     protected Comment() {

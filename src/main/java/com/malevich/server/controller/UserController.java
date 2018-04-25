@@ -14,9 +14,15 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+import static com.malevich.server.entity.User.*;
+import static com.malevich.server.http.response.status.exception.OkException.*;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
+    public static final String QUOTE = "'";
+    public static final String SPACE_QUOTE = " '";
 
     @Autowired
     private final UsersRepository usersRepository;
@@ -43,13 +49,13 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public void saveUser(@RequestBody final User user) {
+    public void saveUser(@RequestBody final User user) throws OkException {
         if(usersRepository.findUserByLogin(user.getLogin()).isPresent()) {
-            throw new EntityAlreadyExistException(this.getClass(), "login '" +  user.getLogin() + "'");
+            throw new EntityAlreadyExistException(this.getClass().toString(), LOGIN_COLUMN + SPACE_QUOTE +  user.getLogin() + QUOTE);
         }
         usersRepository.save(user);
 
-        throw new OkException("user saved in the database");
+        throw new OkException(SAVED, this.getClass().toString());
     }
 
     @PostMapping("/update-name")
@@ -58,7 +64,7 @@ public class UserController {
         validateUser(user.getLogin());
         this.usersRepository.updateName(user.getId(), user.getName());
 
-        throw new OkException("user's name has updated");
+        throw new OkException(UPDATED, this.getClass().toString(), NAME_COLUMN);
     }
 
     @PostMapping("/update-pass")
@@ -67,7 +73,7 @@ public class UserController {
         validateUser(user.getLogin());
         this.usersRepository.updatePassword(user.getId(), user.getPassword());
 
-        throw new OkException("user's password has updated");
+        throw new OkException(UPDATED, this.getClass().toString(), PASSWORD_COLUMN);
     }
 
     @PostMapping("/update-birth-day")
@@ -76,7 +82,7 @@ public class UserController {
         validateUser(user.getLogin());
         this.usersRepository.updateBirthDay(user.getId(), user.getBirthDay());
 
-        throw new OkException("user's birth day has updated");
+        throw new OkException(UPDATED, this.getClass().toString(), BIRTH_DAY_COLUMN);
     }
 
     @PostMapping("/remove")
@@ -89,13 +95,15 @@ public class UserController {
 
         usersRepository.deleteById(user.getId());
 
-        throw new OkException("user removed from the database");
+        throw new OkException(REMOVED, this.getClass().toString());
     }
 
     private void validateUser(String login)
     {
          this.usersRepository.findUserByLogin(login)
-                 .orElseThrow( () -> new EntityNotFoundException(this.getClass(), "login '" + login + "."));
+                 .orElseThrow(
+                         () -> new EntityNotFoundException(
+                                 this.getClass().toString(), LOGIN_COLUMN + SPACE_QUOTE + login + QUOTE));
     }
 
     //TODO: authorization

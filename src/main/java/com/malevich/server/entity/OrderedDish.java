@@ -6,41 +6,54 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+import static com.malevich.server.entity.OrderedDish.TABLE_NAME;
+
 @Entity
-@Table(name = "ordered_dishes")
+@Table(name = TABLE_NAME)
 public class OrderedDish implements Serializable {
+
+    public static final String TABLE_NAME = "ordered_dishes";
+
+    public static final String ID_COLUMN = "id";
+    public static final String ORDER_ID_COLUMN = "order_id";
+    public static final String DISH_ID_COLUMN = "dish_id";
+    public static final String KITCHENER_ID_COLUMN = "kitchener_id";
+    public static final String STATUS_COLUMN = "status";
+    public static final String QUANTITY_COLUMN = "quantity";
+    public static final String TIME_COLUMN = "time";
+    public static final String COMMENT_COLUMN = "comment";
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    @Column(name = "id")
+    @Column(name = ID_COLUMN)
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = ORDER_ID_COLUMN, nullable = false)
     private Order order;
 
     @ManyToOne
-    @JoinColumn(name = "dish_id", nullable = false)
+    @JoinColumn(name = DISH_ID_COLUMN, nullable = false)
     private Dish dish;
 
     @ManyToOne
-    @JoinColumn(name = "kitchener_id", nullable = false)
+    @JoinColumn(name = KITCHENER_ID_COLUMN, nullable = false)
     private User kitchener;
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    @Column(name = "status")
+    @Column(name = STATUS_COLUMN)
     private Status status;
 
     @NotNull
-    @Column(name = "quantity")
+    @Column(name = QUANTITY_COLUMN)
     private int quantity;
 
     @NotNull
-    @Column(name = "time")
+    @Column(name = TIME_COLUMN)
     private String time;
 
-    @Column(name = "comment")
+    @Column(name = COMMENT_COLUMN)
     private String comment;
 
     protected OrderedDish() {

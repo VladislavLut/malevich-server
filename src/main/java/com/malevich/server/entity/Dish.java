@@ -8,35 +8,48 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.malevich.server.entity.Dish.TABLE_NAME;
+
 @Entity
-@Table(name = "dishes")
+@Table(name = TABLE_NAME)
 public class Dish implements Serializable{
+
+    public static final String TABLE_NAME = "dishes";
+
+    public static final String ID_COLUMN = "id";
+    public static final String CATEGORY_COLUMN = "category";
+    public static final String NAME_COLUMN = "name";
+    public static final String DESCRIPTION_COLUMN = "description";
+    public static final String IMAGE_URL_COLUMN = "imageURL";
+    public static final String PRICE_COLUMN = "price";
+    public static final String RATING_COLUMN = "rating";
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    @Column(name = "id")
+    @Column(name = ID_COLUMN)
     private int id;
 
     @NotNull
-    @Column(name = "category")
+    @Column(name = CATEGORY_COLUMN)
     private String category;
 
     @NotNull
-    @Column(name = "name")
+    @Column(name = NAME_COLUMN)
     private String name;
 
     @NotNull
-    @Column(name = "description")
+    @Column(name = DESCRIPTION_COLUMN)
     private String description;
 
-    @Column(name = "imageURL")
+    @Column(name = IMAGE_URL_COLUMN)
     private String imageURL;
 
     @NotNull
-    @Column(name = "price")
+    @Column(name = PRICE_COLUMN)
     private BigDecimal price;
 
-    @Column(name = "rating")
+    @Column(name = RATING_COLUMN)
     private float rating;
 
     @JsonIgnore
