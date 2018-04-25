@@ -2,6 +2,7 @@ package com.malevich.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.malevich.server.utils.UserType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -18,8 +19,9 @@ public class User implements Serializable {
     private int id;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "type")
-    private String type;
+    private UserType type;
 
     @NotNull
     @Column(name = "login", unique = true)
@@ -35,6 +37,9 @@ public class User implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "birth_day")
+    private String birthDay;
+
     @JsonIgnore
     @OneToMany(mappedBy = "kitchener", cascade = CascadeType.ALL)
     private List<OrderedDish> orderedDishes;
@@ -43,11 +48,12 @@ public class User implements Serializable {
 
     }
 
-    public User(String type, String login, String password, String name) {
+    public User(UserType type, String login, String password, String name, String birthDay) {
         this.type = type;
         this.login = login;
         this.password = password;
         this.name = name;
+        this.birthDay = birthDay;
     }
 
     public int getId() {
@@ -58,11 +64,11 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getType() {
+    public UserType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(UserType type) {
         this.type = type;
     }
 
@@ -88,6 +94,14 @@ public class User implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(String birthDay) {
+        this.birthDay = birthDay;
     }
 
     public List<OrderedDish> getOrderedDishes() {
