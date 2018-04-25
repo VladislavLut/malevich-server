@@ -1,17 +1,19 @@
 package com.malevich.server.controller;
 
 
-import com.malevich.server.controller.exception.EntityAlreadyExistException;
-import com.malevich.server.controller.exception.EntityNotFoundException;
+import com.malevich.server.entity.TableItem;
+import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
+import com.malevich.server.http.response.status.exception.EntityNotFoundException;
 import com.malevich.server.entity.Order;
+import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.OrdersRepository;
+import com.malevich.server.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -31,36 +33,61 @@ public class OrderController {
         return this.ordersRepository.findById(id);
     }
 
+    @GetMapping("/all")
+    public List<Order> findAllOrders() {
+        return this.ordersRepository.findAll();
+    }
+
+    @GetMapping("/active-orders")
+    public List<Order> findAllActiveOrders() {
+        return this.ordersRepository.findAllByStatusNotLike(Status.CLOSED);
+    }
+
+    @GetMapping("/{status}/orders-by-status")
+    public List<Order> findOrdersByStatusIgnoreCase(@PathVariable String status) {
+        return this.ordersRepository.findAllByStatus(Status.valueOf(status));
+    }
+
+    @GetMapping("/{date}/orders-by-date")
+    public List<Order> findOrdersByDate(@PathVariable String date) {
+        return this.ordersRepository.findAllByDate(date);
+    }
+
+    @PostMapping("/active-order")
+    public Optional<Order> findActiveOrderAtTable(@RequestBody final TableItem tableItem) {
+        return this.ordersRepository.findFirstByTableItemAndStatusNotLike(tableItem , Status.CLOSED);
+    }
+
     @PostMapping("/add")
-    public ResponseEntity<?> saveOrder(@RequestBody final Order order) {
+    public void saveOrder(@RequestBody final Order order) {
         if (this.ordersRepository.findById(order.getId()).isPresent()) {
             throw new EntityAlreadyExistException(this.getClass(), "id '" + order.getId() + "'");
         }
 
         this.ordersRepository.save(order);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("order saved in the database");
     }
 
     @PostMapping("/remove")
-    public ResponseEntity<?> removeOrder(@RequestBody final Order order) {
+    public void removeOrder(@RequestBody final Order order) {
         validateOrder(order.getId());
 
         ordersRepository.deleteById(order.getId());
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("order removed from the database");
     }
 
     @PostMapping("/update")
     @Transactional
-    public ResponseEntity<?> updateOrder(@Valid @RequestBody final Order order) {
+    public void updateOrder(@Valid @RequestBody final Order order) {
         validateOrder(order.getId());
         this.ordersRepository.updateStatus(
                 order.getId(),
-                order.getStatus().name()
+                order.getStatus()
         );
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        throw new OkException("order was updated");
     }
 
     private void validateOrder(int id) {

@@ -5,6 +5,7 @@ import com.malevich.server.http.response.status.exception.EntityAlreadyExistExce
 import com.malevich.server.http.response.status.exception.EntityNotFoundException;
 import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.UsersRepository;
+import com.malevich.server.utils.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,10 +31,15 @@ public class UserController {
         return this.usersRepository.findAll();
     }
 
-    @PostMapping(value = "/{login}/")
+    @GetMapping(value = "/{login}/")
     public Optional<User> getUserByLogin(@PathVariable String login) {
         validateUser(login);
         return this.usersRepository.findUserByLogin(login);
+    }
+
+    @GetMapping(value = "/{type}")
+    public Optional<List<User>> getAllByType(@PathVariable String type) {
+        return this.usersRepository.findAllByType(UserType.valueOf(type));
     }
 
     @PostMapping("/add")
@@ -52,7 +58,7 @@ public class UserController {
         validateUser(user.getLogin());
         this.usersRepository.updateName(user.getId(), user.getName());
 
-        throw new OkException("user name updated");
+        throw new OkException("user's name has updated");
     }
 
     @PostMapping("/update-pass")
@@ -61,7 +67,16 @@ public class UserController {
         validateUser(user.getLogin());
         this.usersRepository.updatePassword(user.getId(), user.getPassword());
 
-        throw new OkException("user password updated");
+        throw new OkException("user's password has updated");
+    }
+
+    @PostMapping("/update-birth-day")
+    @Transactional
+    public void updateBirthDay(@Valid @RequestBody final User user) {
+        validateUser(user.getLogin());
+        this.usersRepository.updateBirthDay(user.getId(), user.getBirthDay());
+
+        throw new OkException("user's birth day has updated");
     }
 
     @PostMapping("/remove")
