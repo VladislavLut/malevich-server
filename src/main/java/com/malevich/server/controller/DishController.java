@@ -13,6 +13,10 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+import static com.malevich.server.controller.UserController.QUOTE;
+import static com.malevich.server.controller.UserController.SPACE_QUOTE;
+import static com.malevich.server.http.response.status.exception.OkException.*;
+
 @RestController
 @RequestMapping("/menu")
 public class DishController {
@@ -39,12 +43,13 @@ public class DishController {
     @PostMapping("/add")
     public void saveDish(@RequestBody final Dish dish) {
         if (this.dishesRepository.findById(dish.getId()).isPresent()) {
-            throw new EntityAlreadyExistException(this.getClass(), "id '" + dish.getId() + "'");
+            throw new EntityAlreadyExistException(
+                    this.getClass().toString(), Dish.ID_COLUMN + SPACE_QUOTE + dish.getId() + QUOTE);
         }
 
         this.dishesRepository.save(dish);
 
-        throw new OkException("dish saved in the database");
+        throw new OkException(SAVED, this.getClass().toString());
     }
 
     @PostMapping("/remove")
@@ -53,7 +58,7 @@ public class DishController {
 
         dishesRepository.deleteById(dish.getId());
 
-        throw new OkException("dish from the database");
+        throw new OkException(REMOVED, this.getClass().toString());
     }
 
     @PostMapping("/update")
@@ -68,11 +73,12 @@ public class DishController {
                 dish.getDescription()
         );
 
-        throw new OkException("dish was updated");
+        throw new OkException(UPDATED, this.getClass().toString(), Dish.ID_COLUMN + SPACE_QUOTE + dish.getId() + QUOTE);
     }
 
     private void validateDish(int id) {
         this.dishesRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(this.getClass(), "id '" + id + "'."));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        this.getClass().toString(), Dish.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 }

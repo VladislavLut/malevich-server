@@ -1,6 +1,7 @@
 package com.malevich.server.repository;
 
 import com.malevich.server.entity.Order;
+import com.malevich.server.entity.TableItem;
 import com.malevich.server.utils.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -25,10 +26,10 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findAllByStatusNotLike(Status status);
 
-    Optional<Order> findFirstByTableItemAndStatusNotLike(int tableId, Status status);
+    Optional<Order> findFirstByTableItemAndStatusNotLike(TableItem tableId, Status status);
 
     @Modifying(clearAutomatically = true)
     @Query("update Order o set o.status = :status where o.id = :id")
-    int updateStatus(@Param("id") int id, @Param("status") String status);
+    int updateStatus(@Param("id") int id, @Param("status") Status status);
 
 }
