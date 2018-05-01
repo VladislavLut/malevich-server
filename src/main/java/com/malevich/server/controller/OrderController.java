@@ -21,7 +21,7 @@ import static com.malevich.server.controller.UserController.SPACE_QUOTE;
 import static com.malevich.server.http.response.status.exception.OkException.*;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/orders")
 public class OrderController {
     @Autowired
     private final OrdersRepository ordersRepository;
@@ -37,7 +37,7 @@ public class OrderController {
         return this.ordersRepository.findById(id);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/all-orders")
     public List<Order> findAllOrders() {
         return this.ordersRepository.findAll();
     }
@@ -84,12 +84,11 @@ public class OrderController {
     }
 
     @PostMapping("/update")
-    @Transactional
     public void updateOrder(@Valid @RequestBody final Order order) {
         validateOrder(order.getId());
         this.ordersRepository.updateStatus(
                 order.getId(),
-                order.getStatus()
+                order.getStatus().name()
         );
 
         throw new OkException(

@@ -34,7 +34,6 @@ public class Comment implements Serializable {
     }
 
     public Order getOrder() {
-
         return order;
     }
 

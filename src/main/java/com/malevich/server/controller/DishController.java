@@ -29,7 +29,7 @@ public class DishController {
         this.dishesRepository = dishesRepository;
     }
 
-    @GetMapping("/")
+    @GetMapping("/all-items")
     public List<Dish> getMenu() {
         return this.dishesRepository.findAll();
     }
@@ -62,7 +62,6 @@ public class DishController {
     }
 
     @PostMapping("/update")
-    @Transactional
     public void update(@Valid @RequestBody final Dish dish) {
         validateDish(dish.getId());
         this.dishesRepository.update(

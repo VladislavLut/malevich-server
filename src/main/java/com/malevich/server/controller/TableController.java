@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import static com.malevich.server.controller.UserController.QUOTE;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
+import static com.malevich.server.entity.TableItem.OPENED_COLUMN;
 import static com.malevich.server.http.response.status.exception.OkException.*;
 
 @RestController
@@ -29,7 +30,7 @@ public class TableController {
         this.tablesRepository = tablesRepository;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/all-tables")
     public List<TableItem> findAllTables() {
         return this.tablesRepository.findAll();
     }
@@ -68,13 +69,12 @@ public class TableController {
     }
 
     @PostMapping("/update")
-    @Transactional
     public void updateTable(@RequestBody TableItem tableItem) {
         validateTable(tableItem.getId());
 
         this.tablesRepository.updateStatus(tableItem.getId(), tableItem.isOpened());
 
-        throw new OkException(UPDATED, this.getClass().toString());
+        throw new OkException(UPDATED, this.getClass().toString(), OPENED_COLUMN);
     }
 
     @PostMapping("/remove")

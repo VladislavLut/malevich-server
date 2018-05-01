@@ -11,11 +11,12 @@ import com.malevich.server.http.response.status.exception.OkException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/comment")
+@RequestMapping("/comments")
 public class CommentController {
     @Autowired
     private final CommentsRepository commentsRepository;
@@ -31,7 +32,6 @@ public class CommentController {
     }
 
     @PostMapping("/update")
-    @org.springframework.transaction.annotation.Transactional
     public void updateComment(@Valid @RequestBody final Comment comment) {
         this.commentsRepository.updateComment(
                 comment.getId(),
