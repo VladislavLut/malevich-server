@@ -1,15 +1,17 @@
 package com.malevich.server.controller;
 
-import com.malevich.server.entity.Order;
 import com.malevich.server.entity.TableItem;
 import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
 import com.malevich.server.http.response.status.exception.EntityNotFoundException;
 import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.TablesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 
-import javax.transaction.Transactional;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,16 +44,10 @@ public class TableController {
         return this.tablesRepository.findTableById(id);
     }
 
-    @GetMapping("/{id}/last-order")
-    public Order findLastOrder(@PathVariable int id) {
-
-//todo: replace this shit with something adequate :/
-
-        validateTable(id);
-
-        List<Order> orders = this.tablesRepository.findTableById(id).get().getOrders();
-
-        return orders.get(orders.size() - 1);
+    @PostMapping("/active-order")
+    public ModelAndView activeOrder(HttpServletRequest request) {
+        request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+        return new ModelAndView("redirect:http://localhost:8080/orders/active-order");
     }
 
 
