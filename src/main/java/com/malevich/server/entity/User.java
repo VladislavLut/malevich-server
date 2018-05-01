@@ -46,6 +46,7 @@ public class User implements Serializable {
     @Column(name = NAME_COLUMN)
     private String name;
 
+
     @Column(name = BIRTH_DAY_COLUMN)
     private String birthDay;
 
@@ -54,7 +55,7 @@ public class User implements Serializable {
     private List<OrderedDish> orderedDishes;
 
     protected User() {
-
+        this.type = UserType.NULL;
     }
 
     public User(UserType type, String login, String password, String name, String birthDay) {

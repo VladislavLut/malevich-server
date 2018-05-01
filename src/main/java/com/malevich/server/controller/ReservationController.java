@@ -5,7 +5,7 @@ import com.malevich.server.http.response.status.exception.EntityAlreadyExistExce
 import com.malevich.server.http.response.status.exception.EntityNotFoundException;
 import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.ReservedRepository;
-import com.malevich.server.utils.TimeUtil;
+import com.malevich.server.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +35,7 @@ public class ReservationController {
         this.reservedRepository = reservedRepository;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/all-reservations")
     public List<Reservation> findAll() {
         return this.reservedRepository.findAll();
     }
@@ -99,8 +99,8 @@ public class ReservationController {
             if (this.reservedRepository
                     .findAllByDateAndTimeBetween(
                             reservation.getDate(),
-                            TimeUtil.shiftTime(reservation.getTime(), -RESERVATION_RANGE),
-                            TimeUtil.shiftTime(reservation.getTime(), RESERVATION_RANGE))
+                            TimeUtils.shiftTime(reservation.getTime(), -RESERVATION_RANGE),
+                            TimeUtils.shiftTime(reservation.getTime(), RESERVATION_RANGE))
                     .isPresent()) {
                 throw new EntityAlreadyExistException(
                         this.getClass().toString(),

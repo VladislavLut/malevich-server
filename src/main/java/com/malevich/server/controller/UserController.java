@@ -31,7 +31,7 @@ public class UserController {
         this.usersRepository = usersRepository;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/all-users")
     public List<User> getAllUsers() {
         return this.usersRepository.findAll();
     }
@@ -42,34 +42,32 @@ public class UserController {
         return this.usersRepository.findUserByLogin(login);
     }
 
-    @GetMapping(value = "/{type}")
+    @GetMapping(value = "/all-by-type/{type}/")
     public Optional<List<User>> getAllByType(@PathVariable String type) {
         return this.usersRepository.findAllByType(UserType.valueOf(type));
     }
 
     @PostMapping("/add")
     public void saveUser(@RequestBody final User user) throws OkException {
-        if(usersRepository.findUserByLogin(user.getLogin()).isPresent()) {
+        if (usersRepository.findUserByLogin(user.getLogin()).isPresent()) {
             throw new EntityAlreadyExistException(
                     this.getClass().toString(),
-                    User.LOGIN_COLUMN + SPACE_QUOTE +  user.getLogin() + QUOTE);
+                    User.LOGIN_COLUMN + SPACE_QUOTE + user.getLogin() + QUOTE);
         }
-        usersRepository.save(user);
+        this.usersRepository.save(user);
 
         throw new OkException(SAVED, this.getClass().toString());
     }
 
     @PostMapping("/update-name")
-    @Transactional
-    public void updateName(@Valid @RequestBody final User user) {
+    public void updateName(@RequestBody final User user) {
         validateUser(user.getLogin());
         this.usersRepository.updateName(user.getId(), user.getName());
 
         throw new OkException(UPDATED, this.getClass().toString(), User.NAME_COLUMN);
     }
 
-    @PostMapping("/update-pass")
-    @Transactional
+    @PostMapping("/update-password")
     public void updatePassword(@Valid @RequestBody final User user) {
         validateUser(user.getLogin());
         this.usersRepository.updatePassword(user.getId(), user.getPassword());
@@ -78,7 +76,6 @@ public class UserController {
     }
 
     @PostMapping("/update-birth-day")
-    @Transactional
     public void updateBirthDay(@Valid @RequestBody final User user) {
         validateUser(user.getLogin());
         this.usersRepository.updateBirthDay(user.getId(), user.getBirthDay());
@@ -99,12 +96,11 @@ public class UserController {
         throw new OkException(REMOVED, this.getClass().toString());
     }
 
-    private void validateUser(String login)
-    {
-         this.usersRepository.findUserByLogin(login)
-                 .orElseThrow(
-                         () -> new EntityNotFoundException(
-                                 this.getClass().toString(), User.LOGIN_COLUMN + SPACE_QUOTE + login + QUOTE));
+    private void validateUser(String login) {
+        this.usersRepository.findUserByLogin(login)
+                .orElseThrow(
+                        () -> new EntityNotFoundException(
+                                this.getClass().toString(), User.LOGIN_COLUMN + SPACE_QUOTE + login + QUOTE));
     }
 
     //TODO: authorization

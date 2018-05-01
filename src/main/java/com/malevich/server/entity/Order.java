@@ -30,8 +30,8 @@ public class Order implements Serializable {
     @JoinColumn(name = TABLE_ID_COLUMN)
     private TableItem tableItem;
 
-    @Enumerated(EnumType.STRING)
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = STATUS_COLUMN)
     private Status status;
 
