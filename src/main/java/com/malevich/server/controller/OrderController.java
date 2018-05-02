@@ -82,7 +82,7 @@ public class OrderController {
     @Transactional
     public void updateOrder(@Valid @RequestBody final Order order) {
         validateOrder(order.getId());
-        this.ordersRepository.updateStatus(
+        this.ordersRepository.updateById(
                 order.getId(),
                 order.getStatus()
         );

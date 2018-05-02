@@ -30,6 +30,7 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
 
     @Modifying(clearAutomatically = true)
     @Query("update Order o set o.status = :status where o.id = :id")
-    int updateStatus(@Param("id") int id, @Param("status") Status status);
+    int updateById(@Param("id") int id, @Param("status") Status status);
+
 
 }
