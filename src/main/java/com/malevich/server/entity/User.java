@@ -10,34 +10,44 @@ import java.io.Serializable;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = User.TABLE_NAME)
 public class User implements Serializable {
+
+    public static final String TABLE_NAME = "users";
+
+    public static final String ID_COLUMN = "id";
+    public static final String TYPE_COLUMN = "type";
+    public static final String LOGIN_COLUMN = "login";
+    public static final String PASSWORD_COLUMN = "password";
+    public static final String NAME_COLUMN = "name";
+    public static final String BIRTH_DAY_COLUMN = "birth_day";
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    @Column(name = "id")
+    @Column(name = ID_COLUMN)
     private int id;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "type")
+    @Column(name = TYPE_COLUMN)
     private UserType type;
 
     @NotNull
-    @Column(name = "login", unique = true)
+    @Column(name = LOGIN_COLUMN, unique = true)
     private String login;
 
     @JsonIgnore
     @JsonDeserialize
     @NotNull
-    @Column(name = "password")
+    @Column(name = PASSWORD_COLUMN)
     private String password;
 
     @NotNull
-    @Column(name = "name")
+    @Column(name = NAME_COLUMN)
     private String name;
 
-    @Column(name = "birth_day")
+
+    @Column(name = BIRTH_DAY_COLUMN)
     private String birthDay;
 
     @JsonIgnore
@@ -45,7 +55,7 @@ public class User implements Serializable {
     private List<OrderedDish> orderedDishes;
 
     protected User() {
-
+        this.type = UserType.NULL;
     }
 
     public User(UserType type, String login, String password, String name, String birthDay) {
