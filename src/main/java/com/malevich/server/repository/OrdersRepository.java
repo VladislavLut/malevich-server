@@ -15,11 +15,7 @@ import java.util.Optional;
 public interface OrdersRepository extends JpaRepository<Order, Integer> {
 
 
-    //Optional<Order> findOrderByTable(int tableId);
-
-    //List<Order> findAllByIdIsNotNull();
-
-    //Optional<Order> findFirstByTableAndStatusIgnoreCase(int tableId, String status);
+    List<Order> findAllByTableItem(TableItem tableItem);
 
     List<Order> findAllByDate(String date);
 
@@ -30,11 +26,11 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
     Optional<Order> findFirstByTableItemAndStatusNotLike(TableItem tableId, Status status);
 
     @Modifying(clearAutomatically = true)
-    int updateById(@Param("id") int id, @Param("status") Status status);
     @Query("update Order o set o.status = :status where o.id = :id")
+    int updateById(@Param("id") int id, @Param("status") Status status);
+
     @Transactional
     @Query(value = "UPDATE orders SET status = :status WHERE id = :id", nativeQuery = true)
     int updateStatus(@Param("id") int id, @Param("status") String status);
-
 
 }

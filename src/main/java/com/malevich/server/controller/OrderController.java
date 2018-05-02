@@ -1,6 +1,5 @@
 package com.malevich.server.controller;
 
-
 import com.malevich.server.entity.Order;
 import com.malevich.server.entity.TableItem;
 import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
@@ -9,7 +8,6 @@ import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.OrdersRepository;
 import com.malevich.server.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -62,6 +60,11 @@ public class OrderController {
         return this.ordersRepository.findFirstByTableItemAndStatusNotLike(tableItem, Status.CLOSED);
     }
 
+    @PostMapping("/orders-by-table")
+    public List<Order> findOrdersByTableItem(@RequestBody TableItem tableItem) {
+        return this.ordersRepository.findAllByTableItem(tableItem);
+    }
+
     @PostMapping("/add")
     public void saveOrder(@RequestBody final Order order) {
         if (this.ordersRepository.findById(order.getId()).isPresent()) {
@@ -88,7 +91,7 @@ public class OrderController {
         validateOrder(order.getId());
         this.ordersRepository.updateById(
                 order.getId(),
-                order.getStatus().name()
+                order.getStatus()
         );
 
         throw new OkException(
