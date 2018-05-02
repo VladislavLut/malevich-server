@@ -1,6 +1,7 @@
 package com.malevich.server.repository;
 
 import com.malevich.server.entity.Comment;
+import com.malevich.server.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,13 +15,10 @@ public interface CommentsRepository extends JpaRepository<Comment, Integer> {
 
     Optional<Comment> findCommentByOrder(Order order);
     Optional<Comment> findCommentByOrderId(int orderId);
-   // Optional<Comment> deleteByOrder(Order order);
-
-
 
     @Modifying(clearAutomatically = true)
     @Transactional
     @Query(value = "UPDATE comments SET comment = :comment WHERE order_id = :order", nativeQuery = true)
-    int updateComment(@Param("order") int orderId, @Param("comment") String comment);
+    int updateById(@Param("order") int orderId, @Param("comment") String comment);
 
 }
