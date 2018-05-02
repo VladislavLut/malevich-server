@@ -1,6 +1,5 @@
 package com.malevich.server.repository;
 
-import com.malevich.server.entity.Order;
 import com.malevich.server.entity.OrderedDish;
 import com.malevich.server.entity.User;
 import com.malevich.server.utils.Status;
@@ -9,8 +8,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 public interface OrderedDishesRepository extends JpaRepository<OrderedDish, Integer> {
 
@@ -22,14 +21,17 @@ public interface OrderedDishesRepository extends JpaRepository<OrderedDish, Inte
 
 
     @Modifying(clearAutomatically = true)
-    @Query("update OrderedDish od set od.status = :status where od.id = :id")
+    @Transactional
+    @Query(value = "UPDATE ordered_dishes SET status = :status WHERE id = :id", nativeQuery = true)
     int updateStatus(@Param("id") int id, @Param("status") String status);
 
     @Modifying(clearAutomatically = true)
-    @Query("update OrderedDish od set od.status = :status, od.kitchener = :kitchener where od.id = :id")
+    @Transactional
+    @Query(value = "UPDATE ordered_dishes SET status = :status, kitchener = :kitchener WHERE id = :id",
+            nativeQuery = true)
     int updateKitchenerAndStatus(
             @Param("id") int id,
             @Param("status") String status,
-            @Param("kitchener")int kitchener
+            @Param("kitchener") int kitchener
     );
 }
