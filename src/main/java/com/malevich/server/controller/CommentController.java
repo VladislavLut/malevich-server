@@ -3,6 +3,7 @@ package com.malevich.server.controller;
 import com.malevich.server.entity.Order;
 import com.malevich.server.repository.CommentsRepository;
 import com.malevich.server.repository.OrdersRepository;
+import org.hibernate.Hibernate;
 import org.hibernate.query.Query;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ import java.util.Optional;
 public class CommentController {
     @Autowired
     private final CommentsRepository commentsRepository;
+
 
     @Autowired
     public CommentController(CommentsRepository commentsRepository) {
@@ -60,12 +62,14 @@ public class CommentController {
         throw new OkException("comment was updated");
     }
 
+
    @PostMapping("/add")
     public void saveComment(@RequestBody final Comment comment) {
+
         if (this.commentsRepository.findById(comment.getId()).isPresent()) {
             throw new EntityAlreadyExistException(this.getClass(), "id '" + comment.getId() + "'");
         }
-        this.commentsRepository.save(comment);
+       this.commentsRepository.save(comment);
 
         throw new OkException("comment saved in the database");
     }
