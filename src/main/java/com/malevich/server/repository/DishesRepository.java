@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -15,9 +16,10 @@ public interface DishesRepository extends JpaRepository<Dish, Integer> {
 
 
     @Modifying(clearAutomatically = true)
-    @Query("update Dish d " +
-            "set d.price = :price, d.imageURL = :imageURL, d.rating = :rating, d.description = :description " +
-            "where d.id = :id")
+    @Transactional
+    @Query(value = "UPDATE dishes " +
+            "SET price = :price, imageURL = :imageURL, rating = :rating, description = :description " +
+            "WHERE id = :id", nativeQuery = true)
     int update(
             @Param("id")int id,
             @Param("price")BigDecimal price,

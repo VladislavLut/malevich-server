@@ -4,7 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class TimeUtil {
+public class TimeUtils {
     public static final String OPENING_TIME = "9:00";
     public static final String CLOSING_TIME = "23:00";
     public static final String TIME_FORMAT_PATTERN = "HH:mm";

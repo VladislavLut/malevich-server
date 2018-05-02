@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,8 +30,11 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
     Optional<Order> findFirstByTableItemAndStatusNotLike(TableItem tableId, Status status);
 
     @Modifying(clearAutomatically = true)
-    @Query("update Order o set o.status = :status where o.id = :id")
     int updateById(@Param("id") int id, @Param("status") Status status);
+    @Query("update Order o set o.status = :status where o.id = :id")
+    @Transactional
+    @Query(value = "UPDATE orders SET status = :status WHERE id = :id", nativeQuery = true)
+    int updateStatus(@Param("id") int id, @Param("status") String status);
 
 
 }
