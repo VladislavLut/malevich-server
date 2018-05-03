@@ -95,7 +95,6 @@ public class OrderedDishController {
     }
 
     @PostMapping("/update-status")
-    @Transactional
     public void updateOrderedDishStatus(@Valid @RequestBody final OrderedDish orderedDish) {
         validateOrderedDish(orderedDish.getId());
         this.orderedDishesRepository.updateStatus(
@@ -107,7 +106,6 @@ public class OrderedDishController {
     }
 
     @PostMapping("/update-kitchener-and-status")
-    @Transactional
     public void updateOrderedDishKitchenerAndStatus(@Valid @RequestBody final OrderedDish orderedDish) {
         validateOrderedDish(orderedDish.getId());
         this.orderedDishesRepository.updateStatusAndKitchener(
