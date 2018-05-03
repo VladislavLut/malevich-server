@@ -25,13 +25,13 @@ public interface OrderedDishesRepository extends JpaRepository<OrderedDish, Inte
     @Modifying(clearAutomatically = true)
     @Transactional
     @Query(value = "UPDATE ordered_dishes SET status = :status WHERE id = :id", nativeQuery = true)
-    int updateById(@Param("id") int id, @Param("status") String status);
+    int updateStatus(@Param("id") int id, @Param("status") String status);
 
     @Modifying(clearAutomatically = true)
     @Transactional
     @Query(value = "UPDATE ordered_dishes SET status = :status, kitchener_id = :kitchener WHERE id = :id",
             nativeQuery = true)
-    int updateById(
+    int updateStatusAndKitchener(
             @Param("id") int id,
             @Param("status") String status,
             @Param("kitchener") int kitchener

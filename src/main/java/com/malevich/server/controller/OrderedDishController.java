@@ -43,7 +43,7 @@ public class OrderedDishController {
         return this.orderedDishesRepository.findById(id);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/all-ordered-dishes")
     public List<OrderedDish> findAllOrderDishes() {
         return this.orderedDishesRepository.findAll();
     }
@@ -96,9 +96,9 @@ public class OrderedDishController {
 
     @PostMapping("/update-status")
     @Transactional
-    public void updateOrderedDishStatus(@RequestBody final OrderedDish orderedDish) {
+    public void updateOrderedDishStatus(@Valid @RequestBody final OrderedDish orderedDish) {
         validateOrderedDish(orderedDish.getId());
-        this.orderedDishesRepository.updateById(
+        this.orderedDishesRepository.updateStatus(
                 orderedDish.getId(),
                 orderedDish.getStatus().name()
         );
@@ -108,9 +108,9 @@ public class OrderedDishController {
 
     @PostMapping("/update-kitchener-and-status")
     @Transactional
-    public void updateOrderedDishKitchenerAndStatus(@RequestBody final OrderedDish orderedDish) {
+    public void updateOrderedDishKitchenerAndStatus(@Valid @RequestBody final OrderedDish orderedDish) {
         validateOrderedDish(orderedDish.getId());
-        this.orderedDishesRepository.updateById(
+        this.orderedDishesRepository.updateStatusAndKitchener(
                 orderedDish.getId(),
                 orderedDish.getStatus().name(),
                 orderedDish.getKitchener().getId()
