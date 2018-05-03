@@ -1,5 +1,6 @@
 package com.malevich.server.repository;
 
+import com.malevich.server.entity.Order;
 import com.malevich.server.entity.OrderedDish;
 import com.malevich.server.entity.User;
 import com.malevich.server.utils.Status;
@@ -13,23 +14,24 @@ import java.util.List;
 
 public interface OrderedDishesRepository extends JpaRepository<OrderedDish, Integer> {
 
-    List<OrderedDish> findAllByKitchener(User kichener);
+    List<OrderedDish> findAllByKitchener(User kitchener);
+    List<OrderedDish> findAllByKitchenerId(int kitchenerId);
 
     List<OrderedDish> findAllByOrder(Order order);
+    List<OrderedDish> findAllByOrderId(int orderId);
 
     List<OrderedDish> findAllByStatus(Status status);
-
-
+    
     @Modifying(clearAutomatically = true)
     @Transactional
     @Query(value = "UPDATE ordered_dishes SET status = :status WHERE id = :id", nativeQuery = true)
-    int updateStatus(@Param("id") int id, @Param("status") String status);
+    int updateById(@Param("id") int id, @Param("status") String status);
 
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query(value = "UPDATE ordered_dishes SET status = :status, kitchener = :kitchener WHERE id = :id",
+    @Query(value = "UPDATE ordered_dishes SET status = :status, kitchener_id = :kitchener WHERE id = :id",
             nativeQuery = true)
-    int updateKitchenerAndStatus(
+    int updateById(
             @Param("id") int id,
             @Param("status") String status,
             @Param("kitchener") int kitchener

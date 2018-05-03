@@ -20,6 +20,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+
+import static com.malevich.server.controller.UserController.QUOTE;
+import static com.malevich.server.controller.UserController.SPACE_QUOTE;
+import static com.malevich.server.http.response.status.exception.OkException.REMOVED;
+import static com.malevich.server.http.response.status.exception.OkException.SAVED;
+import static com.malevich.server.http.response.status.exception.OkException.UPDATED;
+
 @RestController
 @RequestMapping("/ordered-dish")
 public class OrderedDishController {
@@ -41,9 +48,19 @@ public class OrderedDishController {
         return this.orderedDishesRepository.findAll();
     }
 
-    @GetMapping("/find/{status}/")
+    @GetMapping("/{status}/find-by-status")
     public List<OrderedDish> findOrderDishesByStatus(@PathVariable String status) {
         return this.orderedDishesRepository.findAllByStatus(Status.valueOf(status));
+    }
+
+    @GetMapping("/{orderId}/find-by-order-id")
+    public List<OrderedDish> findOrderDishesByOrderId(@PathVariable int orderId) {
+        return this.orderedDishesRepository.findAllByOrderId(orderId);
+    }
+
+    @GetMapping("/{kitchenerId}/find-by-kitchener-id")
+    public List<OrderedDish> findOrderDishesByKitchenerId(@PathVariable int kitchenerId) {
+        return this.orderedDishesRepository.findAllByKitchenerId(kitchenerId);
     }
 
     @PostMapping("/find-by-order")
@@ -59,37 +76,52 @@ public class OrderedDishController {
     @PostMapping("/add")
     public void saveOrderedDish(@RequestBody final OrderedDish orderedDish) {
         if (this.orderedDishesRepository.findById(orderedDish.getId()).isPresent()) {
-            throw new EntityAlreadyExistException(this.getClass(), "id '" + orderedDish.getId() + "'");
+            throw new EntityAlreadyExistException(
+                    this.getClass().toString(), OrderedDish.ID_COLUMN + SPACE_QUOTE + orderedDish.getId() + QUOTE);
         }
 
         this.orderedDishesRepository.save(orderedDish);
 
-        throw new OkException("ordered dish saved in the database");
+        throw new OkException(SAVED, this.getClass().toString());
     }
 
     @PostMapping("/remove")
     public void removeOrderedDish(@RequestBody final OrderedDish orderedDish) {
-        validateOrder(orderedDish.getId());
+        validateOrderedDish(orderedDish.getId());
 
         orderedDishesRepository.deleteById(orderedDish.getId());
 
-        throw new OkException("ordered dish removed from the database");
+        throw new OkException(REMOVED, this.getClass().toString());
     }
 
-    @PostMapping("/update")
+    @PostMapping("/update-status")
     @Transactional
-    public void updateOrderedDish(@Valid @RequestBody final OrderedDish orderedDish) {
-        validateOrder(orderedDish.getId());
-        this.orderedDishesRepository.updateStatus(
+    public void updateOrderedDishStatus(@RequestBody final OrderedDish orderedDish) {
+        validateOrderedDish(orderedDish.getId());
+        this.orderedDishesRepository.updateById(
                 orderedDish.getId(),
                 orderedDish.getStatus().name()
         );
 
-        throw new OkException("ordered dish was updated");
+        throw new OkException(UPDATED, this.getClass().toString(), OrderedDish.ID_COLUMN + SPACE_QUOTE + orderedDish.getId() + QUOTE);
     }
 
-    private void validateOrder(int id) {
+    @PostMapping("/update-kitchener-and-status")
+    @Transactional
+    public void updateOrderedDishKitchenerAndStatus(@RequestBody final OrderedDish orderedDish) {
+        validateOrderedDish(orderedDish.getId());
+        this.orderedDishesRepository.updateById(
+                orderedDish.getId(),
+                orderedDish.getStatus().name(),
+                orderedDish.getKitchener().getId()
+        );
+
+        throw new OkException(UPDATED, this.getClass().toString(), OrderedDish.ID_COLUMN + SPACE_QUOTE + orderedDish.getId() + QUOTE);
+    }
+
+    private void validateOrderedDish(int id) {
         this.orderedDishesRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(this.getClass(), "id '" + id + "'."));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        this.getClass().toString(), OrderedDish.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 }
