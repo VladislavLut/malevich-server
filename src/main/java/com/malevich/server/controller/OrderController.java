@@ -55,6 +55,11 @@ public class OrderController {
         return this.ordersRepository.findAllByDate(date);
     }
 
+    @GetMapping("/{tableId}/orders-by-table-id")
+    public List<Order> findOrdersByTableItemId(@PathVariable int tableId) {
+        return this.ordersRepository.findAllByTableItemId(tableId);
+    }
+
     @PostMapping("/active-order")
     public Optional<Order> findActiveOrderAtTable(@RequestBody final TableItem tableItem) {
         return this.ordersRepository.findFirstByTableItemAndStatusNotLike(tableItem, Status.CLOSED);
@@ -89,9 +94,9 @@ public class OrderController {
     @PostMapping("/update")
     public void updateOrder(@Valid @RequestBody final Order order) {
         validateOrder(order.getId());
-        this.ordersRepository.updateById(
+        this.ordersRepository.updateStatus(
                 order.getId(),
-                order.getStatus()
+                order.getStatus().name()
         );
 
         throw new OkException(
