@@ -28,7 +28,7 @@ import static com.malevich.server.http.response.status.exception.OkException.SAV
 import static com.malevich.server.http.response.status.exception.OkException.UPDATED;
 
 @RestController
-@RequestMapping("/ordered-dish")
+@RequestMapping("/ordered-dishes")
 public class OrderedDishController {
     @Autowired
     private final OrderedDishesRepository orderedDishesRepository;
