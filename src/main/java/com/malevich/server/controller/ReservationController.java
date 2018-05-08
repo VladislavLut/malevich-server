@@ -25,7 +25,7 @@ public class ReservationController {
 
     public static final String COMA_SPACE = ", ";
 
-    public final int RESERVATION_RANGE = 2;
+    public final int RESERVATION_RANGE_HOURS = 2;
 
     @Autowired
     private final ReservedRepository reservedRepository;
@@ -70,7 +70,6 @@ public class ReservationController {
 
     @PostMapping("/add")
     public void addReservation(@RequestBody Reservation reservation) {
-
         validateReservationForAdding(reservation);
 
         this.reservedRepository.save(reservation);
@@ -99,8 +98,8 @@ public class ReservationController {
             if (this.reservedRepository
                     .findAllByDateAndTimeBetween(
                             reservation.getDate(),
-                            TimeUtils.shiftTime(reservation.getTime(), -RESERVATION_RANGE),
-                            TimeUtils.shiftTime(reservation.getTime(), RESERVATION_RANGE))
+                            TimeUtils.shiftTime(reservation.getTime(), -RESERVATION_RANGE_HOURS),
+                            TimeUtils.shiftTime(reservation.getTime(), RESERVATION_RANGE_HOURS))
                     .isPresent()) {
                 throw new EntityAlreadyExistException(
                         this.getClass().toString(),

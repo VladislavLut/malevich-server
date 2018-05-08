@@ -29,15 +29,15 @@ public class OrderController {
         this.ordersRepository = ordersRepository;
     }
 
+    @GetMapping("/all-orders")
+    public List<Order> findAllOrders() {
+        return this.ordersRepository.findAll();
+    }
+
     @GetMapping("/{id}/")
     public Optional<Order> findOrderById(@PathVariable int id) {
         validateOrder(id);
         return this.ordersRepository.findById(id);
-    }
-
-    @GetMapping("/all-orders")
-    public List<Order> findAllOrders() {
-        return this.ordersRepository.findAll();
     }
 
     @GetMapping("/active-orders")
@@ -91,8 +91,8 @@ public class OrderController {
         throw new OkException(REMOVED, this.getClass().toString());
     }
 
-    @PostMapping("/update")
-    public void updateOrder(@Valid @RequestBody final Order order) {
+    @PostMapping("/update-status")
+    public void updateOrderStatus(@Valid @RequestBody final Order order) {
         validateOrder(order.getId());
         this.ordersRepository.updateStatus(
                 order.getId(),

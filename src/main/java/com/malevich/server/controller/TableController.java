@@ -64,7 +64,7 @@ public class TableController {
         throw new OkException(SAVED, this.getClass().toString());
     }
 
-    @PostMapping("/update")
+    @PostMapping("/update-status")
     public void updateTable(@RequestBody TableItem tableItem) {
         validateTable(tableItem.getId());
 
