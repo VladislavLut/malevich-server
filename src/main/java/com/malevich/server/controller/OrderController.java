@@ -1,6 +1,5 @@
 package com.malevich.server.controller;
 
-
 import com.malevich.server.entity.Order;
 import com.malevich.server.entity.TableItem;
 import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
@@ -9,7 +8,6 @@ import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.OrdersRepository;
 import com.malevich.server.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -57,9 +55,19 @@ public class OrderController {
         return this.ordersRepository.findAllByDate(date);
     }
 
+    @GetMapping("/{tableId}/orders-by-table-id")
+    public List<Order> findOrdersByTableItemId(@PathVariable int tableId) {
+        return this.ordersRepository.findAllByTableItemId(tableId);
+    }
+
     @PostMapping("/active-order")
     public Optional<Order> findActiveOrderAtTable(@RequestBody final TableItem tableItem) {
         return this.ordersRepository.findFirstByTableItemAndStatusNotLike(tableItem, Status.CLOSED);
+    }
+
+    @PostMapping("/orders-by-table")
+    public List<Order> findOrdersByTableItem(@RequestBody TableItem tableItem) {
+        return this.ordersRepository.findAllByTableItem(tableItem);
     }
 
     @PostMapping("/add")

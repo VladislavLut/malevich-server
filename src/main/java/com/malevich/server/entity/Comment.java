@@ -1,5 +1,7 @@
 package com.malevich.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -18,6 +20,7 @@ public class Comment implements Serializable {
     @Column(name = ID_COLUMN)
     private int id;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = ORDER_ID_COLUMN, nullable = false)
     private Order order;
