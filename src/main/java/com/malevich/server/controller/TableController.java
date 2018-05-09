@@ -47,7 +47,7 @@ public class TableController {
     @PostMapping("/active-order")
     public ModelAndView activeOrder(HttpServletRequest request) {
         request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
-        return new ModelAndView("redirect:http://localhost:8080/orders/active-order");
+        return new ModelAndView("redirect:https://malevich-server.herokuapp.com/orders/active-order");
     }
 
 
