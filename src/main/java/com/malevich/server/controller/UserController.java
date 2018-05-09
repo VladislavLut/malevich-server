@@ -9,7 +9,6 @@ import com.malevich.server.utils.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +33,12 @@ public class UserController {
     @GetMapping("/all-users")
     public List<User> getAllUsers() {
         return this.usersRepository.findAll();
+    }
+
+    @GetMapping(value = "/id/{id}/")
+    public Optional<User> getUserById(@PathVariable int id) {
+        validateUser(id);
+        return this.usersRepository.findById(id);
     }
 
     @GetMapping(value = "/{login}/")
@@ -62,6 +67,8 @@ public class UserController {
     @PostMapping("/update-name")
     public void updateName(@RequestBody final User user) {
         validateUser(user.getLogin());
+        validateUserId(user);
+
         this.usersRepository.updateName(user.getId(), user.getName());
 
         throw new OkException(UPDATED, this.getClass().toString(), User.NAME_COLUMN);
@@ -70,6 +77,8 @@ public class UserController {
     @PostMapping("/update-password")
     public void updatePassword(@Valid @RequestBody final User user) {
         validateUser(user.getLogin());
+        validateUserId(user);
+
         this.usersRepository.updatePassword(user.getId(), user.getPassword());
 
         throw new OkException(UPDATED, this.getClass().toString(), User.PASSWORD_COLUMN);
@@ -78,6 +87,8 @@ public class UserController {
     @PostMapping("/update-birth-day")
     public void updateBirthDay(@Valid @RequestBody final User user) {
         validateUser(user.getLogin());
+        validateUserId(user);
+
         this.usersRepository.updateBirthDay(user.getId(), user.getBirthDay());
 
         throw new OkException(UPDATED, this.getClass().toString(), User.BIRTH_DAY_COLUMN);
@@ -87,9 +98,7 @@ public class UserController {
     public void removeUser(@RequestBody final User user) {
         validateUser(user.getLogin());
 
-        if (user.getId() == 0) {
-            user.setId(this.usersRepository.findUserByLogin(user.getLogin()).get().getId());
-        }
+        validateUserId(user);
 
         usersRepository.deleteById(user.getId());
 
@@ -101,6 +110,19 @@ public class UserController {
                 .orElseThrow(
                         () -> new EntityNotFoundException(
                                 this.getClass().toString(), User.LOGIN_COLUMN + SPACE_QUOTE + login + QUOTE));
+    }
+
+    private void validateUser(int id) {
+        this.usersRepository.findById(id)
+                .orElseThrow(
+                        () -> new EntityNotFoundException(
+                                this.getClass().toString(), User.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+    }
+
+    void validateUserId(User user) {
+        if (user.getId() == 0) {
+            user.setId(this.usersRepository.findUserByLogin(user.getLogin()).get().getId());
+        }
     }
 
     //TODO: authorization
