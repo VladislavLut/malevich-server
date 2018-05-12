@@ -1,34 +1,25 @@
 package com.malevich.server.utils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.sql.Time;
 
 public class TimeUtils {
-    public static final String OPENING_TIME = "9:00";
-    public static final String CLOSING_TIME = "23:00";
-    public static final String TIME_FORMAT_PATTERN = "HH:mm";
+    public static final Time OPENING_TIME = Time.valueOf("9:00:00");
+    public static final Time CLOSING_TIME = Time.valueOf("23:00:00");
+    public static final long ONE_HOUR_MILIS = 1000 * 60 * 60;
 
-    public static String shiftTime(String time, int hours) throws ParseException {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat(TIME_FORMAT_PATTERN);
+    public static Time shiftTime(Time time, int hours)  {
 
-        calendar.setTime(format.parse(time));
-        long timeMilis = calendar.getTimeInMillis();
-        calendar.setTime(format.parse(OPENING_TIME));
-        long openingTimeMilis = calendar.getTimeInMillis();
-        calendar.setTime(format.parse(CLOSING_TIME));
-        long closingTimeMilis = calendar.getTimeInMillis();
-        calendar.set(Calendar.HOUR, hours);
-        long hoursMilis = calendar.getTimeInMillis() * (hours < 0 ? -1 : 1);
-        timeMilis += hoursMilis;
+        Time shiftedTime = new Time(time.getTime());
+        long timeMilis = time.getTime();
+        timeMilis += ONE_HOUR_MILIS * hours;
 
-        if (timeMilis > closingTimeMilis) {
-            timeMilis = closingTimeMilis;
-        } else if (timeMilis < openingTimeMilis) {
-            timeMilis = openingTimeMilis;
+        if (timeMilis >= CLOSING_TIME.getTime()) {
+            timeMilis = CLOSING_TIME.getTime();
         }
-
-        return format.format(timeMilis);
+        if (timeMilis <= OPENING_TIME.getTime()) {
+            timeMilis = OPENING_TIME.getTime();
+        }
+        shiftedTime.setTime(timeMilis);
+        return shiftedTime;
     }
 }

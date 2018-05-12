@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,16 +17,16 @@ public interface ReservedRepository extends JpaRepository<Reservation, Integer> 
 
     @Query("select r " +
             "from Reservation r " +
-            "where r.date like %:date% " +
-            "and r.time like %:time% " +
+            "where r.date = :date " +
+            "and r.time = :time " +
             "and r.name like %:name% " +
             "and r.phone like %:phone%")
     Optional<List<Reservation>> findAllByDateAndTimeAndNameAndPhone(
-            @Param("date") String date,
-            @Param("time") String time,
+            @Param("date") Date date,
+            @Param("time") Time time,
             @Param("name") String name,
             @Param("phone") String phone);
 
-    Optional<List<Reservation>> findAllByDateAndTimeBetween(String date, String timeFrom, String timeTo);
+    Optional<List<Reservation>> findAllByDateAndTimeBetween(Date date, Time timeFrom, Time timeTo);
 
 }

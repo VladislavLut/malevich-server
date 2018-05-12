@@ -3,21 +3,18 @@ package com.malevich.server.controller;
 import com.malevich.server.entity.Reservation;
 import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
 import com.malevich.server.http.response.status.exception.EntityNotFoundException;
-import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.ReservedRepository;
+import com.malevich.server.utils.Response;
 import com.malevich.server.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static com.malevich.server.controller.UserController.QUOTE;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
-import static com.malevich.server.http.response.status.exception.OkException.REMOVED;
-import static com.malevich.server.http.response.status.exception.OkException.SAVED;
 
 @RestController
 @RequestMapping("/reserved")
@@ -35,7 +32,7 @@ public class ReservationController {
         this.reservedRepository = reservedRepository;
     }
 
-    @GetMapping("/all-reservations")
+    @GetMapping("/all")
     public List<Reservation> findAll() {
         return this.reservedRepository.findAll();
     }
@@ -43,7 +40,6 @@ public class ReservationController {
     @GetMapping("/{id}/")
     public Optional<Reservation> findReservationById(@PathVariable int id) {
         validateReservation(id);
-
         return this.reservedRepository.findById(id);
     }
 
@@ -69,21 +65,19 @@ public class ReservationController {
     }
 
     @PostMapping("/add")
-    public void addReservation(@RequestBody Reservation reservation) {
+    public String addReservation(@RequestBody Reservation reservation) {
         validateReservationForAdding(reservation);
 
         this.reservedRepository.save(reservation);
-
-        throw new OkException(SAVED, this.getClass().toString());
+        return Response.SAVED.name();
     }
 
     @PostMapping("/remove")
-    public void removeReservation(@RequestBody Reservation reservation) {
+    public String removeReservation(@RequestBody Reservation reservation) {
         validateReservation(reservation.getId());
 
         this.reservedRepository.deleteById(reservation.getId());
-
-        throw new OkException(REMOVED, this.getClass().toString());
+        return Response.REMOVED.name();
     }
 
 
@@ -94,20 +88,16 @@ public class ReservationController {
     }
 
     private void validateReservationForAdding(Reservation reservation) {
-        try {
-            if (this.reservedRepository
-                    .findAllByDateAndTimeBetween(
-                            reservation.getDate(),
-                            TimeUtils.shiftTime(reservation.getTime(), -RESERVATION_RANGE_HOURS),
-                            TimeUtils.shiftTime(reservation.getTime(), RESERVATION_RANGE_HOURS))
-                    .isPresent()) {
-                throw new EntityAlreadyExistException(
-                        this.getClass().toString(),
-                        Reservation.DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + COMA_SPACE
-                                + Reservation.TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (this.reservedRepository
+                .findAllByDateAndTimeBetween(
+                        reservation.getDate(),
+                        TimeUtils.shiftTime(reservation.getTime(), -RESERVATION_RANGE_HOURS),
+                        TimeUtils.shiftTime(reservation.getTime(), RESERVATION_RANGE_HOURS))
+                .isPresent()) {
+            throw new EntityAlreadyExistException(
+                    this.getClass().toString(),
+                    Reservation.DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + COMA_SPACE
+                            + Reservation.TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE);
         }
     }
 

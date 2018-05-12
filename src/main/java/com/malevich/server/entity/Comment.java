@@ -31,6 +31,12 @@ public class Comment implements Serializable {
     protected Comment() {
     }
 
+    public Comment(int id) {
+        this.id = -1;
+        order = new Order(-1);
+        comment = "";
+    }
+
     public Comment(Order order, String comment) {
         this.order = order;
         this.comment = comment;

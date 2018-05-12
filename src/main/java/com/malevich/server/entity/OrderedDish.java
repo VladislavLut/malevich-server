@@ -1,10 +1,14 @@
 package com.malevich.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.malevich.server.utils.Status;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.sql.Time;
 
 @Entity
 @Table(name = OrderedDish.TABLE_NAME)
@@ -26,15 +30,21 @@ public class OrderedDish implements Serializable {
     @Column(name = ID_COLUMN)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     @JoinColumn(name = ORDER_ID_COLUMN, nullable = false)
     private Order order;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     @JoinColumn(name = DISH_ID_COLUMN, nullable = false)
     private Dish dish;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     @JoinColumn(name = KITCHENER_ID_COLUMN, nullable = false)
     private User kitchener;
 
@@ -49,12 +59,23 @@ public class OrderedDish implements Serializable {
 
     @NotNull
     @Column(name = TIME_COLUMN)
-    private String time;
+    private Time time;
 
     @Column(name = COMMENT_COLUMN)
     private String comment;
 
     protected OrderedDish() {
+    }
+
+    public OrderedDish(int id) {
+        this.id = -1;
+        order = new Order(-1);
+        dish = new Dish(-1);
+        kitchener = new User(-1);
+        status = Status.NULL;
+        quantity = -1;
+        time = new Time(0);
+        comment = "";
     }
 
     public OrderedDish(Order order, Dish dish, User kitchener, Status status, int quantity, String time, String comment) {
@@ -63,7 +84,7 @@ public class OrderedDish implements Serializable {
         this.kitchener = kitchener;
         this.status = status;
         this.quantity = quantity;
-        this.time = time;
+        this.time = Time.valueOf(time);
         this.comment = comment;
     }
 
@@ -116,11 +137,11 @@ public class OrderedDish implements Serializable {
         this.quantity = quantity;
     }
 
-    public String getTime() {
+    public Time getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Time time) {
         this.time = time;
     }
 

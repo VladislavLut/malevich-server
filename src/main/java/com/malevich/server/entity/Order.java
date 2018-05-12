@@ -6,9 +6,8 @@ import com.malevich.server.utils.Status;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.List;
-
-import static com.malevich.server.entity.Order.TABLE_NAME;
 
 @Entity
 @Table(name = Order.TABLE_NAME)
@@ -37,7 +36,7 @@ public class Order implements Serializable {
 
     @NotNull
     @Column(name = DATE_COLUMN)
-    private String date;
+    private Date date;
 
     @JsonIgnore
     @OneToOne(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -50,10 +49,17 @@ public class Order implements Serializable {
     protected Order() {
     }
 
+    public Order(int id) {
+        this.id = -1;
+        tableItem = null;
+        status = Status.NULL;
+        date = new Date(0);
+    }
+
     public Order(TableItem tableItem, Status status, String date) {
         this.tableItem = tableItem;
         this.status = status;
-        this.date = date;
+        this.date = Date.valueOf(date);
     }
 
     public int getId() {
@@ -81,11 +87,11 @@ public class Order implements Serializable {
         this.status = status;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

@@ -57,6 +57,16 @@ public class Dish implements Serializable{
     protected Dish() {
     }
 
+    public Dish(int id) {
+        this.id = -1;
+        category = "";
+        name = "";
+        description = "";
+        imageURL = "";
+        price = new BigDecimal(0);
+        rating = 0f;
+    }
+
     public Dish(String category, String name, String description, String imageURL, BigDecimal price, float rating) {
         this.category = category;
         this.name = name;

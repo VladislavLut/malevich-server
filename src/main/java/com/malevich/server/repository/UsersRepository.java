@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,17 +20,11 @@ public interface UsersRepository extends JpaRepository<User, Integer> {
 
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query(value = "UPDATE users SET name = :user_name WHERE id = :id", nativeQuery = true)
-    int updateName(@Param("id") int id, @Param("user_name") String name);
-
-    @Modifying(clearAutomatically = true)
-    @Transactional
-    @Query(value = "UPDATE users SET password = :password WHERE id = :id", nativeQuery = true)
-    int updatePassword(@Param("id") int id, @Param("password") String password);
-
-    @Modifying(clearAutomatically = true)
-    @Transactional
-    @Query(value = "UPDATE users SET birth_day = :birth_day WHERE id = :id", nativeQuery = true)
-    int updateBirthDay(@Param("id") int id, @Param("birth_day") String birthDay);
+    @Query(value = "UPDATE users SET name = :user_name, password = :password, birth_day = :birth_day WHERE id = :id"
+            , nativeQuery = true)
+    int update(@Param("id") int id,
+               @Param("user_name") String name,
+               @Param("password") String password,
+               @Param("birth_day") Date birthDay);
 
 }

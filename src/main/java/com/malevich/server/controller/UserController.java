@@ -3,17 +3,14 @@ package com.malevich.server.controller;
 import com.malevich.server.entity.User;
 import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
 import com.malevich.server.http.response.status.exception.EntityNotFoundException;
-import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.UsersRepository;
+import com.malevich.server.utils.Response;
 import com.malevich.server.utils.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-
-import static com.malevich.server.http.response.status.exception.OkException.*;
 
 @RestController
 @RequestMapping("/users")
@@ -30,7 +27,7 @@ public class UserController {
         this.usersRepository = usersRepository;
     }
 
-    @GetMapping("/all-users")
+    @GetMapping("/all")
     public List<User> getAllUsers() {
         return this.usersRepository.findAll();
     }
@@ -47,62 +44,39 @@ public class UserController {
         return this.usersRepository.findUserByLogin(login);
     }
 
-    @GetMapping(value = "/all-by-type/{type}/")
+    @GetMapping(value = "/type/{type}/")
     public Optional<List<User>> getAllByType(@PathVariable String type) {
         return this.usersRepository.findAllByType(UserType.valueOf(type));
     }
 
     @PostMapping("/add")
-    public void saveUser(@RequestBody final User user) throws OkException {
+    public String saveUser(@RequestBody final User user) {
         if (usersRepository.findUserByLogin(user.getLogin()).isPresent()) {
             throw new EntityAlreadyExistException(
                     this.getClass().toString(),
                     User.LOGIN_COLUMN + SPACE_QUOTE + user.getLogin() + QUOTE);
         }
         this.usersRepository.save(user);
-
-        throw new OkException(SAVED, this.getClass().toString());
+        return Response.SAVED.name();
     }
 
-    @PostMapping("/update-name")
-    public void updateName(@RequestBody final User user) {
+    @PostMapping("/update")
+    public String update(@RequestBody final User user) {
         validateUser(user.getLogin());
         validateUserId(user);
 
-        this.usersRepository.updateName(user.getId(), user.getName());
-
-        throw new OkException(UPDATED, this.getClass().toString(), User.NAME_COLUMN);
-    }
-
-    @PostMapping("/update-password")
-    public void updatePassword(@Valid @RequestBody final User user) {
-        validateUser(user.getLogin());
-        validateUserId(user);
-
-        this.usersRepository.updatePassword(user.getId(), user.getPassword());
-
-        throw new OkException(UPDATED, this.getClass().toString(), User.PASSWORD_COLUMN);
-    }
-
-    @PostMapping("/update-birth-day")
-    public void updateBirthDay(@Valid @RequestBody final User user) {
-        validateUser(user.getLogin());
-        validateUserId(user);
-
-        this.usersRepository.updateBirthDay(user.getId(), user.getBirthDay());
-
-        throw new OkException(UPDATED, this.getClass().toString(), User.BIRTH_DAY_COLUMN);
+        this.usersRepository.update(user.getId(), user.getName(), user.getPassword(), user.getBirthDay());
+        return Response.UPDATED.name();
     }
 
     @PostMapping("/remove")
-    public void removeUser(@RequestBody final User user) {
+    public String removeUser(@RequestBody final User user) {
         validateUser(user.getLogin());
 
         validateUserId(user);
 
         usersRepository.deleteById(user.getId());
-
-        throw new OkException(REMOVED, this.getClass().toString());
+        return Response.REMOVED.name();
     }
 
     private void validateUser(String login) {

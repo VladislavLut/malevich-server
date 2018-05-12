@@ -5,5 +5,6 @@ public enum Status {
     PROCESSING,
     DONE,
     WAITING_FOR_PAYMENT,
-    CLOSED
+    CLOSED,
+    NULL
 }

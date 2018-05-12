@@ -24,7 +24,7 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findAllByStatusNotLike(Status status);
 
-    Optional<Order> findFirstByTableItemAndStatusNotLike(TableItem tableId, Status status);
+    Optional<Order> findFirstByTableItemIdAndStatusNotLike(int tableId, Status status);
 
     @Modifying(clearAutomatically = true)
     @Transactional

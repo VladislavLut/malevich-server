@@ -7,6 +7,7 @@ import com.malevich.server.utils.UserType;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.List;
 
 @Entity
@@ -48,14 +49,22 @@ public class User implements Serializable {
 
 
     @Column(name = BIRTH_DAY_COLUMN)
-    private String birthDay;
+    private Date birthDay;
 
     @JsonIgnore
     @OneToMany(mappedBy = "kitchener", cascade = CascadeType.ALL)
     private List<OrderedDish> orderedDishes;
 
     protected User() {
-        this.type = UserType.NULL;
+    }
+
+    public User(int id) {
+        this.id = -1;
+        type = UserType.NULL;
+        login = "";
+        password = "";
+        name = "";
+        birthDay = new Date(0);
     }
 
     public User(UserType type, String login, String password, String name, String birthDay) {
@@ -63,7 +72,7 @@ public class User implements Serializable {
         this.login = login;
         this.password = password;
         this.name = name;
-        this.birthDay = birthDay;
+        this.birthDay = Date.valueOf(birthDay);
     }
 
     public int getId() {
@@ -106,11 +115,11 @@ public class User implements Serializable {
         this.name = name;
     }
 
-    public String getBirthDay() {
+    public Date getBirthDay() {
         return birthDay;
     }
 
-    public void setBirthDay(String birthDay) {
+    public void setBirthDay(Date birthDay) {
         this.birthDay = birthDay;
     }
 

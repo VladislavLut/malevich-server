@@ -35,6 +35,11 @@ public class TableItem implements Serializable {
     protected TableItem() {
     }
 
+    public TableItem(int id) {
+        this.id = -1;
+        opened = false;
+    }
+
     public TableItem(int id, boolean opened) {
         this.id = id;
         this.opened = opened;

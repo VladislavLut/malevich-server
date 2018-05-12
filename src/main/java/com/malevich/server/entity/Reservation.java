@@ -3,6 +3,8 @@ package com.malevich.server.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.sql.Date;
+import java.sql.Time;
 
 @Entity
 @Table(name = Reservation.TABLE_NAME)
@@ -29,11 +31,11 @@ public class Reservation implements Serializable {
 
     @NotNull
     @Column(name = DATE_COLUMN)
-    private String date;
+    private Date date;
 
     @NotNull
     @Column(name = TIME_COLUMN)
-    private String time;
+    private Time time;
 
     @NotNull
     @Column(name = PHONE_COLUMN)
@@ -49,10 +51,20 @@ public class Reservation implements Serializable {
     protected Reservation() {
     }
 
+    public Reservation(int id) {
+        this.id = -1;
+        tableItem = new TableItem(-1);
+        date = new Date(0);
+        time = new Time(0);
+        phone = "";
+        name = "";
+        comment = "";
+    }
+
     public Reservation(TableItem tableItem, String date, String time, String name, String phone, String comment) {
         this.tableItem = tableItem;
-        this.date = date == null ? "" : date;
-        this.time = time == null ? "" : time;
+        this.date = date == null ? new Date(0) : Date.valueOf(date);
+        this.time = time == null ? new Time(0) : Time.valueOf(time);
         this.name = name == null ? "" : name;
         this.phone = phone == null ? "" : phone;
         this.comment = comment == null ? "" : comment;
@@ -75,19 +87,19 @@ public class Reservation implements Serializable {
         this.tableItem = tableItem;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public String getTime() {
+    public Time getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Time time) {
         this.time = time;
     }
 

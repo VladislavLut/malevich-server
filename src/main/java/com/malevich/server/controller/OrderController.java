@@ -1,11 +1,10 @@
 package com.malevich.server.controller;
 
 import com.malevich.server.entity.Order;
-import com.malevich.server.entity.TableItem;
 import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
 import com.malevich.server.http.response.status.exception.EntityNotFoundException;
-import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.OrdersRepository;
+import com.malevich.server.utils.Response;
 import com.malevich.server.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,6 @@ import java.util.Optional;
 
 import static com.malevich.server.controller.UserController.QUOTE;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
-import static com.malevich.server.http.response.status.exception.OkException.*;
 
 @RestController
 @RequestMapping("/orders")
@@ -29,7 +27,7 @@ public class OrderController {
         this.ordersRepository = ordersRepository;
     }
 
-    @GetMapping("/all-orders")
+    @GetMapping("/all")
     public List<Order> findAllOrders() {
         return this.ordersRepository.findAll();
     }
@@ -40,69 +38,53 @@ public class OrderController {
         return this.ordersRepository.findById(id);
     }
 
-    @GetMapping("/active-orders")
+    @GetMapping("/active")
     public List<Order> findAllActiveOrders() {
         return this.ordersRepository.findAllByStatusNotLike(Status.CLOSED);
     }
 
-    @GetMapping("/{status}/orders-by-status")
+    @GetMapping("/status/{status}/")
     public List<Order> findOrdersByStatusIgnoreCase(@PathVariable String status) {
         return this.ordersRepository.findAllByStatus(Status.valueOf(status));
     }
 
-    @GetMapping("/{date}/orders-by-date")
+    @GetMapping("/date/{date}/")
     public List<Order> findOrdersByDate(@PathVariable String date) {
         return this.ordersRepository.findAllByDate(date);
     }
 
-    @GetMapping("/{tableId}/orders-by-table-id")
+    @GetMapping("/table/{tableId}/")
     public List<Order> findOrdersByTableItemId(@PathVariable int tableId) {
         return this.ordersRepository.findAllByTableItemId(tableId);
     }
 
-    @PostMapping("/active-order")
-    public Optional<Order> findActiveOrderAtTable(@RequestBody final TableItem tableItem) {
-        return this.ordersRepository.findFirstByTableItemAndStatusNotLike(tableItem, Status.CLOSED);
-    }
-
-    @PostMapping("/orders-by-table")
-    public List<Order> findOrdersByTableItem(@RequestBody TableItem tableItem) {
-        return this.ordersRepository.findAllByTableItem(tableItem);
-    }
-
     @PostMapping("/add")
-    public void saveOrder(@RequestBody final Order order) {
+    public String saveOrder(@RequestBody final Order order) {
         if (this.ordersRepository.findById(order.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
                     this.getClass().toString(), Order.ID_COLUMN + SPACE_QUOTE + order.getId() + QUOTE);
         }
 
         this.ordersRepository.save(order);
-
-        throw new OkException(SAVED, this.getClass().toString());
+        return Response.SAVED.name();
     }
 
     @PostMapping("/remove")
-    public void removeOrder(@RequestBody final Order order) {
+    public String removeOrder(@RequestBody final Order order) {
         validateOrder(order.getId());
 
         ordersRepository.deleteById(order.getId());
-
-        throw new OkException(REMOVED, this.getClass().toString());
+        return Response.REMOVED.name();
     }
 
-    @PostMapping("/update-status")
-    public void updateOrderStatus(@Valid @RequestBody final Order order) {
+    @PostMapping("/update")
+    public String updateOrderStatus(@Valid @RequestBody final Order order) {
         validateOrder(order.getId());
         this.ordersRepository.updateStatus(
                 order.getId(),
                 order.getStatus().name()
         );
-
-        throw new OkException(
-                UPDATED,
-                this.getClass().toString(),
-                Order.ID_COLUMN + SPACE_QUOTE + order.getId() + QUOTE);
+        return Response.UPDATED.name();
     }
 
     private void validateOrder(int id) {

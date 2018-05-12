@@ -3,19 +3,17 @@ package com.malevich.server.controller;
 import com.malevich.server.entity.Dish;
 import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
 import com.malevich.server.http.response.status.exception.EntityNotFoundException;
-import com.malevich.server.http.response.status.exception.OkException;
 import com.malevich.server.repository.DishesRepository;
+import com.malevich.server.utils.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
 import static com.malevich.server.controller.UserController.QUOTE;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
-import static com.malevich.server.http.response.status.exception.OkException.*;
 
 @RestController
 @RequestMapping("/menu")
@@ -29,7 +27,7 @@ public class DishController {
         this.dishesRepository = dishesRepository;
     }
 
-    @GetMapping("/all-items")
+    @GetMapping("/all")
     public List<Dish> getMenu() {
         return this.dishesRepository.findAll();
     }
@@ -41,28 +39,26 @@ public class DishController {
     }
 
     @PostMapping("/add")
-    public void saveDish(@RequestBody final Dish dish) {
+    public String saveDish(@RequestBody final Dish dish) {
         if (this.dishesRepository.findById(dish.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
                     this.getClass().toString(), Dish.ID_COLUMN + SPACE_QUOTE + dish.getId() + QUOTE);
         }
 
         this.dishesRepository.save(dish);
-
-        throw new OkException(SAVED, this.getClass().toString());
+        return Response.SAVED.name();
     }
 
     @PostMapping("/remove")
-    public void removeDish(@RequestBody final Dish dish) {
+    public String removeDish(@RequestBody final Dish dish) {
         validateDish(dish.getId());
 
         dishesRepository.deleteById(dish.getId());
-
-        throw new OkException(REMOVED, this.getClass().toString());
+        return Response.REMOVED.name();
     }
 
     @PostMapping("/update")
-    public void update(@Valid @RequestBody final Dish dish) {
+    public String update(@Valid @RequestBody final Dish dish) {
         validateDish(dish.getId());
         this.dishesRepository.update(
                 dish.getId(),
@@ -71,8 +67,7 @@ public class DishController {
                 dish.getRating(),
                 dish.getDescription()
         );
-
-        throw new OkException(UPDATED, this.getClass().toString(), Dish.ID_COLUMN + SPACE_QUOTE + dish.getId() + QUOTE);
+        return Response.UPDATED.name();
     }
 
     private void validateDish(int id) {

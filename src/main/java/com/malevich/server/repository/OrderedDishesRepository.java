@@ -14,19 +14,10 @@ import java.util.List;
 
 public interface OrderedDishesRepository extends JpaRepository<OrderedDish, Integer> {
 
-    List<OrderedDish> findAllByKitchener(User kitchener);
     List<OrderedDish> findAllByKitchenerId(int kitchenerId);
-
-    List<OrderedDish> findAllByOrder(Order order);
     List<OrderedDish> findAllByOrderId(int orderId);
-
     List<OrderedDish> findAllByStatus(Status status);
     
-    @Modifying(clearAutomatically = true)
-    @Transactional
-    @Query(value = "UPDATE ordered_dishes SET status = :status WHERE id = :id", nativeQuery = true)
-    int updateStatus(@Param("id") int id, @Param("status") String status);
-
     @Modifying(clearAutomatically = true)
     @Transactional
     @Query(value = "UPDATE ordered_dishes SET status = :status, kitchener_id = :kitchener WHERE id = :id",

@@ -1,24 +1,21 @@
 package com.malevich.server.controller;
 
+import com.malevich.server.entity.Order;
 import com.malevich.server.entity.TableItem;
 import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
 import com.malevich.server.http.response.status.exception.EntityNotFoundException;
-import com.malevich.server.http.response.status.exception.OkException;
+import com.malevich.server.repository.OrdersRepository;
 import com.malevich.server.repository.TablesRepository;
+import com.malevich.server.utils.Response;
+import com.malevich.server.utils.Status;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Optional;
 
 import static com.malevich.server.controller.UserController.QUOTE;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
-import static com.malevich.server.entity.TableItem.OPENED_COLUMN;
-import static com.malevich.server.http.response.status.exception.OkException.*;
 
 @RestController
 @RequestMapping("/tables")
@@ -28,31 +25,34 @@ public class TableController {
     private final TablesRepository tablesRepository;
 
     @Autowired
-    public TableController(final TablesRepository tablesRepository) {
+    private final OrdersRepository ordersRepository;
+
+    @Autowired
+    public TableController(final TablesRepository tablesRepository, final OrdersRepository ordersRepository) {
         this.tablesRepository = tablesRepository;
+        this.ordersRepository = ordersRepository;
     }
 
-    @GetMapping("/all-tables")
+    @GetMapping("/all")
     public List<TableItem> findAllTables() {
         return this.tablesRepository.findAll();
     }
 
     @GetMapping("/{id}/")
-    public Optional<TableItem> findTableById(@PathVariable int id) {
+    public Pair<TableItem, Order> findTableById(@PathVariable int id) {
         validateTable(id);
 
-        return this.tablesRepository.findTableById(id);
-    }
 
-    @PostMapping("/active-order")
-    public ModelAndView activeOrder(HttpServletRequest request) {
-        request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
-        return new ModelAndView("redirect:https://malevich-server.herokuapp.com/orders/active-order");
-    }
+        TableItem table = this.tablesRepository.findTableById(id).get();
+        Order order = this.ordersRepository
+                .findFirstByTableItemIdAndStatusNotLike(id, Status.CLOSED)
+                .orElse(new Order(id));
 
+        return new Pair<>(table, order);
+    }
 
     @PostMapping("/add")
-    public void saveTable(@RequestBody TableItem tableItem) {
+    public String saveTable(@RequestBody TableItem tableItem) {
         if (this.tablesRepository.findById(tableItem.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
                     this.getClass().toString(),
@@ -60,26 +60,23 @@ public class TableController {
         }
 
         this.tablesRepository.save(tableItem);
-
-        throw new OkException(SAVED, this.getClass().toString());
+        return Response.SAVED.name();
     }
 
-    @PostMapping("/update-status")
-    public void updateTable(@RequestBody TableItem tableItem) {
+    @PostMapping("/update")
+    public String updateTable(@RequestBody TableItem tableItem) {
         validateTable(tableItem.getId());
 
         this.tablesRepository.updateStatus(tableItem.getId(), tableItem.isOpened());
-
-        throw new OkException(UPDATED, this.getClass().toString(), OPENED_COLUMN);
+        return Response.UPDATED.name();
     }
 
     @PostMapping("/remove")
-    public void removeTable(@RequestBody TableItem tableItem) {
+    public String removeTable(@RequestBody TableItem tableItem) {
         validateTable(tableItem.getId());
 
         this.tablesRepository.deleteById(tableItem.getId());
-
-        throw new OkException(REMOVED, this.getClass().toString());
+        return Response.REMOVED.name();
     }
 
     private void validateTable(int id) {
