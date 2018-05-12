@@ -46,7 +46,7 @@ public class Order implements Serializable {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderedDish> orderedDishes;
 
-    protected Order() {
+    public Order() {
     }
 
     public Order(int id) {

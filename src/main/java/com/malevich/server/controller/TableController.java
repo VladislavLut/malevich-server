@@ -8,8 +8,8 @@ import com.malevich.server.repository.OrdersRepository;
 import com.malevich.server.repository.TablesRepository;
 import com.malevich.server.utils.Response;
 import com.malevich.server.utils.Status;
-import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,13 +42,12 @@ public class TableController {
     public Pair<TableItem, Order> findTableById(@PathVariable int id) {
         validateTable(id);
 
-
         TableItem table = this.tablesRepository.findTableById(id).get();
         Order order = this.ordersRepository
                 .findFirstByTableItemIdAndStatusNotLike(id, Status.CLOSED)
                 .orElse(new Order(id));
 
-        return new Pair<>(table, order);
+        return Pair.of(table, order);
     }
 
     @PostMapping("/add")

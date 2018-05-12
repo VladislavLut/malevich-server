@@ -32,7 +32,7 @@ public class TableItem implements Serializable {
     @OneToMany(mappedBy = "tableItem", cascade = CascadeType.ALL)
     private List<Reservation> reservations;
 
-    protected TableItem() {
+    public TableItem() {
     }
 
     public TableItem(int id) {
