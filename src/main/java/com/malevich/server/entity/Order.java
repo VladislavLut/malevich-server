@@ -1,6 +1,9 @@
 package com.malevich.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.malevich.server.utils.Status;
 
 import javax.persistence.*;
@@ -25,6 +28,8 @@ public class Order implements Serializable {
     @Column(name = ID_COLUMN)
     private int id;
 
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne
     @JoinColumn(name = TABLE_ID_COLUMN)
     private TableItem tableItem;
