@@ -4,8 +4,8 @@ import com.malevich.server.entity.OrderedDish;
 import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
 import com.malevich.server.http.response.status.exception.EntityNotFoundException;
 import com.malevich.server.repository.OrderedDishesRepository;
-import com.malevich.server.utils.Response;
-import com.malevich.server.utils.Status;
+import com.malevich.server.util.Response;
+import com.malevich.server.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

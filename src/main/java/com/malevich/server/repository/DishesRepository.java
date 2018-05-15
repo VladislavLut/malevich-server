@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface DishesRepository extends JpaRepository<Dish, Integer> {
 
-
+    List<Dish> findAllByCategory(String category);
 
     @Modifying(clearAutomatically = true)
     @Transactional

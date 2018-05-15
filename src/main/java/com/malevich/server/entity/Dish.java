@@ -22,6 +22,14 @@ public class Dish implements Serializable{
     public static final String PRICE_COLUMN = "price";
     public static final String RATING_COLUMN = "rating";
 
+    public static final String CATEGORY_SUSHI = "sushi";
+    public static final String CATEGORY_PIZZA = "pizza";
+    public static final String CATEGORY_DRINK = "drink";
+    public static final String CATEGORY_BURGER = "burger";
+    public static final String CATEGORY_SALAD = "salad";
+    public static final String CATEGORY_DESSERT = "dessert";
+    public static final String CATEGORY_PASTA = "pasta";
+    public static final String CATEGORY_SNACK = "snack";
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)

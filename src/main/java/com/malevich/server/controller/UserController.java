@@ -4,8 +4,8 @@ import com.malevich.server.entity.User;
 import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
 import com.malevich.server.http.response.status.exception.EntityNotFoundException;
 import com.malevich.server.repository.UsersRepository;
-import com.malevich.server.utils.Response;
-import com.malevich.server.utils.UserType;
+import com.malevich.server.util.Response;
+import com.malevich.server.util.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

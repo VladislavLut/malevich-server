@@ -2,7 +2,7 @@ package com.malevich.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.malevich.server.utils.UserType;
+import com.malevich.server.util.UserType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

@@ -4,7 +4,7 @@ import com.malevich.server.entity.Dish;
 import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
 import com.malevich.server.http.response.status.exception.EntityNotFoundException;
 import com.malevich.server.repository.DishesRepository;
-import com.malevich.server.utils.Response;
+import com.malevich.server.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +30,11 @@ public class DishController {
     @GetMapping("/all")
     public List<Dish> getMenu() {
         return this.dishesRepository.findAll();
+    }
+
+    @GetMapping("/category/{category}/")
+    public List<Dish> getAllByCategory(@PathVariable String category) {
+        return this.dishesRepository.findAllByCategory(category);
     }
 
     @GetMapping("/{id}/")
@@ -74,5 +79,9 @@ public class DishController {
         this.dishesRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         this.getClass().toString(), Dish.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+    }
+
+    private void validateCategory(String category) {
+
     }
 }

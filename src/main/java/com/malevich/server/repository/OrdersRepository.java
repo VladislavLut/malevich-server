@@ -2,7 +2,7 @@ package com.malevich.server.repository;
 
 import com.malevich.server.entity.Order;
 import com.malevich.server.entity.TableItem;
-import com.malevich.server.utils.Status;
+import com.malevich.server.util.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,8 +14,8 @@ import java.util.Optional;
 
 public interface OrdersRepository extends JpaRepository<Order, Integer> {
 
-
     List<Order> findAllByTableItem(TableItem tableItem);
+
     List<Order> findAllByTableItemId(int tableItemId);
 
     List<Order> findAllByDate(String date);

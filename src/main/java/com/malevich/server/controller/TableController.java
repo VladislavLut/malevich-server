@@ -6,8 +6,8 @@ import com.malevich.server.http.response.status.exception.EntityAlreadyExistExce
 import com.malevich.server.http.response.status.exception.EntityNotFoundException;
 import com.malevich.server.repository.OrdersRepository;
 import com.malevich.server.repository.TablesRepository;
-import com.malevich.server.utils.Response;
-import com.malevich.server.utils.Status;
+import com.malevich.server.util.Response;
+import com.malevich.server.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.web.bind.annotation.*;

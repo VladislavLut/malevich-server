@@ -4,7 +4,7 @@ import com.malevich.server.entity.Comment;
 import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
 import com.malevich.server.http.response.status.exception.EntityNotFoundException;
 import com.malevich.server.repository.CommentsRepository;
-import com.malevich.server.utils.Response;
+import com.malevich.server.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

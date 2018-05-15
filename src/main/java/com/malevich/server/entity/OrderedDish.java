@@ -3,7 +3,7 @@ package com.malevich.server.entity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.malevich.server.utils.Status;
+import com.malevich.server.util.Status;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
