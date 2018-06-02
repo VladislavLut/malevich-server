@@ -1,9 +1,10 @@
 package com.malevich.server.controller;
 
 import com.malevich.server.entity.Reservation;
-import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
-import com.malevich.server.http.response.status.exception.EntityNotFoundException;
+import com.malevich.server.exception.EntityAlreadyExistException;
+import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.repository.ReservedRepository;
+import com.malevich.server.repository.SessionsRepository;
 import com.malevich.server.util.Response;
 import com.malevich.server.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.malevich.server.controller.UserController.QUOTE;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
+import static com.malevich.server.util.UserType.ADMINISTRATOR;
+import static com.malevich.server.util.ValidationUtil.validateAccess;
+import static org.apache.logging.log4j.util.Chars.QUOTE;
 
 @RestController
 @RequestMapping("/reserved")
@@ -28,23 +31,30 @@ public class ReservationController {
     private final ReservedRepository reservedRepository;
 
     @Autowired
-    public ReservationController(ReservedRepository reservedRepository) {
+    private final SessionsRepository sessionsRepository;
+
+    @Autowired
+    public ReservationController(ReservedRepository reservedRepository, SessionsRepository sessionsRepository) {
         this.reservedRepository = reservedRepository;
+        this.sessionsRepository = sessionsRepository;
     }
 
     @GetMapping("/all")
-    public List<Reservation> findAll() {
+    public List<Reservation> findAll(@CookieValue(name = "sid") String sid) {
+        validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         return this.reservedRepository.findAll();
     }
 
     @GetMapping("/{id}/")
-    public Optional<Reservation> findReservationById(@PathVariable int id) {
+    public Optional<Reservation> findReservationById(@PathVariable int id, @CookieValue(name = "sid") String sid) {
+        validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         validateReservation(id);
         return this.reservedRepository.findById(id);
     }
 
     @PostMapping("/find")
-    public List<Reservation> find(@RequestBody Reservation reservation) {
+    public List<Reservation> find(@RequestBody Reservation reservation, @CookieValue(name = "sid") String sid) {
+        validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         if (reservation.getId() != 0) {
             validateReservation(reservation.getId());
             return Collections.singletonList(this.reservedRepository.findById(reservation.getId()).get());
@@ -57,7 +67,7 @@ public class ReservationController {
                 reservation.getPhone()
         ).orElseThrow(() -> new EntityNotFoundException(
                 this.getClass().toString(),
-                Reservation.DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + UserController.QUOTE +
+                Reservation.DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + QUOTE +
                         Reservation.TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE + COMA_SPACE +
                         Reservation.NAME_COLUMN + SPACE_QUOTE + reservation.getName() + QUOTE + COMA_SPACE +
                         Reservation.PHONE_COLUMN + SPACE_QUOTE + reservation.getPhone() + QUOTE)
@@ -73,7 +83,8 @@ public class ReservationController {
     }
 
     @PostMapping("/remove")
-    public String removeReservation(@RequestBody Reservation reservation) {
+    public String removeReservation(@RequestBody Reservation reservation, @CookieValue(name = "sid") String sid) {
+        validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         validateReservation(reservation.getId());
 
         this.reservedRepository.deleteById(reservation.getId());

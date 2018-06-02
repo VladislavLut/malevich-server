@@ -1,10 +1,8 @@
 package com.malevich.server.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import com.malevich.server.util.Status;
+import com.malevich.server.view.Views;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -23,48 +21,61 @@ public class Order implements Serializable {
     public static final String STATUS_COLUMN = "status";
     public static final String DATE_COLUMN = "date";
 
+    @JsonView(Views.Public.class)
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orders_generator")
+    @SequenceGenerator(name = "orders_generator", sequenceName = "orders_seq")
     @Column(name = ID_COLUMN)
     private int id;
 
+    @JsonView(Views.Public.class)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne
     @JoinColumn(name = TABLE_ID_COLUMN)
     private TableItem tableItem;
 
+    @JsonView(Views.Public.class)
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = STATUS_COLUMN)
     private Status status;
 
+    @JsonView(Views.Public.class)
     @NotNull
     @Column(name = DATE_COLUMN)
     private Date date;
 
+    @JsonView(Views.Public.class)
     @JsonIgnore
     @OneToOne(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Comment comment;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @JsonView(Views.Internal.class)
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<OrderedDish> orderedDishes;
 
     public Order() {
     }
 
     public Order(int id) {
-        this.id = -1;
+        this.id = id;
         tableItem = null;
-        status = Status.NULL;
-        date = new Date(0);
+        status = null;
+        date = null;
     }
 
     public Order(TableItem tableItem, Status status, String date) {
         this.tableItem = tableItem;
-        this.status = status;
+        this.status = status == null ? Status.WAITING : status;
         this.date = Date.valueOf(date);
+    }
+
+    public Order(TableItem tableItem, Status status, String date, List<OrderedDish> dishes) {
+        this.tableItem = tableItem;
+        this.status = status == null ? Status.WAITING : status;
+        this.date = Date.valueOf(date);
+        this.orderedDishes = dishes;
     }
 
     public int getId() {

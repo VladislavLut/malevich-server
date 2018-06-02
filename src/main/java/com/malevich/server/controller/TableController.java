@@ -2,9 +2,10 @@ package com.malevich.server.controller;
 
 import com.malevich.server.entity.Order;
 import com.malevich.server.entity.TableItem;
-import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
-import com.malevich.server.http.response.status.exception.EntityNotFoundException;
+import com.malevich.server.exception.EntityAlreadyExistException;
+import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.repository.OrdersRepository;
+import com.malevich.server.repository.SessionsRepository;
 import com.malevich.server.repository.TablesRepository;
 import com.malevich.server.util.Response;
 import com.malevich.server.util.Status;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.malevich.server.controller.UserController.QUOTE;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
+import static com.malevich.server.util.UserType.*;
+import static com.malevich.server.util.ValidationUtil.validateAccess;
+import static org.apache.logging.log4j.util.Chars.QUOTE;
 
 @RestController
 @RequestMapping("/tables")
@@ -28,9 +31,15 @@ public class TableController {
     private final OrdersRepository ordersRepository;
 
     @Autowired
-    public TableController(final TablesRepository tablesRepository, final OrdersRepository ordersRepository) {
+    private final SessionsRepository sessionRepository;
+
+    @Autowired
+    public TableController(final TablesRepository tablesRepository,
+                           final OrdersRepository ordersRepository,
+                           final SessionsRepository sessionRepository) {
         this.tablesRepository = tablesRepository;
         this.ordersRepository = ordersRepository;
+        this.sessionRepository = sessionRepository;
     }
 
     @GetMapping("/all")
@@ -39,7 +48,8 @@ public class TableController {
     }
 
     @GetMapping("/{id}/")
-    public Pair<TableItem, Order> findTableById(@PathVariable int id) {
+    public Pair<TableItem, Order> findTableById(@PathVariable int id, @CookieValue(name = "sid") String sid) {
+        validateAccess(sessionRepository, sid, ADMINISTRATOR, KITCHENER, TABLE);
         validateTable(id);
 
         TableItem table = this.tablesRepository.findTableById(id).get();
@@ -51,7 +61,8 @@ public class TableController {
     }
 
     @PostMapping("/add")
-    public String saveTable(@RequestBody TableItem tableItem) {
+    public String saveTable(@RequestBody TableItem tableItem, @CookieValue(name = "sid") String sid) {
+        validateAccess(sessionRepository, sid, ADMINISTRATOR);
         if (this.tablesRepository.findById(tableItem.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
                     this.getClass().toString(),
@@ -63,7 +74,8 @@ public class TableController {
     }
 
     @PostMapping("/update")
-    public String updateTable(@RequestBody TableItem tableItem) {
+    public String updateTable(@RequestBody TableItem tableItem, @CookieValue(name = "sid") String sid) {
+        validateAccess(sessionRepository, sid, ADMINISTRATOR);
         validateTable(tableItem.getId());
 
         this.tablesRepository.updateStatus(tableItem.getId(), tableItem.isOpened());
@@ -71,7 +83,8 @@ public class TableController {
     }
 
     @PostMapping("/remove")
-    public String removeTable(@RequestBody TableItem tableItem) {
+    public String removeTable(@RequestBody TableItem tableItem, @CookieValue(name = "sid") String sid) {
+        validateAccess(sessionRepository, sid, ADMINISTRATOR);
         validateTable(tableItem.getId());
 
         this.tablesRepository.deleteById(tableItem.getId());

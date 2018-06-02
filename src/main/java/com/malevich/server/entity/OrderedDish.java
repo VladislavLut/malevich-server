@@ -2,8 +2,10 @@ package com.malevich.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.malevich.server.util.Status;
+import com.malevich.server.view.Views;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -25,6 +27,7 @@ public class OrderedDish implements Serializable {
     public static final String TIME_COLUMN = "time";
     public static final String COMMENT_COLUMN = "comment";
 
+    @JsonView(Views.Internal.class)
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = ID_COLUMN)
@@ -36,31 +39,37 @@ public class OrderedDish implements Serializable {
     @JoinColumn(name = ORDER_ID_COLUMN, nullable = false)
     private Order order;
 
+    @JsonView(Views.Internal.class)
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @JoinColumn(name = DISH_ID_COLUMN, nullable = false)
     private Dish dish;
 
+    @JsonView(Views.Internal.class)
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    @JoinColumn(name = KITCHENER_ID_COLUMN, nullable = false)
+    @JoinColumn(name = KITCHENER_ID_COLUMN, nullable = true)
     private User kitchener;
 
+    @JsonView(Views.Internal.class)
     @Enumerated(EnumType.STRING)
     @NotNull
     @Column(name = STATUS_COLUMN)
     private Status status;
 
+    @JsonView(Views.Internal.class)
     @NotNull
     @Column(name = QUANTITY_COLUMN)
     private int quantity;
 
+    @JsonView(Views.Internal.class)
     @NotNull
     @Column(name = TIME_COLUMN)
     private Time time;
 
+    @JsonView(Views.Internal.class)
     @Column(name = COMMENT_COLUMN)
     private String comment;
 
@@ -68,14 +77,15 @@ public class OrderedDish implements Serializable {
     }
 
     public OrderedDish(int id) {
+        this(null, null, null, null, 0, null, null);
         this.id = -1;
-        order = new Order(-1);
-        dish = new Dish(-1);
-        kitchener = new User(-1);
-        status = Status.NULL;
-        quantity = -1;
-        time = new Time(0);
-        comment = "";
+//        order = new Order(-1);
+//        dish = new Dish(-1);
+//        kitchener = new User(-1);
+//        status = Status.NULL;
+//        quantity = -1;
+//        time = new Time(0);
+//        comment = "";
     }
 
     public OrderedDish(Order order, Dish dish, User kitchener, Status status, int quantity, String time, String comment) {

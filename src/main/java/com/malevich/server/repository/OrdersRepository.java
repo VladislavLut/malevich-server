@@ -31,4 +31,8 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
     @Query(value = "UPDATE orders SET status = :status WHERE id = :id", nativeQuery = true)
     int updateStatus(@Param("id") int id, @Param("status") String status);
 
+
+    @Transactional
+    @Query(value = "SELECT nextval('orders_seq') AS new_id", nativeQuery = true)
+    int getNextId();
 }

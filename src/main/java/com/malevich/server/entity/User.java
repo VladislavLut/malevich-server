@@ -1,8 +1,9 @@
 package com.malevich.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.malevich.server.util.UserType;
+import com.malevich.server.view.Views;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -23,48 +24,55 @@ public class User implements Serializable {
     public static final String NAME_COLUMN = "name";
     public static final String BIRTH_DAY_COLUMN = "birth_day";
 
+    @JsonView(Views.Public.class)
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = ID_COLUMN)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
-    @NotNull
+    @JsonView(Views.Public.class)
     @Enumerated(EnumType.STRING)
+    @NotNull
     @Column(name = TYPE_COLUMN)
     private UserType type;
 
+    @JsonView(Views.Public.class)
     @NotNull
     @Column(name = LOGIN_COLUMN, unique = true)
     private String login;
 
-    @JsonIgnore
-    @JsonDeserialize
     @NotNull
     @Column(name = PASSWORD_COLUMN)
     private String password;
 
+    @JsonView(Views.Public.class)
     @NotNull
     @Column(name = NAME_COLUMN)
     private String name;
 
 
+    @JsonView(Views.Public.class)
     @Column(name = BIRTH_DAY_COLUMN)
     private Date birthDay;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "kitchener", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "kitchener", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<OrderedDish> orderedDishes;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Session session;
 
     protected User() {
     }
 
     public User(int id) {
-        this.id = -1;
-        type = UserType.NULL;
-        login = "";
-        password = "";
-        name = "";
-        birthDay = new Date(0);
+        this.id = id;
+        type = null;
+        login = null;
+        password = null;
+        name = null;
+        birthDay = null;
     }
 
     public User(UserType type, String login, String password, String name, String birthDay) {

@@ -25,4 +25,6 @@ public interface OrderedDishesRepository extends JpaRepository<OrderedDish, Inte
             @Param("status") String status,
             @Param("kitchener") int kitchener
     );
+
+    //todo: add orderedDishes list
 }

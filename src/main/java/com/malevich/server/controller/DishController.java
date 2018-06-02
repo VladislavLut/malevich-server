@@ -1,9 +1,10 @@
 package com.malevich.server.controller;
 
 import com.malevich.server.entity.Dish;
-import com.malevich.server.http.response.status.exception.EntityAlreadyExistException;
-import com.malevich.server.http.response.status.exception.EntityNotFoundException;
+import com.malevich.server.exception.EntityAlreadyExistException;
+import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.repository.DishesRepository;
+import com.malevich.server.repository.SessionsRepository;
 import com.malevich.server.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +13,10 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
-import static com.malevich.server.controller.UserController.QUOTE;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
+import static com.malevich.server.util.UserType.ADMINISTRATOR;
+import static com.malevich.server.util.ValidationUtil.validateAccess;
+import static org.apache.logging.log4j.util.Chars.QUOTE;
 
 @RestController
 @RequestMapping("/menu")
@@ -23,8 +26,12 @@ public class DishController {
     private final DishesRepository dishesRepository;
 
     @Autowired
-    public DishController(DishesRepository dishesRepository) {
+    private final SessionsRepository sessionsRepository;
+
+    @Autowired
+    public DishController(DishesRepository dishesRepository, SessionsRepository sessionsRepository) {
         this.dishesRepository = dishesRepository;
+        this.sessionsRepository = sessionsRepository;
     }
 
     @GetMapping("/all")
@@ -44,7 +51,8 @@ public class DishController {
     }
 
     @PostMapping("/add")
-    public String saveDish(@RequestBody final Dish dish) {
+    public String saveDish(@RequestBody final Dish dish, @CookieValue(name = "sid") String sid) {
+        validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         if (this.dishesRepository.findById(dish.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
                     this.getClass().toString(), Dish.ID_COLUMN + SPACE_QUOTE + dish.getId() + QUOTE);
@@ -55,15 +63,16 @@ public class DishController {
     }
 
     @PostMapping("/remove")
-    public String removeDish(@RequestBody final Dish dish) {
+    public String removeDish(@RequestBody final Dish dish, @CookieValue(name = "sid") String sid) {
+        validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         validateDish(dish.getId());
-
         dishesRepository.deleteById(dish.getId());
         return Response.REMOVED.name();
     }
 
     @PostMapping("/update")
-    public String update(@Valid @RequestBody final Dish dish) {
+    public String update(@Valid @RequestBody final Dish dish, @CookieValue(name = "sid") String sid) {
+        validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         validateDish(dish.getId());
         this.dishesRepository.update(
                 dish.getId(),
@@ -79,9 +88,5 @@ public class DishController {
         this.dishesRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         this.getClass().toString(), Dish.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
-    }
-
-    private void validateCategory(String category) {
-
     }
 }
