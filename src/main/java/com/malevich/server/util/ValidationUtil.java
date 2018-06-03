@@ -9,6 +9,8 @@ import com.malevich.server.exception.WrongPasswordException;
 import com.malevich.server.repository.SessionsRepository;
 import com.malevich.server.repository.UsersRepository;
 
+import java.sql.Time;
+
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
 import static com.malevich.server.entity.User.LOGIN_COLUMN;
 import static com.malevich.server.util.Encode.encodePassword;
@@ -21,7 +23,7 @@ public class ValidationUtil {
         getSession(repository, sid);
     }
 
-    public static Session getSession(SessionsRepository repository, String sid) {
+    private static Session getSession(SessionsRepository repository, String sid) {
         return repository.findSessionBySid(sid).orElseThrow(UnauthorizedAccessException::new);
     }
 
@@ -36,16 +38,26 @@ public class ValidationUtil {
     }
 
     public static void validateAccess(SessionsRepository sessionsRepository, String sid, UserType... types) {
+        validateAccess(sessionsRepository, sid, false, types);
+    }
+
+    public static void validateAccess(SessionsRepository sessionsRepository, String sid, boolean freeAccess, UserType... types) {
+
+        Session session = getSession(sessionsRepository, sid);
+        sessionsRepository.update(new Time(System.currentTimeMillis()), sid);
+        if (freeAccess) {
+            return;
+        }
         for (UserType type : types) {
-            if (isUserTypeEquals(sessionsRepository, sid, type)) {
+            if (isUserTypeEquals(session, type)) {
                 return;
             }
         }
         throw new AccessDeniedException();
     }
 
-    public static boolean isUserTypeEquals(SessionsRepository sessionsRepository, String sid, UserType type) {
-        UserType userType = getSession(sessionsRepository, sid).getUser().getType();
-        return userType == type || userType == ADMINISTRATOR;
+    private static boolean isUserTypeEquals(Session session, UserType type) {
+        return session.getUser().getType() == type
+                || session.getUser().getType() == ADMINISTRATOR;
     }
 }

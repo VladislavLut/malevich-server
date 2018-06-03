@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+import static com.malevich.server.controller.SessionController.SID;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
 import static com.malevich.server.util.UserType.ADMINISTRATOR;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
@@ -35,23 +36,26 @@ public class DishController {
     }
 
     @GetMapping("/all")
-    public List<Dish> getMenu() {
+    public List<Dish> getMenu(@CookieValue(name = SID) String sid) {
+        validateAccess(sessionsRepository, sid, true);
         return this.dishesRepository.findAll();
     }
 
     @GetMapping("/category/{category}/")
-    public List<Dish> getAllByCategory(@PathVariable String category) {
+    public List<Dish> getAllByCategory(@PathVariable String category, @CookieValue(name = SID) String sid) {
+        validateAccess(sessionsRepository, sid, true);
         return this.dishesRepository.findAllByCategory(category);
     }
 
     @GetMapping("/{id}/")
-    public Optional<Dish> findDishById(@PathVariable int id) {
+    public Optional<Dish> findDishById(@PathVariable int id, @CookieValue(name = SID) String sid) {
+        validateAccess(sessionsRepository, sid, true);
         validateDish(id);
         return this.dishesRepository.findById(id);
     }
 
     @PostMapping("/add")
-    public String saveDish(@RequestBody final Dish dish, @CookieValue(name = "sid") String sid) {
+    public String saveDish(@RequestBody final Dish dish, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         if (this.dishesRepository.findById(dish.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
@@ -63,7 +67,7 @@ public class DishController {
     }
 
     @PostMapping("/remove")
-    public String removeDish(@RequestBody final Dish dish, @CookieValue(name = "sid") String sid) {
+    public String removeDish(@RequestBody final Dish dish, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         validateDish(dish.getId());
         dishesRepository.deleteById(dish.getId());
@@ -71,7 +75,7 @@ public class DishController {
     }
 
     @PostMapping("/update")
-    public String update(@Valid @RequestBody final Dish dish, @CookieValue(name = "sid") String sid) {
+    public String update(@Valid @RequestBody final Dish dish, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         validateDish(dish.getId());
         this.dishesRepository.update(

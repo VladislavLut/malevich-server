@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.malevich.server.controller.SessionController.SID;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
 import static com.malevich.server.util.UserType.*;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
@@ -31,25 +32,26 @@ public class TableController {
     private final OrdersRepository ordersRepository;
 
     @Autowired
-    private final SessionsRepository sessionRepository;
+    private final SessionsRepository sessionsRepository;
 
     @Autowired
     public TableController(final TablesRepository tablesRepository,
                            final OrdersRepository ordersRepository,
-                           final SessionsRepository sessionRepository) {
+                           final SessionsRepository sessionsRepository) {
         this.tablesRepository = tablesRepository;
         this.ordersRepository = ordersRepository;
-        this.sessionRepository = sessionRepository;
+        this.sessionsRepository = sessionsRepository;
     }
 
     @GetMapping("/all")
-    public List<TableItem> findAllTables() {
+    public List<TableItem> findAllTables(@CookieValue(name = SID) String sid) {
+        validateAccess(sessionsRepository, sid, true);
         return this.tablesRepository.findAll();
     }
 
     @GetMapping("/{id}/")
-    public Pair<TableItem, Order> findTableById(@PathVariable int id, @CookieValue(name = "sid") String sid) {
-        validateAccess(sessionRepository, sid, ADMINISTRATOR, KITCHENER, TABLE);
+    public Pair<TableItem, Order> findTableById(@PathVariable int id, @CookieValue(name = SID) String sid) {
+        validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER, TABLE);
         validateTable(id);
 
         TableItem table = this.tablesRepository.findTableById(id).get();
@@ -61,8 +63,8 @@ public class TableController {
     }
 
     @PostMapping("/add")
-    public String saveTable(@RequestBody TableItem tableItem, @CookieValue(name = "sid") String sid) {
-        validateAccess(sessionRepository, sid, ADMINISTRATOR);
+    public String saveTable(@RequestBody TableItem tableItem, @CookieValue(name = SID) String sid) {
+        validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         if (this.tablesRepository.findById(tableItem.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
                     this.getClass().toString(),
@@ -74,8 +76,8 @@ public class TableController {
     }
 
     @PostMapping("/update")
-    public String updateTable(@RequestBody TableItem tableItem, @CookieValue(name = "sid") String sid) {
-        validateAccess(sessionRepository, sid, ADMINISTRATOR);
+    public String updateTable(@RequestBody TableItem tableItem, @CookieValue(name = SID) String sid) {
+        validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         validateTable(tableItem.getId());
 
         this.tablesRepository.updateStatus(tableItem.getId(), tableItem.isOpened());
@@ -83,8 +85,8 @@ public class TableController {
     }
 
     @PostMapping("/remove")
-    public String removeTable(@RequestBody TableItem tableItem, @CookieValue(name = "sid") String sid) {
-        validateAccess(sessionRepository, sid, ADMINISTRATOR);
+    public String removeTable(@RequestBody TableItem tableItem, @CookieValue(name = SID) String sid) {
+        validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         validateTable(tableItem.getId());
 
         this.tablesRepository.deleteById(tableItem.getId());

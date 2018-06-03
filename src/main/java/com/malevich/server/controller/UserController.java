@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import static com.malevich.server.controller.SessionController.SID;
 import static com.malevich.server.entity.User.LOGIN_COLUMN;
 import static com.malevich.server.util.Encode.encodePassword;
 import static com.malevich.server.util.UserType.*;
@@ -41,34 +42,35 @@ public class UserController {
 
     @JsonView(Views.Public.class)
     @GetMapping("/all")
-    public List<User> getAllUsers(@CookieValue(name = "sid") String sid) {
+    public List<User> getAllUsers(@CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         return this.usersRepository.findAll();
     }
 
     @JsonView(Views.Public.class)
     @GetMapping(value = "/id/{id}/")
-    public Optional<User> getUserById(@PathVariable int id, @CookieValue(name = "sid") String sid) {
+    public Optional<User> getUserById(@PathVariable int id, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, CLIENT, KITCHENER, TABLE);
         return this.usersRepository.findById(id);
     }
 
     @JsonView(Views.Public.class)
     @GetMapping(value = "/{login}/")
-    public Optional<User> getUserByLogin(@PathVariable String login, @CookieValue(name = "sid") String sid) {
+    public Optional<User> getUserByLogin(@PathVariable String login, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, CLIENT, KITCHENER, TABLE);
         return this.usersRepository.findUserByLogin(login);
     }
 
     @JsonView(Views.Public.class)
     @GetMapping(value = "/type/{type}/")
-    public Optional<List<User>> getAllByType(@PathVariable String type, @CookieValue(name = "sid") String sid) {
+    public Optional<List<User>> getAllByType(@PathVariable String type, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         return this.usersRepository.findAllByType(UserType.valueOf(type));
     }
 
     @PostMapping("/add")
-    public String saveUser(@RequestBody final User user) {
+    public String saveUser(@RequestBody final User user, @CookieValue(name = SID) String sid) {
+        validateAccess(sessionsRepository, sid, true);
         if (usersRepository.findUserByLogin(user.getLogin()).isPresent()) {
             throw new EntityAlreadyExistException(
                     this.getClass().toString(),
@@ -80,8 +82,7 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public String update(@RequestBody final User user, @CookieValue(name = "sid") String sid) {
-
+    public String update(@RequestBody final User user, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, CLIENT, KITCHENER);
         validateUser(user);
         user.setPassword(encodePassword(user));
@@ -91,7 +92,7 @@ public class UserController {
     }
 
     @PostMapping("/remove")
-    public String removeUser(@RequestBody final User user, @CookieValue(name = "sid") String sid) {
+    public String removeUser(@RequestBody final User user, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, CLIENT, ADMINISTRATOR, KITCHENER);
         validateUser(user);
 
