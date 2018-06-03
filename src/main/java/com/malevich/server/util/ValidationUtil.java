@@ -13,7 +13,7 @@ import java.sql.Time;
 
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
 import static com.malevich.server.entity.User.LOGIN_COLUMN;
-import static com.malevich.server.util.Encode.encodePassword;
+import static com.malevich.server.util.EncodeUtil.encodePassword;
 import static com.malevich.server.util.UserType.ADMINISTRATOR;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 

@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Time;
 
-import static sun.plugin2.util.SystemUtil.isDebug;
-
 @Component
 public class DeleteInactiveSessionsScheduleTask {
 
@@ -24,14 +22,10 @@ public class DeleteInactiveSessionsScheduleTask {
     public void scheduledTask() {
         String sql = "SELECT COUNT(*) FROM " + Session.TABLE_NAME + " s WHERE s.last_activity < ?";
         int size = jdbcTemplate.queryForObject(sql, new Object[]{new Time(System.currentTimeMillis() - TIMEOUT)}, Integer.class);
-        if (isDebug()) {
-            ServerApplication.log.info("Inactive sessions count: " + size);
-        }
+        ServerApplication.log.info("Inactive sessions count: " + size);
 
         sql = "DELETE FROM " + Session.TABLE_NAME + " s WHERE s.last_activity < ?";
         jdbcTemplate.update(sql, new Time(System.currentTimeMillis() - TIMEOUT));
-        if (isDebug()) {
-            ServerApplication.log.info("Inactive sessions has been closed");
-        }
+        ServerApplication.log.info("Inactive sessions has been closed");
     }
 }
