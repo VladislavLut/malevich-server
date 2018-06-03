@@ -67,7 +67,7 @@ public class OrderedDishController {
 
     @PostMapping("/add")
     public String saveOrderedDish(@RequestBody final OrderedDish orderedDish, @CookieValue(name = "sid") String sid) {
-        validateAccess(sessionsRepository, sid, TABLE);
+        validateAccess(sessionsRepository, sid, TABLE, ADMINISTRATOR);
         if (this.orderedDishesRepository.findById(orderedDish.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
                     this.getClass().toString(), OrderedDish.ID_COLUMN + SPACE_QUOTE + orderedDish.getId() + QUOTE);

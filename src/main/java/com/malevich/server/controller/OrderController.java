@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.malevich.server.controller.SessionController.SID;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
 import static com.malevich.server.util.UserType.*;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
@@ -48,45 +49,45 @@ public class OrderController {
 
     @JsonView(Views.Internal.class)
     @GetMapping("/all")
-    public List<Order> findAllOrders(@CookieValue(name = "sid") String sid) {
+    public List<Order> findAllOrders(@CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, KITCHENER, ADMINISTRATOR);
         return this.ordersRepository.findAll();
     }
 
     @GetMapping("/{id}/")
-    public Optional<Order> findOrderById(@PathVariable int id, @CookieValue(name = "sid") String sid) {
+    public Optional<Order> findOrderById(@PathVariable int id, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER);
         throwIfNotExist(id);
         return this.ordersRepository.findById(id);
     }
 
     @GetMapping("/active")
-    public List<Order> findAllActiveOrders(@CookieValue(name = "sid") String sid) {
+    public List<Order> findAllActiveOrders(@CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER);
         return this.ordersRepository.findAllByStatusNotLike(Status.CLOSED);
     }
 
     @GetMapping("/status/{status}/")
-    public List<Order> findOrdersByStatusIgnoreCase(@PathVariable String status, @CookieValue(name = "sid") String sid) {
+    public List<Order> findOrdersByStatusIgnoreCase(@PathVariable String status, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER);
         return this.ordersRepository.findAllByStatus(Status.valueOf(status));
     }
 
     @GetMapping("/date/{date}/")
-    public List<Order> findOrdersByDate(@PathVariable String date, @CookieValue(name = "sid") String sid) {
+    public List<Order> findOrdersByDate(@PathVariable String date, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         return this.ordersRepository.findAllByDate(date);
     }
 
     @GetMapping("/table/{tableId}/")
-    public List<Order> findOrdersByTableItemId(@PathVariable int tableId, @CookieValue(name = "sid") String sid) {
+    public List<Order> findOrdersByTableItemId(@PathVariable int tableId, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         return this.ordersRepository.findAllByTableItemId(tableId);
     }
 
     @JsonView(Views.Internal.class)
     @PostMapping("/add")
-    public String saveOrder(@RequestBody final Order order, @CookieValue(name = "sid") String sid) {
+    public String saveOrder(@RequestBody final Order order, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, TABLE);
         List<OrderedDish> dishes = order.getOrderedDishes();
         order.setOrderedDishes(new ArrayList<>());
@@ -103,7 +104,7 @@ public class OrderController {
     }
 
     @PostMapping("/remove")
-    public String removeOrder(@RequestBody final Order order, @CookieValue(name = "sid") String sid) {
+    public String removeOrder(@RequestBody final Order order, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, TABLE);
         throwIfNotExist(order.getId());
 
@@ -112,7 +113,7 @@ public class OrderController {
     }
 
     @PostMapping("/update")
-    public String updateOrderStatus(@Valid @RequestBody final Order order, @CookieValue(name = "sid") String sid) {
+    public String updateOrderStatus(@Valid @RequestBody final Order order, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, TABLE, KITCHENER);
         throwIfNotExist(order.getId());
         this.ordersRepository.updateStatus(
