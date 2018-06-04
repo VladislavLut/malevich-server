@@ -19,7 +19,7 @@ import static com.malevich.server.util.UserType.TABLE;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
-@CrossOrigin(origins = "/**")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/comments")
 public class CommentController {

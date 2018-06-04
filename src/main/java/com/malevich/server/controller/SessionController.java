@@ -17,7 +17,7 @@ import static com.malevich.server.util.SessionUtil.generateSID;
 import static com.malevich.server.util.ValidationUtil.validateCredentials;
 import static com.malevich.server.util.ValidationUtil.validateSid;
 
-@CrossOrigin(origins = "/**")
+@CrossOrigin(origins = "*")
 @RestController
 public class SessionController {
 
