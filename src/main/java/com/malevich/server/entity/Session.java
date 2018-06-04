@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.sql.Date;
 import java.sql.Time;
 
 import static com.malevich.server.entity.Session.TABLE_NAME;
@@ -26,17 +26,14 @@ public class Session implements Serializable {
     @Column(name = SID_COLUMN, unique = true)
     private String sid;
 
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "user_id")
-    @JsonIdentityReference(alwaysAsId = true)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = USER_ID_COLUMN, unique = true)
     private User user;
 
     @Column(name = LOGGED_IN_COLUMN, nullable = false)
     private Boolean loggedIn;
 
-    @Column(name = LAST_ACTIVITY_TIME_COLUMN, nullable = false)
+    @Column(name = LAST_ACTIVITY_TIME_COLUMN)
     private Time lastActivity;
 
     protected Session() {

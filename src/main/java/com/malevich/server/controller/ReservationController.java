@@ -1,6 +1,7 @@
 package com.malevich.server.controller;
 
 import com.malevich.server.entity.Reservation;
+import com.malevich.server.entity.Session;
 import com.malevich.server.exception.EntityAlreadyExistException;
 import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.repository.ReservedRepository;

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import javax.transaction.Transactional;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 public interface ReservedRepository extends JpaRepository<Reservation, Integer> {
 
+    @Transactional
     @Query("select r " +
             "from Reservation r " +
             "where r.date = :date " +
