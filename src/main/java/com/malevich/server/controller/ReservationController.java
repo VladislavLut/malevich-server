@@ -14,11 +14,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.malevich.server.controller.SessionController.SID;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
 import static com.malevich.server.util.UserType.ADMINISTRATOR;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
+@CrossOrigin(origins = "/**")
 @RestController
 @RequestMapping("/reserved")
 public class ReservationController {
@@ -75,7 +77,8 @@ public class ReservationController {
     }
 
     @PostMapping("/add")
-    public String addReservation(@RequestBody Reservation reservation) {
+    public String addReservation(@RequestBody Reservation reservation, @CookieValue(name = SID) String sid) {
+        validateAccess(sessionsRepository, sid, true);
         validateReservationForAdding(reservation);
 
         this.reservedRepository.save(reservation);

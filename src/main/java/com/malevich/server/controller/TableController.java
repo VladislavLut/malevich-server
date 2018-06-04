@@ -21,6 +21,7 @@ import static com.malevich.server.util.UserType.*;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
+@CrossOrigin(origins = "/**")
 @RestController
 @RequestMapping("/tables")
 public class TableController {

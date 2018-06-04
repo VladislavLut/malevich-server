@@ -12,6 +12,8 @@ import com.malevich.server.view.Views;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +24,7 @@ import static com.malevich.server.util.UserType.*;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
+@CrossOrigin(origins = "/**")
 @RestController
 @RequestMapping("/users")
 public class UserController {
