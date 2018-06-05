@@ -3,7 +3,6 @@ package com.malevich.server.controller;
 
 import com.malevich.server.entity.Session;
 import com.malevich.server.entity.User;
-import com.malevich.server.exception.SessionIsAlreadyOpened;
 import com.malevich.server.repository.SessionsRepository;
 import com.malevich.server.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,16 +49,13 @@ public class SessionController {
     @PostMapping(value = "/session/login")
     public void login(@RequestBody User user, @CookieValue(SID) String sid, HttpServletResponse response) {
         validateSid(sessionsRepository, sid);
-        int userId = validateNewSession(user);
-        sessionsRepository.update(userId, true, new Time(System.currentTimeMillis()), sid);
+        sid = openSession(user, sid);
         response.addCookie(new Cookie(SID, sid));
     }
 
     @PostMapping(value = "/login")
     public void login(@RequestBody User user, HttpServletResponse response) {
-        int userId = validateNewSession(user);
-        String sid = generateSID();
-        sessionsRepository.save(new Session(new User(userId), sid, true));
+        String sid = openSession(user, null);
         response.addCookie(new Cookie(SID, sid));
     }
 
@@ -70,16 +66,24 @@ public class SessionController {
         response.addCookie(new Cookie(SID, sid));
     }
 
-    private int validateNewSession(User user) {
-        int userId = validateUserCredentials(user.getLogin(), user.getPassword());
-        if (this.sessionsRepository.findSessionByUserId(userId).isPresent()) {
-            throw new SessionIsAlreadyOpened();
+    private String openSession(User user, String sid) {
+        user.setId(getUserIdByCredentials(user.getLogin(), user.getPassword()));
+        Session session = this.sessionsRepository.findSessionByUserId(user.getId())
+                .orElse(this.sessionsRepository.findSessionBySid(sid)
+                        .orElse(null));
+        if (session == null) {
+            sid = generateSID();
+            sessionsRepository.save(new Session(user, sid, true));
+        } else {
+            sid = session.getSid();
+            sessionsRepository.update(user, true, new Time(System.currentTimeMillis()), sid);
         }
-        return userId;
+        return sid;
     }
 
-    private int validateUserCredentials(String login, String password) {
-        return validateCredentials(usersRepository, login, password);
+    private int getUserIdByCredentials(String login, String password) {
+        validateCredentials(usersRepository, login, password);
+        return usersRepository.findUserByLogin(login).get().getId();
     }
 
 }

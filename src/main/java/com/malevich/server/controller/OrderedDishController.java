@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+import static com.malevich.server.controller.SessionController.SID;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
 import static com.malevich.server.util.UserType.*;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
@@ -35,38 +36,38 @@ public class OrderedDishController {
     }
 
     @GetMapping("/{id}/")
-    public Optional<OrderedDish> findOrderedDishById(@PathVariable int id, @CookieValue(name = "sid") String sid) {
+    public Optional<OrderedDish> findOrderedDishById(@PathVariable int id, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER, TABLE);
         validateOrderedDish(id);
         return this.orderedDishesRepository.findById(id);
     }
 
     @GetMapping("/all")
-    public List<OrderedDish> findAllOrderedDishes(@CookieValue(name = "sid") String sid) {
+    public List<OrderedDish> findAllOrderedDishes(@CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER);
         return this.orderedDishesRepository.findAll();
     }
 
     @GetMapping("/status/{status}/")
-    public List<OrderedDish> findOrderDishesByStatus(@PathVariable String status, @CookieValue(name = "sid") String sid) {
+    public List<OrderedDish> findOrderDishesByStatus(@PathVariable String status, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER);
         return this.orderedDishesRepository.findAllByStatus(Status.valueOf(status));
     }
 
     @GetMapping("/order/{orderId}/")
-    public List<OrderedDish> findOrderDishesByOrderId(@PathVariable int orderId, @CookieValue(name = "sid") String sid) {
+    public List<OrderedDish> findOrderDishesByOrderId(@PathVariable int orderId, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER, TABLE);
         return this.orderedDishesRepository.findAllByOrderId(orderId);
     }
 
     @GetMapping("/kitchener/{kitchenerId}/")
-    public List<OrderedDish> findOrderDishesByKitchenerId(@PathVariable int kitchenerId, @CookieValue(name = "sid") String sid) {
+    public List<OrderedDish> findOrderDishesByKitchenerId(@PathVariable int kitchenerId, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER);
         return this.orderedDishesRepository.findAllByKitchenerId(kitchenerId);
     }
 
     @PostMapping("/add")
-    public String saveOrderedDish(@RequestBody final OrderedDish orderedDish, @CookieValue(name = "sid") String sid) {
+    public String saveOrderedDish(@RequestBody final OrderedDish orderedDish, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, TABLE, ADMINISTRATOR);
         if (this.orderedDishesRepository.findById(orderedDish.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
@@ -78,7 +79,7 @@ public class OrderedDishController {
     }
 
     @PostMapping("/remove")
-    public String removeOrderedDish(@RequestBody final OrderedDish orderedDish, @CookieValue(name = "sid") String sid) {
+    public String removeOrderedDish(@RequestBody final OrderedDish orderedDish, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, TABLE);
         validateOrderedDish(orderedDish.getId());
 
@@ -87,7 +88,7 @@ public class OrderedDishController {
     }
 
     @PostMapping("/update")
-    public String updateOrderedDishKitchenerAndStatus(@Valid @RequestBody final OrderedDish orderedDish, @CookieValue(name = "sid") String sid) {
+    public String updateOrderedDishKitchenerAndStatus(@Valid @RequestBody final OrderedDish orderedDish, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER, TABLE);
         validateOrderedDish(orderedDish.getId());
         this.orderedDishesRepository.updateStatusAndKitchener(

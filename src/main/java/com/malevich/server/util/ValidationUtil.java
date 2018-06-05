@@ -27,14 +27,14 @@ public class ValidationUtil {
         return repository.findSessionBySid(sid).orElseThrow(UnauthorizedAccessException::new);
     }
 
-    public static int validateCredentials(UsersRepository usersRepository, String login, String password) {
+    public static void validateCredentials(UsersRepository usersRepository, String login, String password) {
         User user = usersRepository
                 .findUserByLogin(login)
                 .orElseThrow(() -> new EntityNotFoundException(User.class.getName(), LOGIN_COLUMN + SPACE_QUOTE + login + QUOTE));
         if (!user.getPassword().equals(encodePassword(user.getLogin(), password))) {
             throw new WrongPasswordException();
         }
-        return user.getId();
+//        return user.getId();
     }
 
     public static void validateAccess(SessionsRepository sessionsRepository, String sid, UserType... types) {
