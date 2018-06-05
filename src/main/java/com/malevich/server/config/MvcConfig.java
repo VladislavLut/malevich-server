@@ -9,59 +9,62 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/session/**").allowedOrigins(ALLOWED_ORIGINS);
-//      registry.addMapping("/session/end").allowedOrigins(ALLOWED_ORIGINS);
-//      registry.addMapping("/session /login").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/session/start").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/session/end").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/session /login").allowedOrigins(ALLOWED_ORIGINS);
         registry.addMapping("/login").allowedOrigins(ALLOWED_ORIGINS);
         registry.addMapping("/logout").allowedOrigins(ALLOWED_ORIGINS);
-        registry.addMapping("/users/**").allowedOrigins(ALLOWED_ORIGINS);
-//      /users/all
-//      /users/id/{id}/
-//      /users/{login}/
-//      /users/type/{type}/
-//      /users/add
-//      /users/update
-//      /users/remove
-        registry.addMapping("/tables/**").allowedOrigins(ALLOWED_ORIGINS);
-//      /tables /all
-//      /tables /{id}/
-//      /tables /add
-//      /tables /update
-//      /tables /remove
-        registry.addMapping("/reserved/**").allowedOrigins(ALLOWED_ORIGINS);
-//      /reserved/all
-//      /reserved/{id}/
-//      /reserved/find
-//      /reserved/add
-//      /reserved/remove
-        registry.addMapping("/menu/**").allowedOrigins(ALLOWED_ORIGINS);
-//      /menu/all
-//      /menu/category/{category}/
-//      /menu/{id}/
-//      /menu/add
-//      /menu/update
-        registry.addMapping("/orders/**").allowedOrigins(ALLOWED_ORIGINS);
-//      /orders/all
-//      /orders/{id}/
-//      /orders/active
-//      /orders/status /{status} /        /orders /table /{tableId} /        /orders /date /{date} /        /orders /add
-//      /orders/update
-//      /orders/remove
-        registry.addMapping("/dishes/**").allowedOrigins(ALLOWED_ORIGINS);
-//      /dishes/all
-//      /dishes/{id}/
-//      /dishes/order/{orderId}/
-//      /dishes/status/{status}/
-//      /dishes/kitchener/{kitchenerId}/
-//      /dishes/add
-//      /dishes/update
-//      /dishes/remove
-        registry.addMapping("/comments/**").allowedOrigins(ALLOWED_ORIGINS);
-//      /comments/all
-//      /comments/{id}/
-//      /comments/order/{orderId}/
-//      /comments/add
-//      /comments/update
-//      /commetns/remove
+//        registry.addMapping("/users/**").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/users/all").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/users/id/{id}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/users/{login}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/users/type/{type}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/users/add").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/users/update").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/users/remove").allowedOrigins(ALLOWED_ORIGINS);
+//        registry.addMapping("/tables/**").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/tables/all").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/tables/{id}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/tables/add").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/tables/update").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/tables/remove").allowedOrigins(ALLOWED_ORIGINS);
+//        registry.addMapping("/reserved/**").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/reserved/all").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/reserved/{id}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/reserved/find").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/reserved/add").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/reserved/remove").allowedOrigins(ALLOWED_ORIGINS);
+//        registry.addMapping("/menu/**").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/menu/all").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/menu/category/{category}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/menu/{id}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/menu/add").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/menu/update").allowedOrigins(ALLOWED_ORIGINS);
+//        registry.addMapping("/orders/**").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/orders/all").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/orders/{id}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/orders/active").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/orders/status/{status}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/orders/table/{tableId}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/orders/date/{date}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/orders/add").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/orders/update").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/orders/remove").allowedOrigins(ALLOWED_ORIGINS);
+//        registry.addMapping("/dishes/**").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/dishes/all").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/dishes/{id}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/dishes/order/{orderId}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/dishes/status/{status}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/dishes/kitchener/{kitchenerId}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/dishes/add").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/dishes/update").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/dishes/remove").allowedOrigins(ALLOWED_ORIGINS);
+//        registry.addMapping("/comments/**").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/comments/all").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/comments/{id}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/comments/order/{orderId}/").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/comments/add").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/comments/update").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/commetns/remove").allowedOrigins(ALLOWED_ORIGINS);
     }
 }
