@@ -17,7 +17,6 @@ import static com.malevich.server.util.SessionUtil.generateSID;
 import static com.malevich.server.util.ValidationUtil.validateCredentials;
 import static com.malevich.server.util.ValidationUtil.validateSid;
 
-@CrossOrigin(origins = "https://malevich-website.herokuapp.com")
 @RestController
 public class SessionController {
 
