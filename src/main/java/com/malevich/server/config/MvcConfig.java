@@ -68,4 +68,6 @@ public class MvcConfig implements WebMvcConfigurer {
 //        registry.addMapping("/comments/update").allowedOrigins(ALLOWED_ORIGINS);
 //        registry.addMapping("/comments/remove").allowedOrigins(ALLOWED_ORIGINS);
 //    }
+
+    }
 }
