@@ -102,7 +102,7 @@ public class OrderController {
             order.setId(this.ordersRepository.save(order).getId());
         }
         saveOrderedDishesList(dishes, order);
-
+        order.setOrderedDishes(orderedDishesRepository.findAllByOrderId(order.getId()));
         return order;
     }
 
@@ -140,13 +140,6 @@ public class OrderController {
         this.ordersRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         this.getClass().toString(), Order.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
-    }
-
-    private void throwIfExist(int id) {
-        if (this.ordersRepository.findById(id).isPresent()) {
-            throw new EntityAlreadyExistException(
-                    this.getClass().toString(), Order.ID_COLUMN + SPACE_QUOTE + id + QUOTE);
-        }
     }
 
 }
