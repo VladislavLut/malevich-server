@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = Dish.TABLE_NAME)
-public class Dish implements Serializable{
+public class Dish implements Serializable {
 
     public static final String TABLE_NAME = "dishes";
 
@@ -66,13 +66,7 @@ public class Dish implements Serializable{
     }
 
     public Dish(int id) {
-        this.id = -1;
-        category = "";
-        name = "";
-        description = "";
-        imageURL = "";
-        price = new BigDecimal(0);
-        rating = 0f;
+        this.id = id;
     }
 
     public Dish(String category, String name, String description, String imageURL, BigDecimal price, float rating) {

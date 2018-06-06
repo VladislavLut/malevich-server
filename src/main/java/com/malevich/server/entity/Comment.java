@@ -37,6 +37,10 @@ public class Comment implements Serializable {
         comment = "";
     }
 
+    public Comment(int orderId, String comment) {
+        this(new Order(orderId), comment);
+    }
+
     public Comment(Order order, String comment) {
         this.order = order;
         this.comment = comment;

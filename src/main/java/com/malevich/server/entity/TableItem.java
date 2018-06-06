@@ -1,6 +1,7 @@
 package com.malevich.server.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.malevich.server.view.Views;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,20 +17,22 @@ public class TableItem implements Serializable {
     public static final String ID_COLUMN = "id";
     public static final String OPENED_COLUMN = "opened";
 
+    @JsonView(Views.Public.class)
     @Id
     @Column(name = ID_COLUMN)
     private int id;
 
+    @JsonView(Views.Public.class)
     @NotNull
     @Column(name = OPENED_COLUMN)
     private boolean opened;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "tableItem", cascade = CascadeType.ALL)
+    @JsonView(Views.Internal.class)
+    @OneToMany(mappedBy = "tableItem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Order> orders;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "tableItem", cascade = CascadeType.ALL)
+    @JsonView(Views.Internal.class)
+    @OneToMany(mappedBy = "tableItem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Reservation> reservations;
 
     public TableItem() {

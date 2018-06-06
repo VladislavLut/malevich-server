@@ -1,11 +1,12 @@
 package com.malevich.server.controller;
 
 import com.malevich.server.entity.Reservation;
-import com.malevich.server.entity.Session;
 import com.malevich.server.exception.EntityAlreadyExistException;
 import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.repository.ReservedRepository;
 import com.malevich.server.repository.SessionsRepository;
+import com.malevich.server.service.AdminClientService;
+import com.malevich.server.util.JsonUtil;
 import com.malevich.server.util.Response;
 import com.malevich.server.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,16 @@ import static org.apache.logging.log4j.util.Chars.QUOTE;
 @RequestMapping("/reserved")
 public class ReservationController {
 
+    private static final int SERVER_PORT = 3445;
+
     public static final String COMA_SPACE = ", ";
 
     public final int RESERVATION_RANGE_HOURS = 2;
 
     @Autowired
     private final ReservedRepository reservedRepository;
+
+    private AdminClientService adminClientService;
 
     @Autowired
     private final SessionsRepository sessionsRepository;
@@ -39,6 +44,7 @@ public class ReservationController {
     public ReservationController(ReservedRepository reservedRepository, SessionsRepository sessionsRepository) {
         this.reservedRepository = reservedRepository;
         this.sessionsRepository = sessionsRepository;
+        adminClientService = new AdminClientService(SERVER_PORT);
     }
 
     @GetMapping("/all")
@@ -82,6 +88,7 @@ public class ReservationController {
         validateReservationForAdding(reservation);
 
         this.reservedRepository.save(reservation);
+        adminClientService.send(JsonUtil.toJson(reservation));
         return Response.SAVED.name();
     }
 

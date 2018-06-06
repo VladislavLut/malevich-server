@@ -138,4 +138,6 @@ public class User implements Serializable {
     public void setOrderedDishes(List<OrderedDish> orderedDishes) {
         this.orderedDishes = orderedDishes;
     }
+
+
 }

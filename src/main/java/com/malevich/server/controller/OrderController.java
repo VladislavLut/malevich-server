@@ -3,11 +3,12 @@ package com.malevich.server.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.malevich.server.entity.Order;
 import com.malevich.server.entity.OrderedDish;
-import com.malevich.server.exception.EntityAlreadyExistException;
 import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.repository.OrderedDishesRepository;
 import com.malevich.server.repository.OrdersRepository;
 import com.malevich.server.repository.SessionsRepository;
+import com.malevich.server.service.AdminClientService;
+import com.malevich.server.util.JsonUtil;
 import com.malevich.server.util.Response;
 import com.malevich.server.util.Status;
 import com.malevich.server.view.Views;
@@ -29,6 +30,8 @@ import static org.apache.logging.log4j.util.Chars.QUOTE;
 @RequestMapping("/orders")
 public class OrderController {
 
+    private static final int SERVER_PORT = 3443;
+
     @Autowired
     private final OrdersRepository ordersRepository;
 
@@ -38,6 +41,8 @@ public class OrderController {
     @Autowired
     private final OrderedDishesRepository orderedDishesRepository;
 
+    private AdminClientService adminClientService;
+
     @Autowired
     public OrderController(final OrdersRepository ordersRepository,
                            final SessionsRepository sessionsRepository,
@@ -45,6 +50,7 @@ public class OrderController {
         this.ordersRepository = ordersRepository;
         this.sessionsRepository = sessionsRepository;
         this.orderedDishesRepository = orderedDishesRepository;
+        adminClientService = new AdminClientService(SERVER_PORT);
     }
 
     @JsonView(Views.Internal.class)
@@ -123,6 +129,7 @@ public class OrderController {
                 order.getId(),
                 order.getStatus().name()
         );
+        adminClientService.send(JsonUtil.toJson(order));
         return Response.UPDATED.name();
     }
 

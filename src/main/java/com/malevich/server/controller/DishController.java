@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,15 +30,18 @@ public class DishController {
     @Autowired
     private final SessionsRepository sessionsRepository;
 
+    private Timestamp timestamp;
+
     @Autowired
     public DishController(DishesRepository dishesRepository, SessionsRepository sessionsRepository) {
         this.dishesRepository = dishesRepository;
         this.sessionsRepository = sessionsRepository;
+        timestamp = new Timestamp(System.currentTimeMillis());
     }
 
     @GetMapping("/all")
-    public List<Dish> getMenu(@CookieValue(name = SID) String sid) {
-        validateAccess(sessionsRepository, sid, true);
+    public List<Dish> getMenu() {
+//        validateAccess(sessionsRepository, sid, true);
         return this.dishesRepository.findAll();
     }
 
@@ -54,6 +58,11 @@ public class DishController {
         return this.dishesRepository.findById(id);
     }
 
+    @GetMapping("/stamp")
+    public Timestamp getTimeStamp() {
+        return timestamp;
+    }
+
     @PostMapping("/add")
     public String saveDish(@RequestBody final Dish dish, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
@@ -63,6 +72,7 @@ public class DishController {
         }
 
         this.dishesRepository.save(dish);
+        timestamp.setTime(System.currentTimeMillis());
         return Response.SAVED.name();
     }
 
@@ -71,6 +81,7 @@ public class DishController {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         validateDish(dish.getId());
         dishesRepository.deleteById(dish.getId());
+        timestamp.setTime(System.currentTimeMillis());
         return Response.REMOVED.name();
     }
 
@@ -85,12 +96,13 @@ public class DishController {
                 dish.getRating(),
                 dish.getDescription()
         );
+        timestamp.setTime(System.currentTimeMillis());
         return Response.UPDATED.name();
     }
 
     private void validateDish(int id) {
         this.dishesRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        this.getClass().toString(), Dish.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+                        this.getClass().getSimpleName(), Dish.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 }

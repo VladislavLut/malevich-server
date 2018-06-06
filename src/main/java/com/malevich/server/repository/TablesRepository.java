@@ -1,7 +1,9 @@
 package com.malevich.server.repository;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.malevich.server.entity.Order;
 import com.malevich.server.entity.TableItem;
+import com.malevich.server.view.Views;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,6 +15,7 @@ import java.util.Optional;
 
 public interface TablesRepository extends JpaRepository<TableItem, Integer> {
 
+    @JsonView(Views.Public.class)
     Optional<TableItem> findTableById(int id);
 
     List<TableItem> findAllByOpenedIsTrue();

@@ -4,7 +4,10 @@ import com.malevich.server.entity.OrderedDish;
 import com.malevich.server.exception.EntityAlreadyExistException;
 import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.repository.OrderedDishesRepository;
+import com.malevich.server.repository.OrdersRepository;
 import com.malevich.server.repository.SessionsRepository;
+import com.malevich.server.service.AdminClientService;
+import com.malevich.server.util.JsonUtil;
 import com.malevich.server.util.Response;
 import com.malevich.server.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +26,27 @@ import static org.apache.logging.log4j.util.Chars.QUOTE;
 @RestController
 @RequestMapping("/dishes")
 public class OrderedDishController {
+    private static final int SERVER_PORT = 3446;
+
     @Autowired
     private final OrderedDishesRepository orderedDishesRepository;
 
     @Autowired
-    private final SessionsRepository sessionsRepository;
+    private final OrdersRepository ordersRepository;
 
     @Autowired
-    public OrderedDishController(final OrderedDishesRepository orderedDishesRepository, final SessionsRepository sessionsRepository) {
+    private final SessionsRepository sessionsRepository;
+
+    private AdminClientService adminClientService;
+
+    @Autowired
+    public OrderedDishController(final OrderedDishesRepository orderedDishesRepository,
+                                 final SessionsRepository sessionsRepository,
+                                 final OrdersRepository ordersRepository) {
         this.orderedDishesRepository = orderedDishesRepository;
         this.sessionsRepository = sessionsRepository;
+        this.ordersRepository = ordersRepository;
+        adminClientService = new AdminClientService(SERVER_PORT);
     }
 
     @GetMapping("/{id}/")
@@ -96,6 +110,8 @@ public class OrderedDishController {
                 orderedDish.getStatus().name(),
                 orderedDish.getKitchener().getId()
         );
+        ordersRepository.updateStatus(orderedDish.getOrder().getId(), Status.PROCESSING.name());
+        adminClientService.send(JsonUtil.toJson(orderedDish));
         return Response.UPDATED.name();
     }
 

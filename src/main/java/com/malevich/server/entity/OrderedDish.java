@@ -82,13 +82,7 @@ public class OrderedDish implements Serializable {
     }
 
     public OrderedDish(Order order, Dish dish, User kitchener, int quantity, String time, String comment) {
-        this.order = order;
-        this.dish = dish;
-        this.kitchener = kitchener;
-        this.status = Status.WAITING;
-        this.quantity = quantity;
-        this.time = Time.valueOf(time);
-        this.comment = comment;
+        this(order, dish, kitchener, Status.WAITING, quantity, time, comment);
     }
 
     public OrderedDish(Order order, Dish dish, User kitchener, Status status, int quantity, String time, String comment) {

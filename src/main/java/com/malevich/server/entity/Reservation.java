@@ -1,9 +1,7 @@
 package com.malevich.server.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
+import com.malevich.server.view.Views;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -25,11 +23,13 @@ public class Reservation implements Serializable {
     public static final String NAME_COLUMN = "name";
     public static final String COMMENT_COLUMN = "comment";
 
+    @JsonView(Views.Public.class)
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = ID_COLUMN)
     private int id;
 
+    @JsonView(Views.Public.class)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -37,22 +37,27 @@ public class Reservation implements Serializable {
     @JoinColumn(name = TABLE_ID_COLUMN, nullable = false)
     private TableItem tableItem;
 
+    @JsonView(Views.Public.class)
     @NotNull
     @Column(name = DATE_COLUMN)
     private Date date;
 
+    @JsonView(Views.Public.class)
     @NotNull
     @Column(name = TIME_COLUMN)
     private Time time;
 
+    @JsonView(Views.Public.class)
     @NotNull
     @Column(name = PHONE_COLUMN)
     private String phone;
 
+    @JsonView(Views.Public.class)
     @NotNull
     @Column(name = NAME_COLUMN)
     private String name;
 
+    @JsonView(Views.Public.class)
     @Column(name = COMMENT_COLUMN)
     private String comment;
 
@@ -60,13 +65,7 @@ public class Reservation implements Serializable {
     }
 
     public Reservation(int id) {
-        this.id = -1;
-        tableItem = new TableItem(-1);
-        date = new Date(0);
-        time = new Time(0);
-        phone = "";
-        name = "";
-        comment = "";
+        this.id = id;
     }
 
     public Reservation(TableItem tableItem, String date, String time, String name, String phone, String comment) {
