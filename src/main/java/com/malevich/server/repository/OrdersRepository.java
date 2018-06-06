@@ -14,8 +14,6 @@ import java.util.Optional;
 
 public interface OrdersRepository extends JpaRepository<Order, Integer> {
 
-    List<Order> findAllByTableItem(TableItem tableItem);
-
     List<Order> findAllByTableItemId(int tableItemId);
 
     List<Order> findAllByDate(String date);

@@ -87,20 +87,23 @@ public class OrderController {
 
     @JsonView(Views.Internal.class)
     @PostMapping("/add")
-    public String saveOrder(@RequestBody final Order order, @CookieValue(name = SID) String sid) {
-        validateAccess(sessionsRepository, sid, TABLE);
+    public Order saveOrder(@RequestBody final Order order, @CookieValue(name = SID) String sid) {
+        validateAccess(sessionsRepository, sid, TABLE, ADMINISTRATOR);
         List<OrderedDish> dishes = order.getOrderedDishes();
         order.setOrderedDishes(new ArrayList<>());
-        order.setId(this.ordersRepository.save(order).getId());
-
-        if (!dishes.isEmpty()) {
-            for (OrderedDish dish : dishes) {
-                dish.setOrder(order);
+        Order old = ordersRepository.findById(order.getId()).orElse(null);
+        if (old != null) {
+            if (old.getStatus() == Status.CLOSED) {
+                return null;
             }
-            this.orderedDishesRepository.saveAll(dishes);
+            order.setStatus((old.getStatus() == Status.DONE) ? Status.WAITING : old.getStatus());
+            ordersRepository.updateStatus(order.getId(), order.getStatus().name());
+        } else {
+            order.setId(this.ordersRepository.save(order).getId());
         }
+        saveOrderedDishesList(dishes, order);
 
-        return Response.SAVED.name();
+        return order;
     }
 
     @PostMapping("/remove")
@@ -121,6 +124,16 @@ public class OrderController {
                 order.getStatus().name()
         );
         return Response.UPDATED.name();
+    }
+
+    private void saveOrderedDishesList(List<OrderedDish> dishes, Order order) {
+        if (!dishes.isEmpty()) {
+            for (OrderedDish dish : dishes) {
+                dish.setOrder(order);
+                dish.setStatus(Status.WAITING);
+            }
+            this.orderedDishesRepository.saveAll(dishes);
+        }
     }
 
     private void throwIfNotExist(int id) {

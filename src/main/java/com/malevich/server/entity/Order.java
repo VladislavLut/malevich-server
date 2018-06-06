@@ -65,15 +65,22 @@ public class Order implements Serializable {
         date = null;
     }
 
-    public Order(TableItem tableItem, Status status, String date) {
+    public Order(TableItem tableItem, String date) {
         this.tableItem = tableItem;
-        this.status = status == null ? Status.WAITING : status;
+        this.status = Status.WAITING;
         this.date = Date.valueOf(date);
+    }
+
+    public Order(TableItem tableItem, String date, List<OrderedDish> dishes) {
+        this.tableItem = tableItem;
+        this.status = Status.WAITING;
+        this.date = Date.valueOf(date);
+        this.orderedDishes = dishes;
     }
 
     public Order(TableItem tableItem, Status status, String date, List<OrderedDish> dishes) {
         this.tableItem = tableItem;
-        this.status = status == null ? Status.WAITING : status;
+        this.status = (status == null) ? Status.WAITING : status;
         this.date = Date.valueOf(date);
         this.orderedDishes = dishes;
     }
