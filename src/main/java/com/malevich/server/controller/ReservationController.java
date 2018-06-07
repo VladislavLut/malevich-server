@@ -50,14 +50,14 @@ public class ReservationController {
     @GetMapping("/all")
     public List<Reservation> findAll(@CookieValue(name = "sid") String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
-        return this.reservedRepository.findAll();
+        return reservedRepository.findAll();
     }
 
     @GetMapping("/{id}/")
     public Optional<Reservation> findReservationById(@PathVariable int id, @CookieValue(name = "sid") String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         validateReservation(id);
-        return this.reservedRepository.findById(id);
+        return reservedRepository.findById(id);
     }
 
     @PostMapping("/find")
@@ -65,16 +65,16 @@ public class ReservationController {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         if (reservation.getId() != 0) {
             validateReservation(reservation.getId());
-            return Collections.singletonList(this.reservedRepository.findById(reservation.getId()).get());
+            return Collections.singletonList(reservedRepository.findById(reservation.getId()).get());
         }
 
-        return this.reservedRepository.findAllByDateAndTimeAndNameAndPhone(
+        return reservedRepository.findAllByDateAndTimeAndNameAndPhone(
                 reservation.getDate(),
                 reservation.getTime(),
                 reservation.getName(),
                 reservation.getPhone()
         ).orElseThrow(() -> new EntityNotFoundException(
-                this.getClass().toString(),
+                getClass().toString(),
                 Reservation.DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + QUOTE +
                         Reservation.TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE + COMA_SPACE +
                         Reservation.NAME_COLUMN + SPACE_QUOTE + reservation.getName() + QUOTE + COMA_SPACE +
@@ -87,7 +87,7 @@ public class ReservationController {
         validateAccess(sessionsRepository, sid, true);
         validateReservationForAdding(reservation);
 
-        this.reservedRepository.save(reservation);
+        reservedRepository.save(reservation);
         adminClientService.send(JsonUtil.toJson(reservation));
         return Response.SAVED.name();
     }
@@ -97,26 +97,26 @@ public class ReservationController {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         validateReservation(reservation.getId());
 
-        this.reservedRepository.deleteById(reservation.getId());
+        reservedRepository.deleteById(reservation.getId());
         return Response.REMOVED.name();
     }
 
 
     private void validateReservation(int id) {
-        this.reservedRepository.findById(id)
+        reservedRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        this.getClass().toString(), Reservation.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+                        getClass().toString(), Reservation.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 
     private void validateReservationForAdding(Reservation reservation) {
-        if (this.reservedRepository
+        if (reservedRepository
                 .findAllByDateAndTimeBetween(
                         reservation.getDate(),
                         TimeUtil.shiftTime(reservation.getTime(), -RESERVATION_RANGE_HOURS),
                         TimeUtil.shiftTime(reservation.getTime(), RESERVATION_RANGE_HOURS))
                 .isPresent()) {
             throw new EntityAlreadyExistException(
-                    this.getClass().toString(),
+                    getClass().toString(),
                     Reservation.DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + COMA_SPACE
                             + Reservation.TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE);
         }

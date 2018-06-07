@@ -1,5 +1,6 @@
 package com.malevich.server.repository;
 
+import com.malevich.server.entity.Order;
 import com.malevich.server.entity.OrderedDish;
 import com.malevich.server.util.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,5 +27,11 @@ public interface OrderedDishesRepository extends JpaRepository<OrderedDish, Inte
             @Param("kitchener") int kitchener
     );
 
-    //todo: add orderedDishes list
+    @Transactional
+    @Query("select count(o) from OrderedDish o where o.order =:order and o.status = :status")
+    int countByStatus(@Param("order") Order order, @Param("status") Status status);
+
+    @Transactional
+    @Query("select count(o) from OrderedDish o where o.order =:order")
+    int countByOrder(@Param("order") Order order);
 }

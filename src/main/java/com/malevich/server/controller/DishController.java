@@ -42,20 +42,20 @@ public class DishController {
     @GetMapping("/all")
     public List<Dish> getMenu() {
 //        validateAccess(sessionsRepository, sid, true);
-        return this.dishesRepository.findAll();
+        return dishesRepository.findAll();
     }
 
     @GetMapping("/category/{category}/")
     public List<Dish> getAllByCategory(@PathVariable String category, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, true);
-        return this.dishesRepository.findAllByCategory(category);
+        return dishesRepository.findAllByCategory(category);
     }
 
     @GetMapping("/{id}/")
     public Optional<Dish> findDishById(@PathVariable int id, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, true);
         validateDish(id);
-        return this.dishesRepository.findById(id);
+        return dishesRepository.findById(id);
     }
 
     @GetMapping("/stamp")
@@ -66,12 +66,12 @@ public class DishController {
     @PostMapping("/add")
     public String saveDish(@RequestBody final Dish dish, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
-        if (this.dishesRepository.findById(dish.getId()).isPresent()) {
+        if (dishesRepository.findById(dish.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
-                    this.getClass().toString(), Dish.ID_COLUMN + SPACE_QUOTE + dish.getId() + QUOTE);
+                    getClass().toString(), Dish.ID_COLUMN + SPACE_QUOTE + dish.getId() + QUOTE);
         }
 
-        this.dishesRepository.save(dish);
+        dishesRepository.save(dish);
         timestamp.setTime(System.currentTimeMillis());
         return Response.SAVED.name();
     }
@@ -89,7 +89,7 @@ public class DishController {
     public String update(@Valid @RequestBody final Dish dish, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         validateDish(dish.getId());
-        this.dishesRepository.update(
+        dishesRepository.update(
                 dish.getId(),
                 dish.getPrice(),
                 dish.getImageURL(),
@@ -101,8 +101,8 @@ public class DishController {
     }
 
     private void validateDish(int id) {
-        this.dishesRepository.findById(id)
+        dishesRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        this.getClass().getSimpleName(), Dish.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+                        getClass().getSimpleName(), Dish.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 }

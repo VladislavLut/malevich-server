@@ -57,38 +57,38 @@ public class OrderController {
     @GetMapping("/all")
     public List<Order> findAllOrders(@CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, KITCHENER, ADMINISTRATOR);
-        return this.ordersRepository.findAll();
+        return ordersRepository.findAll();
     }
 
     @GetMapping("/{id}/")
     public Optional<Order> findOrderById(@PathVariable int id, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER);
         throwIfNotExist(id);
-        return this.ordersRepository.findById(id);
+        return ordersRepository.findById(id);
     }
 
     @GetMapping("/active")
     public List<Order> findAllActiveOrders(@CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER);
-        return this.ordersRepository.findAllByStatusNotLike(Status.CLOSED);
+        return ordersRepository.findAllByStatusNotLike(Status.CLOSED);
     }
 
     @GetMapping("/status/{status}/")
     public List<Order> findOrdersByStatusIgnoreCase(@PathVariable String status, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER);
-        return this.ordersRepository.findAllByStatus(Status.valueOf(status));
+        return ordersRepository.findAllByStatus(Status.valueOf(status));
     }
 
     @GetMapping("/date/{date}/")
     public List<Order> findOrdersByDate(@PathVariable String date, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
-        return this.ordersRepository.findAllByDate(date);
+        return ordersRepository.findAllByDate(date);
     }
 
     @GetMapping("/table/{tableId}/")
     public List<Order> findOrdersByTableItemId(@PathVariable int tableId, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
-        return this.ordersRepository.findAllByTableItemId(tableId);
+        return ordersRepository.findAllByTableItemId(tableId);
     }
 
     @JsonView(Views.Internal.class)
@@ -105,7 +105,7 @@ public class OrderController {
             order.setStatus((old.getStatus() == Status.DONE) ? Status.WAITING : old.getStatus());
             ordersRepository.updateStatus(order.getId(), order.getStatus().name());
         } else {
-            order.setId(this.ordersRepository.save(order).getId());
+            order.setId(ordersRepository.save(order).getId());
         }
         saveOrderedDishesList(dishes, order);
         order.setOrderedDishes(orderedDishesRepository.findAllByOrderId(order.getId()));
@@ -125,7 +125,7 @@ public class OrderController {
     public String updateOrderStatus(@Valid @RequestBody final Order order, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, TABLE, KITCHENER);
         throwIfNotExist(order.getId());
-        this.ordersRepository.updateStatus(
+        ordersRepository.updateStatus(
                 order.getId(),
                 order.getStatus().name()
         );
@@ -139,14 +139,14 @@ public class OrderController {
                 dish.setOrder(order);
                 dish.setStatus(Status.WAITING);
             }
-            this.orderedDishesRepository.saveAll(dishes);
+            orderedDishesRepository.saveAll(dishes);
         }
     }
 
     private void throwIfNotExist(int id) {
-        this.ordersRepository.findById(id)
+        ordersRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        this.getClass().toString(), Order.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+                        getClass().toString(), Order.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 
 }

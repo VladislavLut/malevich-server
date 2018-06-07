@@ -44,28 +44,28 @@ public class UserController {
     @GetMapping("/all")
     public List<User> getAllUsers(@CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
-        return this.usersRepository.findAll();
+        return usersRepository.findAll();
     }
 
     @JsonView(Views.Public.class)
     @GetMapping(value = "/id/{id}/")
     public Optional<User> getUserById(@PathVariable int id, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, CLIENT, KITCHENER, TABLE);
-        return this.usersRepository.findById(id);
+        return usersRepository.findById(id);
     }
 
     @JsonView(Views.Public.class)
     @GetMapping(value = "/{login}/")
     public Optional<User> getUserByLogin(@PathVariable String login, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, CLIENT, KITCHENER, TABLE);
-        return this.usersRepository.findUserByLogin(login);
+        return usersRepository.findUserByLogin(login);
     }
 
     @JsonView(Views.Public.class)
     @GetMapping(value = "/type/{type}/")
     public Optional<List<User>> getAllByType(@PathVariable String type, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
-        return this.usersRepository.findAllByType(UserType.valueOf(type));
+        return usersRepository.findAllByType(UserType.valueOf(type));
     }
 
     @PostMapping("/add")
@@ -73,11 +73,11 @@ public class UserController {
         validateAccess(sessionsRepository, sid, true);
         if (usersRepository.findUserByLogin(user.getLogin()).isPresent()) {
             throw new EntityAlreadyExistException(
-                    this.getClass().toString(),
+                    getClass().toString(),
                     LOGIN_COLUMN + SPACE_QUOTE + user.getLogin() + QUOTE);
         }
         user.setPassword(encodePassword(user));
-        this.usersRepository.save(user);
+        usersRepository.save(user);
         return Response.SAVED.name();
     }
 
@@ -87,7 +87,7 @@ public class UserController {
         validateUser(user);
         user.setPassword(encodePassword(user));
 
-        this.usersRepository.update(user.getId(), user.getName(), user.getPassword(), user.getBirthDay());
+        usersRepository.update(user.getId(), user.getName(), user.getPassword(), user.getBirthDay());
         return Response.UPDATED.name();
     }
 
@@ -101,7 +101,7 @@ public class UserController {
     }
 
     private void validateUser(User user) {
-        User origin = this.usersRepository.findUserByLogin(user.getLogin()).orElseThrow(() -> new EntityNotFoundException(
+        User origin = usersRepository.findUserByLogin(user.getLogin()).orElseThrow(() -> new EntityNotFoundException(
                 User.class.getName(), LOGIN_COLUMN + SPACE_QUOTE + user.getLogin() + QUOTE));
         user.setId(origin.getId());
     }

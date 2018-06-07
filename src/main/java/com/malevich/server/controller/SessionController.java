@@ -47,16 +47,18 @@ public class SessionController {
     }
 
     @PostMapping(value = "/session/login")
-    public void login(@RequestBody User user, @CookieValue(SID) String sid, HttpServletResponse response) {
+    public User login(@RequestBody User user, @CookieValue(SID) String sid, HttpServletResponse response) {
         validateSid(sessionsRepository, sid);
         sid = openSession(user, sid);
         response.addCookie(new Cookie(SID, sid));
+        return usersRepository.findUserByLogin(user.getLogin()).get();
     }
 
     @PostMapping(value = "/login")
-    public void login(@RequestBody User user, HttpServletResponse response) {
+    public User login(@RequestBody User user, HttpServletResponse response) {
         String sid = openSession(user, null);
         response.addCookie(new Cookie(SID, sid));
+        return usersRepository.findUserByLogin(user.getLogin()).get();
     }
 
     @GetMapping(value = "/logout")

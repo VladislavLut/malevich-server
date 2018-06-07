@@ -62,7 +62,7 @@ public class TableController {
     @GetMapping("/all")
     public List<TableItem> findAllTables(@CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, true);
-        return this.tablesRepository.findAll();
+        return tablesRepository.findAll();
     }
 
     @JsonView(Views.Internal.class)
@@ -71,9 +71,9 @@ public class TableController {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER, TABLE);
         validateTable(id);
 
-        TableItem table = this.tablesRepository.findTableById(id).get();
+        TableItem table = tablesRepository.findTableById(id).get();
         table.setOrders(new ArrayList<>());
-        table.getOrders().add(this.ordersRepository
+        table.getOrders().add(ordersRepository
                 .findFirstByTableItemIdAndStatusNotLike(id, Status.CLOSED)
                 .orElse(new Order(id)));
         table.setReservations(reservedRepository.findAllByDateAndTableItemId(
@@ -86,13 +86,13 @@ public class TableController {
     @PostMapping("/add")
     public String saveTable(@RequestBody TableItem tableItem, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
-        if (this.tablesRepository.findById(tableItem.getId()).isPresent()) {
+        if (tablesRepository.findById(tableItem.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
-                    this.getClass().toString(),
+                    getClass().toString(),
                     TableItem.ID_COLUMN + SPACE_QUOTE + tableItem.getId() + QUOTE);
         }
 
-        this.tablesRepository.save(tableItem);
+        tablesRepository.save(tableItem);
         return Response.SAVED.name();
     }
 
@@ -101,7 +101,7 @@ public class TableController {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, TABLE);
         validateTable(tableItem.getId());
 
-        this.tablesRepository.updateStatus(tableItem.getId(), tableItem.isOpened());
+        tablesRepository.updateStatus(tableItem.getId(), tableItem.isOpened());
         adminClientService.send(JsonUtil.toJson(tableItem));
         return Response.UPDATED.name();
     }
@@ -111,14 +111,14 @@ public class TableController {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         validateTable(tableItem.getId());
 
-        this.tablesRepository.deleteById(tableItem.getId());
+        tablesRepository.deleteById(tableItem.getId());
         return Response.REMOVED.name();
     }
 
     private void validateTable(int id) {
-        this.tablesRepository.findTableById(id)
+        tablesRepository.findTableById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        this.getClass().toString(), TableItem.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+                        getClass().toString(), TableItem.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 
 }
