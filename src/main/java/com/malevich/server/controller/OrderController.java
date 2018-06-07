@@ -3,7 +3,7 @@ package com.malevich.server.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.malevich.server.entity.Order;
 import com.malevich.server.entity.OrderedDish;
-import com.malevich.server.exception.EntityAlreadyExistException;
+import com.malevich.server.entity.TableItem;
 import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.exception.OrderIsClosedEception;
 import com.malevich.server.repository.OrderedDishesRepository;
@@ -101,13 +101,24 @@ public class OrderController {
         List<OrderedDish> dishes = order.getOrderedDishes();
         order.setOrderedDishes(new ArrayList<>());
 
-        validateOrderStatus(order);
+        validateOrder(order);
 
         saveOrUpdateOrder(order);
         saveOrderedDishesList(dishes, order);
 
         order.setOrderedDishes(orderedDishesRepository.findAllByOrderId(order.getId()));
         return order;
+    }
+
+    private void validateOrder(@RequestBody Order order) {
+        validateOrderTable(order);
+        validateOrderStatus(order);
+    }
+
+    private void validateOrderTable(@RequestBody Order order) {
+        if (order.getTableItem() == null) {
+            order.setTableItem(new TableItem(-1));
+        }
     }
 
     private void validateOrderStatus(@RequestBody Order order) {
