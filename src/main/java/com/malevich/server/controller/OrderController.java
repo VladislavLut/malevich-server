@@ -96,7 +96,7 @@ public class OrderController {
     @JsonView(Views.Internal.class)
     @PostMapping("/add")
     public Order saveOrder(@RequestBody final Order order, @CookieValue(name = SID) String sid) {
-        validateAccess(sessionsRepository, sid, TABLE, ADMINISTRATOR);
+        validateAccess(sessionsRepository, sid, TABLE, CLIENT, ADMINISTRATOR);
 
         List<OrderedDish> dishes = order.getOrderedDishes();
         order.setOrderedDishes(new ArrayList<>());
