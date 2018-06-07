@@ -3,7 +3,9 @@ package com.malevich.server.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.malevich.server.entity.Order;
 import com.malevich.server.entity.OrderedDish;
+import com.malevich.server.exception.EntityAlreadyExistException;
 import com.malevich.server.exception.EntityNotFoundException;
+import com.malevich.server.exception.OrderIsClosedEception;
 import com.malevich.server.repository.OrderedDishesRepository;
 import com.malevich.server.repository.OrdersRepository;
 import com.malevich.server.repository.SessionsRepository;
@@ -95,21 +97,35 @@ public class OrderController {
     @PostMapping("/add")
     public Order saveOrder(@RequestBody final Order order, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, TABLE, ADMINISTRATOR);
+
         List<OrderedDish> dishes = order.getOrderedDishes();
         order.setOrderedDishes(new ArrayList<>());
+
+        validateOrderStatus(order);
+
+        saveOrUpdateOrder(order);
+        saveOrderedDishesList(dishes, order);
+
+        order.setOrderedDishes(orderedDishesRepository.findAllByOrderId(order.getId()));
+        return order;
+    }
+
+    private void validateOrderStatus(@RequestBody Order order) {
+        Status status = order.getStatus();
+        order.setStatus(status == null ? Status.WAITING : status);
+    }
+
+    private void saveOrUpdateOrder(@RequestBody Order order) {
         Order old = ordersRepository.findById(order.getId()).orElse(null);
         if (old != null) {
             if (old.getStatus() == Status.CLOSED) {
-                return null;
+                throw new OrderIsClosedEception(String.valueOf(order.getId()));
             }
             order.setStatus((old.getStatus() == Status.DONE) ? Status.WAITING : old.getStatus());
             ordersRepository.updateStatus(order.getId(), order.getStatus().name());
         } else {
             order.setId(ordersRepository.save(order).getId());
         }
-        saveOrderedDishesList(dishes, order);
-        order.setOrderedDishes(orderedDishesRepository.findAllByOrderId(order.getId()));
-        return order;
     }
 
     @PostMapping("/remove")
@@ -148,5 +164,6 @@ public class OrderController {
                 .orElseThrow(() -> new EntityNotFoundException(
                         getClass().toString(), Order.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
+
 
 }
