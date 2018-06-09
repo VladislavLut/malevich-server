@@ -1,6 +1,6 @@
 package com.malevich.server.service;
 
-import com.malevich.server.http.response.status.exception.CanNotConnectException;
+import com.malevich.server.exception.CanNotConnectException;
 import org.springframework.util.CollectionUtils;
 
 import java.io.DataOutputStream;

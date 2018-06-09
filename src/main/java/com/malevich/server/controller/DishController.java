@@ -1,11 +1,11 @@
 package com.malevich.server.controller;
 
 import com.malevich.server.entity.Dish;
+import com.malevich.server.enums.Response;
 import com.malevich.server.exception.EntityAlreadyExistException;
 import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.repository.DishesRepository;
 import com.malevich.server.repository.SessionsRepository;
-import com.malevich.server.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +16,7 @@ import java.util.Optional;
 
 import static com.malevich.server.controller.SessionController.SID;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
-import static com.malevich.server.util.UserType.ADMINISTRATOR;
+import static com.malevich.server.enums.UserType.ADMINISTRATOR;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
@@ -91,6 +91,7 @@ public class DishController {
         validateDish(dish.getId());
         dishesRepository.update(
                 dish.getId(),
+                dish.getCategory(),
                 dish.getPrice(),
                 dish.getImageURL(),
                 dish.getRating(),

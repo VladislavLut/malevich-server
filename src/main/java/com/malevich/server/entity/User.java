@@ -2,7 +2,7 @@ package com.malevich.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.malevich.server.util.UserType;
+import com.malevich.server.enums.UserType;
 import com.malevich.server.view.Views;
 
 import javax.persistence.*;
@@ -21,6 +21,7 @@ public class User implements Serializable {
     public static final String TYPE_COLUMN = "type";
     public static final String LOGIN_COLUMN = "login";
     public static final String PASSWORD_COLUMN = "password";
+    public static final String PHONE_COLUMN = "phone";
     public static final String NAME_COLUMN = "name";
     public static final String BIRTH_DAY_COLUMN = "birth_day";
 
@@ -28,7 +29,7 @@ public class User implements Serializable {
     @Id
     @Column(name = ID_COLUMN)
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int id;
+    private Integer id;
 
     @JsonView(Views.Public.class)
     @Enumerated(EnumType.STRING)
@@ -55,6 +56,10 @@ public class User implements Serializable {
     @Column(name = BIRTH_DAY_COLUMN)
     private Date birthDay;
 
+    @JsonView(Views.Public.class)
+    @Column(name = PHONE_COLUMN)
+    private String phone;
+
     @JsonIgnore
     @OneToMany(mappedBy = "kitchener", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<OrderedDish> orderedDishes;
@@ -66,28 +71,28 @@ public class User implements Serializable {
     protected User() {
     }
 
-    public User(int id) {
+    public User(Integer id) {
         this.id = id;
-        type = null;
-        login = null;
-        password = null;
-        name = null;
-        birthDay = null;
     }
 
     public User(UserType type, String login, String password, String name, String birthDay) {
+        this(type, login, password, name, birthDay, null);
+    }
+
+    public User(UserType type, String login, String password, String name, String birthDay, String phone) {
         this.type = type;
         this.login = login;
         this.password = password;
         this.name = name;
         this.birthDay = Date.valueOf(birthDay);
+        this.phone = phone;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -139,5 +144,19 @@ public class User implements Serializable {
         this.orderedDishes = orderedDishes;
     }
 
+    public String getPhone() {
+        return phone;
+    }
 
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
+    }
 }

@@ -27,7 +27,7 @@ public class Reservation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = ID_COLUMN)
-    private int id;
+    private Integer id;
 
     @JsonView(Views.Public.class)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -64,25 +64,29 @@ public class Reservation implements Serializable {
     protected Reservation() {
     }
 
-    public Reservation(int id) {
+    public Reservation(Integer id) {
         this.id = id;
+    }
+
+    public Reservation(Integer tableId, String date, String time, String name, String phone, String comment) {
+        this(new TableItem(tableId), date, time, name, phone, comment);
     }
 
     public Reservation(TableItem tableItem, String date, String time, String name, String phone, String comment) {
         this.tableItem = tableItem;
-        this.date = date == null ? new Date(0) : Date.valueOf(date);
-        this.time = time == null ? new Time(0) : Time.valueOf(time);
-        this.name = name == null ? "" : name;
-        this.phone = phone == null ? "" : phone;
-        this.comment = comment == null ? "" : comment;
+        this.date = Date.valueOf(date);
+        this.time = Time.valueOf(time);
+        this.name = name;
+        this.phone = phone;
+        this.comment = comment;
     }
 
-    public int getId() {
+    public Integer getId() {
 
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

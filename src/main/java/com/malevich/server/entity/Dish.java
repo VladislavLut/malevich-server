@@ -22,19 +22,10 @@ public class Dish implements Serializable {
     public static final String PRICE_COLUMN = "price";
     public static final String RATING_COLUMN = "rating";
 
-    public static final String CATEGORY_SUSHI = "sushi";
-    public static final String CATEGORY_PIZZA = "pizza";
-    public static final String CATEGORY_DRINK = "drink";
-    public static final String CATEGORY_BURGER = "burger";
-    public static final String CATEGORY_SALAD = "salad";
-    public static final String CATEGORY_DESSERT = "dessert";
-    public static final String CATEGORY_PASTA = "pasta";
-    public static final String CATEGORY_SNACK = "snack";
-
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = ID_COLUMN)
-    private int id;
+    private Integer id;
 
     @NotNull
     @Column(name = CATEGORY_COLUMN)
@@ -56,7 +47,7 @@ public class Dish implements Serializable {
     private BigDecimal price;
 
     @Column(name = RATING_COLUMN)
-    private float rating;
+    private Float rating;
 
     @JsonIgnore
     @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)
@@ -65,11 +56,15 @@ public class Dish implements Serializable {
     protected Dish() {
     }
 
-    public Dish(int id) {
+    public Dish(Integer id) {
         this.id = id;
     }
 
-    public Dish(String category, String name, String description, String imageURL, BigDecimal price, float rating) {
+    public Dish(String category, String name, String description, String imageURL, BigDecimal price) {
+        this(category, name, description, imageURL, price, null);
+    }
+
+    public Dish(String category, String name, String description, String imageURL, BigDecimal price, Float rating) {
         this.category = category;
         this.name = name;
         this.description = description;
@@ -78,12 +73,12 @@ public class Dish implements Serializable {
         this.rating = rating;
     }
 
-    public int getId() {
+    public Integer getId() {
 
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -20,12 +20,12 @@ public class TableItem implements Serializable {
     @JsonView(Views.Public.class)
     @Id
     @Column(name = ID_COLUMN)
-    private int id;
+    private Integer id;
 
     @JsonView(Views.Public.class)
     @NotNull
     @Column(name = OPENED_COLUMN)
-    private boolean opened;
+    private Boolean opened;
 
     @JsonView(Views.Internal.class)
     @OneToMany(mappedBy = "tableItem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -38,22 +38,20 @@ public class TableItem implements Serializable {
     public TableItem() {
     }
 
-    public TableItem(int id) {
-        this.id = -1;
-        opened = false;
+    public TableItem(Integer id) {
+        this(id, false);
     }
 
-    public TableItem(int id, boolean opened) {
+    public TableItem(Integer id, Boolean opened) {
         this.id = id;
         this.opened = opened;
     }
 
-    public int getId() {
-
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

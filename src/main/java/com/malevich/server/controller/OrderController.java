@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.malevich.server.entity.Order;
 import com.malevich.server.entity.OrderedDish;
 import com.malevich.server.entity.TableItem;
+import com.malevich.server.enums.Response;
+import com.malevich.server.enums.Status;
 import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.exception.OrderIsClosedEception;
 import com.malevich.server.repository.OrderedDishesRepository;
@@ -11,8 +13,6 @@ import com.malevich.server.repository.OrdersRepository;
 import com.malevich.server.repository.SessionsRepository;
 import com.malevich.server.service.AdminClientService;
 import com.malevich.server.util.JsonUtil;
-import com.malevich.server.util.Response;
-import com.malevich.server.util.Status;
 import com.malevich.server.view.Views;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +24,7 @@ import java.util.Optional;
 
 import static com.malevich.server.controller.SessionController.SID;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
-import static com.malevich.server.util.UserType.*;
+import static com.malevich.server.enums.UserType.*;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
@@ -110,6 +110,27 @@ public class OrderController {
         return order;
     }
 
+    @PostMapping("/remove")
+    public String removeOrder(@RequestBody final Order order, @CookieValue(name = SID) String sid) {
+        validateAccess(sessionsRepository, sid, ADMINISTRATOR, TABLE);
+        throwIfNotExist(order.getId());
+
+        ordersRepository.deleteById(order.getId());
+        return Response.REMOVED.name();
+    }
+
+    @PostMapping("/update")
+    public String updateOrderStatus(@Valid @RequestBody final Order order, @CookieValue(name = SID) String sid) {
+        validateAccess(sessionsRepository, sid, ADMINISTRATOR, TABLE, KITCHENER);
+        throwIfNotExist(order.getId());
+        ordersRepository.updateStatus(
+                order.getId(),
+                order.getStatus().name()
+        );
+        adminClientService.send(JsonUtil.toJson(order));
+        return Response.UPDATED.name();
+    }
+
     private void validateOrder(@RequestBody Order order) {
         validateOrderTable(order);
         validateOrderStatus(order);
@@ -137,27 +158,6 @@ public class OrderController {
         } else {
             order.setId(ordersRepository.save(order).getId());
         }
-    }
-
-    @PostMapping("/remove")
-    public String removeOrder(@RequestBody final Order order, @CookieValue(name = SID) String sid) {
-        validateAccess(sessionsRepository, sid, ADMINISTRATOR, TABLE);
-        throwIfNotExist(order.getId());
-
-        ordersRepository.deleteById(order.getId());
-        return Response.REMOVED.name();
-    }
-
-    @PostMapping("/update")
-    public String updateOrderStatus(@Valid @RequestBody final Order order, @CookieValue(name = SID) String sid) {
-        validateAccess(sessionsRepository, sid, ADMINISTRATOR, TABLE, KITCHENER);
-        throwIfNotExist(order.getId());
-        ordersRepository.updateStatus(
-                order.getId(),
-                order.getStatus().name()
-        );
-        adminClientService.send(JsonUtil.toJson(order));
-        return Response.UPDATED.name();
     }
 
     private void saveOrderedDishesList(List<OrderedDish> dishes, Order order) {

@@ -1,9 +1,8 @@
-package com.malevich.server.util;
+package com.malevich.server.enums;
 
 public enum UserType {
     CLIENT,
     KITCHENER,
     ADMINISTRATOR,
-    TABLE,
-    NULL
+    TABLE
 }

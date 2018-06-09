@@ -1,4 +1,4 @@
-package com.malevich.server.http.response.status.exception;
+package com.malevich.server.exception;
 
 public class CanNotConnectException extends RuntimeException {
 

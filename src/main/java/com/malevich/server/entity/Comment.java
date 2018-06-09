@@ -1,6 +1,7 @@
 package com.malevich.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.malevich.server.view.Views;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,7 +19,7 @@ public class Comment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = ID_COLUMN)
-    private int id;
+    private Integer id;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToOne(fetch = FetchType.LAZY)
@@ -31,13 +32,11 @@ public class Comment implements Serializable {
     protected Comment() {
     }
 
-    public Comment(int id) {
-        this.id = -1;
-        order = new Order(-1);
-        comment = "";
+    public Comment(Integer orderId) {
+        order = new Order(orderId);
     }
 
-    public Comment(int orderId, String comment) {
+    public Comment(Integer orderId, String comment) {
         this(new Order(orderId), comment);
     }
 
@@ -62,11 +61,11 @@ public class Comment implements Serializable {
         this.comment = comment;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

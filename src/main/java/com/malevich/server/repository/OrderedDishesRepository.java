@@ -2,7 +2,7 @@ package com.malevich.server.repository;
 
 import com.malevich.server.entity.Order;
 import com.malevich.server.entity.OrderedDish;
-import com.malevich.server.util.Status;
+import com.malevich.server.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
