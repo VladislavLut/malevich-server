@@ -2,6 +2,7 @@ package com.malevich.server.util;
 
 import com.malevich.server.entity.Session;
 import com.malevich.server.entity.User;
+import com.malevich.server.enums.UserType;
 import com.malevich.server.exception.AccessDeniedException;
 import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.exception.UnauthorizedAccessException;
@@ -13,8 +14,10 @@ import java.sql.Time;
 
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
 import static com.malevich.server.entity.User.LOGIN_COLUMN;
+import static com.malevich.server.enums.UserType.ADMINISTRATOR;
+import static com.malevich.server.schedule.DeleteInactiveSessionsScheduleTask.TIMEOUT;
 import static com.malevich.server.util.EncodeUtil.encodePassword;
-import static com.malevich.server.util.UserType.ADMINISTRATOR;
+import static com.malevich.server.util.SessionUtil.generateSID;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
 public class ValidationUtil {
@@ -34,7 +37,6 @@ public class ValidationUtil {
         if (!user.getPassword().equals(encodePassword(user.getLogin(), password))) {
             throw new WrongPasswordException();
         }
-//        return user.getId();
     }
 
     public static void validateAccess(SessionsRepository sessionsRepository, String sid, UserType... types) {
@@ -44,7 +46,7 @@ public class ValidationUtil {
     public static void validateAccess(SessionsRepository sessionsRepository, String sid, boolean freeAccess, UserType... types) {
 
         Session session = getSession(sessionsRepository, sid);
-        sessionsRepository.update(new Time(System.currentTimeMillis()), sid);
+        updateSession(sessionsRepository, sid, session);
         if (freeAccess) {
             return;
         }
@@ -54,6 +56,12 @@ public class ValidationUtil {
             }
         }
         throw new AccessDeniedException();
+    }
+
+    private static void updateSession(SessionsRepository sessionsRepository, String sid, Session session) {
+        String newSid = (System.currentTimeMillis() - session.getStartTime().getTime()) > TIMEOUT ? generateSID() : sid;
+        Time currentTime = new Time(System.currentTimeMillis());
+        sessionsRepository.update(currentTime, newSid, sid);
     }
 
     private static boolean isUserTypeEquals(Session session, UserType type) {

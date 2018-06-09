@@ -1,4 +1,4 @@
-package com.malevich.server.util;
+package com.malevich.server.enums;
 
 public enum Response {
     SAVED,

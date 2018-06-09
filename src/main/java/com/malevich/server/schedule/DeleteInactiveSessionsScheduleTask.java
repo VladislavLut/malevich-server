@@ -12,7 +12,7 @@ import java.sql.Time;
 @Component
 public class DeleteInactiveSessionsScheduleTask {
 
-    private static final long TIMEOUT = 600000; // 10 minutes
+    public static final long TIMEOUT = 600000; // 10 minutes
     private static final long PERIOD = 60000; // 1 minute
 
     @Autowired

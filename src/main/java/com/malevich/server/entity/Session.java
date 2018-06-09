@@ -21,6 +21,7 @@ public class Session implements Serializable {
     public static final String SID_COLUMN = "sid";
     public static final String LOGGED_IN_COLUMN = "logged_in";
     public static final String LAST_ACTIVITY_TIME_COLUMN = "last_activity";
+    public static final String SESSION_START_TIME_COLUMN = "start_time";
 
     @Id
     @Column(name = SID_COLUMN, unique = true)
@@ -35,6 +36,9 @@ public class Session implements Serializable {
 
     @Column(name = LAST_ACTIVITY_TIME_COLUMN)
     private Time lastActivity;
+
+    @Column(name = SESSION_START_TIME_COLUMN)
+    private Time startTime;
 
     protected Session() {
     }
@@ -51,7 +55,8 @@ public class Session implements Serializable {
         this.user = user;
         this.sid = sid;
         this.loggedIn = loggedIn;
-        this.lastActivity = new Time(System.currentTimeMillis());
+        lastActivity = new Time(System.currentTimeMillis());
+        startTime = new Time(System.currentTimeMillis());
     }
 
     public User getUser() {
@@ -84,5 +89,13 @@ public class Session implements Serializable {
 
     public void setLastActivity(Time lastActivity) {
         this.lastActivity = lastActivity;
+    }
+
+    public Time getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Time startTime) {
+        this.startTime = startTime;
     }
 }

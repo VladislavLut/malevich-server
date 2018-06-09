@@ -1,7 +1,7 @@
 package com.malevich.server.entity;
 
 import com.fasterxml.jackson.annotation.*;
-import com.malevich.server.util.Status;
+import com.malevich.server.enums.Status;
 import com.malevich.server.view.Views;
 
 import javax.persistence.*;
@@ -20,16 +20,17 @@ public class Order implements Serializable {
     public static final String TABLE_ID_COLUMN = "table_id";
     public static final String STATUS_COLUMN = "status";
     public static final String DATE_COLUMN = "date";
+    public static final String COMMENT_COLUMN = "comment";
 
     @JsonView(Views.Public.class)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orders_generator")
     @SequenceGenerator(name = "orders_generator", sequenceName = "orders_seq")
     @Column(name = ID_COLUMN)
-    private int id;
+    private Integer id;
 
     @JsonView(Views.Public.class)
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = ID_COLUMN)
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne
     @JoinColumn(name = TABLE_ID_COLUMN)
@@ -47,43 +48,61 @@ public class Order implements Serializable {
     private Date date;
 
     @JsonView(Views.Public.class)
+    @Column(name = COMMENT_COLUMN)
+    private String comment;
+
+    @JsonView(Views.Public.class)
     @JsonIgnore
     @OneToOne(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Comment comment;
+    private Comment commentEntity;
 
     @JsonView(Views.Internal.class)
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<OrderedDish> orderedDishes;
 
-    public Order() {
+    protected Order() {
     }
 
-    public Order(int id) {
+    public Order(Integer id) {
         this.id = id;
+    }
+
+    public Order(Integer tableId, String date) {
+        this(new TableItem(tableId), date);
     }
 
     public Order(TableItem tableItem, String date) {
         this(tableItem, date, null);
     }
 
+    public Order(Integer tableId, String date, List<Integer> dishesId) {
+        this(tableId, date);
+        for (Integer dishId : dishesId) {
+            orderedDishes.add(new OrderedDish(dishId));
+        }
+    }
+
     public Order(TableItem tableItem, String date, List<OrderedDish> dishes) {
         this(tableItem, Status.WAITING, date, dishes);
     }
 
-
     public Order(TableItem tableItem, Status status, String date, List<OrderedDish> dishes) {
+        this(tableItem, status, date, null, dishes);
+    }
+
+    public Order(TableItem tableItem, Status status, String date, String comment, List<OrderedDish> dishes) {
         this.tableItem = tableItem;
         this.status = (status == null) ? Status.WAITING : status;
         this.date = Date.valueOf(date);
         this.orderedDishes = dishes;
+        this.comment = comment;
     }
 
-    public int getId() {
-
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -111,12 +130,20 @@ public class Order implements Serializable {
         this.date = date;
     }
 
-    public Comment getComment() {
+    public String getComment() {
         return comment;
     }
 
-    public void setComment(Comment comment) {
+    public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public Comment getCommentEntity() {
+        return commentEntity;
+    }
+
+    public void setCommentEntity(Comment commentEntity) {
+        this.commentEntity = commentEntity;
     }
 
     public List<OrderedDish> getOrderedDishes() {

@@ -8,8 +8,8 @@ import com.malevich.server.repository.OrdersRepository;
 import com.malevich.server.repository.SessionsRepository;
 import com.malevich.server.service.AdminClientService;
 import com.malevich.server.util.JsonUtil;
-import com.malevich.server.util.Response;
-import com.malevich.server.util.Status;
+import com.malevich.server.enums.Response;
+import com.malevich.server.enums.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +19,8 @@ import java.util.Optional;
 
 import static com.malevich.server.controller.SessionController.SID;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
-import static com.malevich.server.util.Status.*;
-import static com.malevich.server.util.UserType.*;
+import static com.malevich.server.enums.Status.*;
+import static com.malevich.server.enums.UserType.*;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 

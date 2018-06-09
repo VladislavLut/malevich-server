@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.malevich.server.util.Status;
+import com.malevich.server.enums.Status;
 import com.malevich.server.view.Views;
 
 import javax.persistence.*;
@@ -31,7 +31,7 @@ public class OrderedDish implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = ID_COLUMN)
-    private int id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -62,7 +62,7 @@ public class OrderedDish implements Serializable {
     @JsonView(Views.Internal.class)
     @NotNull
     @Column(name = QUANTITY_COLUMN)
-    private int quantity;
+    private Integer quantity;
 
     @JsonView(Views.Internal.class)
     @NotNull
@@ -76,16 +76,19 @@ public class OrderedDish implements Serializable {
     protected OrderedDish() {
     }
 
-    public OrderedDish(int id) {
-        this(null, null, null, null, 0, null, null);
-        this.id = -1;
+    public OrderedDish(Integer id) {
+        this.id = id;
     }
 
-    public OrderedDish(Order order, Dish dish, User kitchener, int quantity, String time, String comment) {
+    public OrderedDish(Integer orderId, Integer dishId, Integer kitchenerId, Integer quantity, String time, String comment) {
+        this(new Order(orderId), new Dish(dishId), new User(kitchenerId), quantity, time, comment);
+    }
+
+    public OrderedDish(Order order, Dish dish, User kitchener, Integer quantity, String time, String comment) {
         this(order, dish, kitchener, Status.WAITING, quantity, time, comment);
     }
 
-    public OrderedDish(Order order, Dish dish, User kitchener, Status status, int quantity, String time, String comment) {
+    public OrderedDish(Order order, Dish dish, User kitchener, Status status, Integer quantity, String time, String comment) {
         this.order = order;
         this.dish = dish;
         this.kitchener = kitchener;
@@ -95,12 +98,12 @@ public class OrderedDish implements Serializable {
         this.comment = comment;
     }
 
-    public int getId() {
+    public Integer getId() {
 
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -136,11 +139,11 @@ public class OrderedDish implements Serializable {
         this.status = status;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 

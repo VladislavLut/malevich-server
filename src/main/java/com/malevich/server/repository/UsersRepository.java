@@ -1,7 +1,7 @@
 package com.malevich.server.repository;
 
 import com.malevich.server.entity.User;
-import com.malevich.server.util.UserType;
+import com.malevich.server.enums.UserType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -73,13 +73,18 @@ public class SessionController {
         Session session = this.sessionsRepository.findSessionByUserId(user.getId())
                 .orElse(this.sessionsRepository.findSessionBySid(sid)
                         .orElse(null));
-        if (session == null) {
-            sid = generateSID();
-            sessionsRepository.save(new Session(user, sid, true));
-        } else {
-            sid = session.getSid();
-            sessionsRepository.update(user, true, new Time(System.currentTimeMillis()), sid);
-        }
+        return (session == null) ? createNewSession(user) : updateExistingSession(user, session);
+    }
+
+    private String updateExistingSession(User user, Session session) {
+        String sid = session.getSid();
+        sessionsRepository.update(user, true, new Time(System.currentTimeMillis()), generateSID(), sid);
+        return sid;
+    }
+
+    private String createNewSession(User user) {
+        String sid = generateSID();
+        sessionsRepository.save(new Session(user, sid, true));
         return sid;
     }
 
