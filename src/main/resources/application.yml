@@ -10,6 +10,3 @@ spring:
     username: root
     password: TurtleHarley1514
     driverClassName: org.postgresql.Driver
-  spring.mvc.view.prefix: /WEB-INF/view/
-  spring.mvc.view.suffix: .jsp
-  spring.mvc.static-path-pattern: /resources/**
