@@ -69,7 +69,7 @@ public class SessionController {
     }
 
     private String openSession(User user, String sid) {
-        user.setId(getUserIdByCredentials(user.getLogin(), user.getPassword()));
+        user.setId(getUserIdByCredentials(user.getLogin(), user.getPassword(), user.getPhone()));
         Session session = this.sessionsRepository.findSessionByUserId(user.getId())
                 .orElse(this.sessionsRepository.findSessionBySid(sid)
                         .orElse(null));
@@ -89,8 +89,8 @@ public class SessionController {
         return sid;
     }
 
-    private int getUserIdByCredentials(String login, String password) {
-        validateCredentials(usersRepository, login, password);
+    private int getUserIdByCredentials(String login, String password, String phone) {
+        validateCredentials(usersRepository, login, password, phone);
         return usersRepository.findUserByLogin(login).get().getId();
     }
 

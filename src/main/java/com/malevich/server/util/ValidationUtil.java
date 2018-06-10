@@ -11,6 +11,8 @@ import com.malevich.server.repository.SessionsRepository;
 import com.malevich.server.repository.UsersRepository;
 
 import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
 import static com.malevich.server.entity.User.LOGIN_COLUMN;
@@ -18,6 +20,7 @@ import static com.malevich.server.enums.UserType.ADMINISTRATOR;
 import static com.malevich.server.schedule.DeleteInactiveSessionsScheduleTask.TIMEOUT;
 import static com.malevich.server.util.EncodeUtil.encodePassword;
 import static com.malevich.server.util.SessionUtil.generateSID;
+import static com.malevich.server.util.TimeUtil.getTimePeriod;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
 public class ValidationUtil {
@@ -30,9 +33,9 @@ public class ValidationUtil {
         return repository.findSessionBySid(sid).orElseThrow(UnauthorizedAccessException::new);
     }
 
-    public static void validateCredentials(UsersRepository usersRepository, String login, String password) {
+    public static void validateCredentials(UsersRepository usersRepository, String login, String password, String phone) {
         User user = usersRepository
-                .findUserByLogin(login)
+                .findUserByLoginOrPhoneAndPhoneIsNotNull(login, phone)
                 .orElseThrow(() -> new EntityNotFoundException(User.class.getName(), LOGIN_COLUMN + SPACE_QUOTE + login + QUOTE));
         if (!user.getPassword().equals(encodePassword(user.getLogin(), password))) {
             throw new WrongPasswordException();
@@ -59,8 +62,10 @@ public class ValidationUtil {
     }
 
     private static void updateSession(SessionsRepository sessionsRepository, String sid, Session session) {
-        String newSid = (System.currentTimeMillis() - session.getStartTime().getTime()) > TIMEOUT ? generateSID() : sid;
         Time currentTime = new Time(System.currentTimeMillis());
+        String newSid = getTimePeriod(session.getStartTime(), currentTime) > TIMEOUT
+                ? generateSID()
+                : sid;
         sessionsRepository.update(currentTime, newSid, sid);
     }
 

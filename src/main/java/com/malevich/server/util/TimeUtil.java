@@ -27,4 +27,8 @@ public class TimeUtil {
         return shiftedTime;
     }
 
+    public static long getTimePeriod(Time from, Time to) {
+        return Time.valueOf(to.toString()).getTime() - Time.valueOf(from.toString()).getTime();
+    }
+
 }
