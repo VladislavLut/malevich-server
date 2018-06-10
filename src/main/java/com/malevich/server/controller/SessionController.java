@@ -78,8 +78,9 @@ public class SessionController {
 
     private String updateExistingSession(User user, Session session) {
         String sid = session.getSid();
-        sessionsRepository.update(user, true, new Time(System.currentTimeMillis()), generateSID(), sid);
-        return sid;
+        String newSid = generateSID();
+        sessionsRepository.update(user, true, new Time(System.currentTimeMillis()), newSid, sid);
+        return newSid;
     }
 
     private String createNewSession(User user) {
