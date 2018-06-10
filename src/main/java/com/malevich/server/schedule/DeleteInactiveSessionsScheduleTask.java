@@ -20,14 +20,14 @@ public class DeleteInactiveSessionsScheduleTask {
 
     @Scheduled(initialDelay = PERIOD, fixedDelay = PERIOD)
     public void scheduledTask() {
-        long current = System.currentTimeMillis();
+        Time time = Time.valueOf(new Time(System.currentTimeMillis() - TIMEOUT).toString());
 
         String sql = "SELECT COUNT(*) FROM " + Session.TABLE_NAME + " s WHERE s.last_activity < ?";
-        int size = jdbcTemplate.queryForObject(sql, new Object[]{new Time(current - TIMEOUT)}, Integer.class);
+        int size = jdbcTemplate.queryForObject(sql, new Object[]{time}, Integer.class);
         ServerApplication.log.info("Inactive sessions count: " + size);
 
         sql = "DELETE FROM " + Session.TABLE_NAME + " s WHERE s.last_activity < ?";
-        jdbcTemplate.update(sql, new Time(current - TIMEOUT));
+        jdbcTemplate.update(sql, time);
         ServerApplication.log.info("Inactive sessions has been closed");
     }
 }
