@@ -119,7 +119,7 @@ public class ReservationController {
 
     private void validateReservationForAdding(Reservation reservation) {
         if (reservedRepository
-                .findAllByDateAndTimeBetweenAndTableItemId(
+                .findAllByTableItemIdAndDateAndTimeBetween(
                         reservation.getTableItem().getId(),
                         reservation.getDate(),
                         TimeUtil.shiftTime(reservation.getTime(), -RESERVATION_RANGE_HOURS),

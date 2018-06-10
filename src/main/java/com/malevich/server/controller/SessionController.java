@@ -1,10 +1,12 @@
 package com.malevich.server.controller;
 
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.malevich.server.entity.Session;
 import com.malevich.server.entity.User;
 import com.malevich.server.repository.SessionsRepository;
 import com.malevich.server.repository.UsersRepository;
+import com.malevich.server.view.Views;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +48,7 @@ public class SessionController {
         this.sessionsRepository.delete(sid);
     }
 
+    @JsonView(Views.Public.class)
     @PostMapping(value = "/session/login")
     public User login(@RequestBody User user, @CookieValue(SID) String sid, HttpServletResponse response) {
         validateSid(sessionsRepository, sid);
@@ -54,6 +57,7 @@ public class SessionController {
         return usersRepository.findUserByLogin(user.getLogin()).get();
     }
 
+    @JsonView(Views.Public.class)
     @PostMapping(value = "/login")
     public User login(@RequestBody User user, HttpServletResponse response) {
         String sid = openSession(user, null);
@@ -78,7 +82,7 @@ public class SessionController {
 
     private String updateExistingSession(User user, Session session) {
         String sid = session.getSid();
-        String newSid = generateSID();
+        String newSid = sid;/*generateSID();*/
         sessionsRepository.update(user, true, new Time(System.currentTimeMillis()), newSid, sid);
         return newSid;
     }
