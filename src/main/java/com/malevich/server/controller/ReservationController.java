@@ -12,6 +12,7 @@ import com.malevich.server.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -68,8 +69,10 @@ public class ReservationController {
             return Collections.singletonList(reservedRepository.findById(reservation.getId()).get());
         }
 
+        Date date = reservation.getDate();
+
         return reservedRepository.findAllByDateAndTimeAndNameAndPhone(
-                reservation.getDate(),
+                date == null ? new Date(System.currentTimeMillis()) : date,
                 reservation.getTime(),
                 reservation.getName(),
                 reservation.getPhone()
@@ -82,14 +85,20 @@ public class ReservationController {
         );
     }
 
+    @GetMapping("/{date}/date")
+    public List<Reservation> findByDate(@PathVariable String date, @CookieValue(name = SID) String sid) {
+        validateAccess(sessionsRepository, sid, true);
+        return reservedRepository.findAllByDate(Date.valueOf(date));
+    }
+
     @PostMapping("/add")
-    public String addReservation(@RequestBody Reservation reservation, @CookieValue(name = SID) String sid) {
+    public Reservation addReservation(@RequestBody Reservation reservation, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, true);
         validateReservationForAdding(reservation);
 
         reservedRepository.save(reservation);
         adminClientService.send(JsonUtil.toJson(reservation));
-        return Response.SAVED.name();
+        return reservation;
     }
 
     @PostMapping("/remove")
@@ -110,13 +119,14 @@ public class ReservationController {
 
     private void validateReservationForAdding(Reservation reservation) {
         if (reservedRepository
-                .findAllByDateAndTimeBetween(
+                .findAllByDateAndTimeBetweenAndTableItemId(
+                        reservation.getTableItem().getId(),
                         reservation.getDate(),
                         TimeUtil.shiftTime(reservation.getTime(), -RESERVATION_RANGE_HOURS),
                         TimeUtil.shiftTime(reservation.getTime(), RESERVATION_RANGE_HOURS))
                 .isPresent()) {
             throw new EntityAlreadyExistException(
-                    getClass().toString(),
+                    Reservation.class.getSimpleName(),
                     Reservation.DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + COMA_SPACE
                             + Reservation.TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE);
         }

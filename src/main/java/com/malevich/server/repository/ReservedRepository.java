@@ -27,7 +27,7 @@ public interface ReservedRepository extends JpaRepository<Reservation, Integer> 
             @Param("name") String name,
             @Param("phone") String phone);
 
-    Optional<List<Reservation>> findAllByDateAndTimeBetween(Date date, Time timeFrom, Time timeTo);
+    Optional<List<Reservation>> findAllByDateAndTimeBetweenAndTableItemId(Integer tableID, Date date, Time timeFrom, Time timeTo);
 
     Optional<List<Reservation>> findAllByDateAndTableItemId(Date date, int id);
 
