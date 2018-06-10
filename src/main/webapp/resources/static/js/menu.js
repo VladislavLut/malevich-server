@@ -1,56 +1,41 @@
 $("document").ready(function() {
-  loadGoods();
+    loadGoods();
 });
 
+var host = window.location.hostname.toString();
 function loadGoods() {
-  /*var requestOpenSession =
-    "https://malevich-server.herokuapp.com/session/start";
+    fetch("https://malevich-server.herokuapp.com/session/start", {credentials: "same-origin"}).then(() => console.warn("Cookie ok"));
 
-  var request = new XMLHttpRequest();
-  request.responseType = "text";
-  request.open("GET", requestOpenSession);
-
-  request.send();
-  console.log(request.response);
-
-  var requestMenuURL = "https://malevich-server.herokuapp.com/menu/all";
-
-  var requestMenu = new XMLHttpRequest();
-  requestMenu.responseType = "json";
-  requestMenu.withCredentials = true;
-  requestMenu.open("GET", requestMenuURL);
-  requestMenu.send();
-
-  requestMenu.onload = function() {
-    var dishList = requestMenu.response;
-    console.log(dishList);
-    parseDishList(dishList);
-  };
-  */
- $.getJSON("js/menu.json", function(json) {
-      console.log(json); 
-      parseDishList(json);
-  });
-
+    var requestMenuURL =  "https://malevich-server.herokuapp.com/menu/category/" + location.search.toString().substring(1) + "/";
+    fetch(requestMenuURL, {credentials: 'include'})
+        .then(function(response) {
+            console.log(response.headers.get('Content-Type')); // application/json; charset=utf-8
+            console.log(response.status);
+            return response.json();
+        })
+        .then(function(jsonObj) {
+            parseDishList(jsonObj);
+        })
+        .catch( console.log );
 }
 
 function parseDishList(jsonObj) {
-  var out = "";
-  for (var key in jsonObj) {
-    out +=
-      '<div class="dish-card">' +
-      '<img class="dish-img" src="' +
-      jsonObj[key]["imageURL"] +
-      '"onclick="PopUpDishCardShow()">';
-    out += '<p class="dish-title" onclick="PopUpDishCardShow()">' + jsonObj[key]["name"] + "</p>";
-    out +=
-      '<div class="dish-description" onclick="PopUpDishCardShow()">' +
-      jsonObj[key]["description"] +
-      "</div>";
-    out += '<p class="dish-cost">' + jsonObj[key]["price"] + " ₴</p>";
-    out += '<div class="order-button">Заказать</div></div>';
-  }
-  $("#goods").html(out);
+    var out = "";
+    for (var key in jsonObj) {
+        out +=
+            '<div class="dish-card">' +
+            '<img class="dish-img" src="' +
+            jsonObj[key]["imageURL"] +
+            '"onclick="PopUpDishCardShow()">';
+        out += '<p class="dish-title" onclick="PopUpDishCardShow()">' + jsonObj[key]["name"] + "</p>";
+        out +=
+            '<div class="dish-description" onclick="PopUpDishCardShow()">' +
+            jsonObj[key]["description"] +
+            "</div>";
+        out += '<p class="dish-cost">' + jsonObj[key]["price"] + " ₴</p>";
+        out += '<div class="order-button">Заказать</div></div>';
+    }
+    $("#goods").html(out);
 }
 /*
 function setCookie(name, value, options) {
@@ -82,3 +67,4 @@ function setCookie(name, value, options) {
   document.cookie = updatedCookie;
 }
 */
+

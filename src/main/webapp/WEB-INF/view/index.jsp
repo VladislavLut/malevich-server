@@ -13,6 +13,8 @@
     <link href="<c:url value="/resources/static/css/topbutton.css"/>" rel="stylesheet">
     <link href="<c:url value="/resources/static/css/fixed_header.css"/>" rel="stylesheet">
     <link href="<c:url value="/resources/static/css/entry.css"/>" rel="stylesheet">
+    <link href="<c:url value="/resources/static/css/modal_dishcard.css"/>" rel="stylesheet">
+    <link href="<c:url value="/resources/static/css/busket.css"/>" rel="stylesheet">
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
           integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
@@ -33,6 +35,30 @@
 </head>
 
 <body>
+<!--Корзина-->
+<div class="cart">
+    <div class="cart-head">
+        <div class="icon-close">
+            <a href="#">
+                <i class="fas fa-chevron-circle-right"></i>
+            </a>
+        </div>
+        <div class="cart-title">Заказ</div>
+    </div>
+    <div class="cart-list">
+
+    </div>
+    <div class="cart-footer">
+        <div class="cart-sum">
+            <p>Сумма:</p>
+            <p>0</p>
+        </div>
+        <div class="cart-button">
+            Оформить
+        </div>
+    </div>
+</div>
+<!--Корзина-->
 <header>
     <div class="firstRow">
         <div class="socIcon">
@@ -66,7 +92,7 @@
 
             </a>
             <a class="temp" href="#" title="Отобразить карзину">
-                <div class="navBtn">
+                <div class="navBtn busket-btn">
                     <i class="fa fa-shopping-basket fa-fw" aria-hidden="true"></i>
                     <span>Корзина</span>
                 </div>
@@ -83,7 +109,7 @@
                     </a>
                     <ul>
                         <li>
-                            <a href="category.jsp">Пицца</a>
+                            <a href="<c:url value="category"/>">Пицца</a>
                         </li>
                         <li>
                             <a href="#">Бургеры</a>
@@ -151,7 +177,7 @@
                     </a>
                     <ul>
                         <li>
-                            <a href="category.jsp">Пицца</a>
+                            <a href="<c:url value="category"/>">Пицца</a>
                         </li>
                         <li>
                             <a href="#">Бургеры</a>
@@ -201,7 +227,7 @@
             </ul>
         </div>
         <div class="fixed-basket">
-            <div class="fixed-navBtn">
+            <div class="fixed-navBtn busket-btn">
                 <i class="fa fa-shopping-basket fa-fw" aria-hidden="true"></i>
                 <span>Корзина</span>
             </div>
@@ -507,7 +533,61 @@
     <script src="<c:url value="/resources/static/js/fixed_header.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/resources/static/js/entryform.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/resources/static/js/registrationform.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/resources/static/js/busket.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/resources/static/js/cart.js"/>"></script>
 
 </body>
 
 <footer></footer>
+
+$("document").ready(function() {
+loadGoods();
+});
+
+var host = window.location.hostname.toString();
+function loadGoods() {
+var requestOpenSession =
+"/session/start";
+
+var request = new XMLHttpRequest();
+request.responseType = "text";
+request.open("GET", requestOpenSession);
+request.send();
+console.log(request.response);
+
+var requestMenuURL =  "/menu/all";
+
+var requestMenu = new XMLHttpRequest();
+requestMenu.responseType = "json";
+requestMenu.withCredentials = true;
+requestMenu.open("GET", requestMenuURL);
+requestMenu.send();
+
+requestMenu.onload = function() {
+var dishList = requestMenu.response;
+console.log(dishList);
+parseDishList(dishList);
+};
+
+
+
+}
+
+function parseDishList(jsonObj) {
+var out = "";
+for (var key in jsonObj) {
+out +=
+'<div class="dish-card">' +
+'<img class="dish-img" src="' +
+jsonObj[key]["imageURL"] +
+'"onclick="PopUpDishCardShow()">';
+out += '<p class="dish-title" onclick="PopUpDishCardShow()">' + jsonObj[key]["name"] + "</p>";
+out +=
+'<div class="dish-description" onclick="PopUpDishCardShow()">' +
+jsonObj[key]["description"] +
+"</div>";
+out += '<p class="dish-cost">' + jsonObj[key]["price"] + " ₴</p>";
+out += '<div class="order-button">Заказать</div></div>';
+}
+$("#goods").html(out);
+}

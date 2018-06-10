@@ -17,6 +17,8 @@
   <link href="<c:url value="/resources/static/css/reservation.css"/>" rel="stylesheet">
   <link href="<c:url value="/resources/static/css/topbutton.css"/>" rel="stylesheet">
   <link href="<c:url value="/resources/static/css/entry.css"/>" rel="stylesheet">
+  <link href="<c:url value="/resources/static/css/modal_dishcard.css"/>" rel="stylesheet">
+  <link href="<c:url value="/resources/static/css/busket.css"/>" rel="stylesheet">
 
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
     crossorigin="anonymous">
@@ -35,7 +37,30 @@
 </head>
 
 <body>
+<!--Корзина-->
+<div class="cart">
+  <div class="cart-head">
+    <div class="icon-close">
+      <a href="#">
+        <i class="fas fa-chevron-circle-right"></i>
+      </a>
+    </div>
+    <div class="cart-title">Заказ</div>
+  </div>
+  <div class="cart-list">
 
+  </div>
+  <div class="cart-footer">
+    <div class="cart-sum">
+      <p>Сумма:</p>
+      <p>0</p>
+    </div>
+    <div class="cart-button">
+      Оформить
+    </div>
+  </div>
+</div>
+<!--Корзина-->
 <header>
   <div class="firstRow">
     <div class="socIcon">
@@ -69,7 +94,7 @@
 
       </a>
       <a class="temp" href="#" title="Отобразить карзину">
-        <div class="navBtn">
+        <div class="navBtn busket-btn">
           <i class="fa fa-shopping-basket fa-fw" aria-hidden="true"></i>
           <span>Корзина</span>
         </div>
@@ -86,7 +111,7 @@
           </a>
           <ul>
             <li>
-              <a href="category.jsp">Пицца</a>
+              <a href="<c:url value="category"/>">Пицца</a>
             </li>
             <li>
               <a href="#">Бургеры</a>
@@ -432,7 +457,8 @@
   <script type="text/javascript" src="<c:url value="/resources/static/js/topbutton.js"/>"></script>
   <script type="text/javascript" src="<c:url value="/resources/static/js/entryform.js"/>"></script>
   <script type="text/javascript" src="<c:url value="/resources/static/js/registrationform.js"/>"></script>
-
+<script type="text/javascript" src="<c:url value="/resources/static/js/busket.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/static/js/cart.js"/>"></script>
 </body>
 
 </html>
