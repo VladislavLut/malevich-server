@@ -22,13 +22,6 @@ import java.util.TimeZone;
 @ComponentScan
 public class MvcConfig implements WebMvcConfigurer {
 
-    private static final String ALLOWED_ORIGINS = "https://malevich-website.herokuapp.com";
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins(ALLOWED_ORIGINS);
-    }
-
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
