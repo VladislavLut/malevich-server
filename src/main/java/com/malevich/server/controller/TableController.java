@@ -94,7 +94,7 @@ public class TableController {
     }
 
     @PostMapping("/add")
-    public String saveTable(@RequestBody TableItem tableItem, @CookieValue(name = SID) String sid) {
+    public TableItem saveTable(@RequestBody TableItem tableItem, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         if (tablesRepository.findById(tableItem.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
@@ -103,7 +103,7 @@ public class TableController {
         }
 
         tablesRepository.save(tableItem);
-        return Response.SAVED.name();
+        return tableItem;
     }
 
     @PostMapping("/update")

@@ -104,7 +104,7 @@ public class OrderedDishController {
     }
 
     @PostMapping("/update")
-    public String updateOrderedDishKitchenerAndStatus(@Valid @RequestBody final OrderedDish orderedDish, @CookieValue(name = SID) String sid) {
+    public OrderedDish updateOrderedDishKitchenerAndStatus(@Valid @RequestBody final OrderedDish orderedDish, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER, TABLE);
         validateOrderedDish(orderedDish.getId());
         orderedDishesRepository.updateStatusAndKitchener(
@@ -114,7 +114,7 @@ public class OrderedDishController {
         );
         updateOrder(orderedDish);
         adminClientService.send(JsonUtil.toJson(orderedDish));
-        return Response.UPDATED.name();
+        return orderedDish;
     }
 
     private void updateOrder(OrderedDish orderedDish) {

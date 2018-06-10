@@ -19,7 +19,6 @@ import java.util.Optional;
 
 import static com.malevich.server.controller.SessionController.SID;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
-import static com.malevich.server.enums.UserType.ADMINISTRATOR;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
@@ -50,20 +49,20 @@ public class ReservationController {
 
     @GetMapping("/all")
     public List<Reservation> findAll(@CookieValue(name = "sid") String sid) {
-        validateAccess(sessionsRepository, sid, ADMINISTRATOR);
+        validateAccess(sessionsRepository, sid, true);
         return reservedRepository.findAll();
     }
 
     @GetMapping("/{id}/")
     public Optional<Reservation> findReservationById(@PathVariable int id, @CookieValue(name = "sid") String sid) {
-        validateAccess(sessionsRepository, sid, ADMINISTRATOR);
+        validateAccess(sessionsRepository, sid, true);
         validateReservation(id);
         return reservedRepository.findById(id);
     }
 
     @PostMapping("/find")
     public List<Reservation> find(@RequestBody Reservation reservation, @CookieValue(name = "sid") String sid) {
-        validateAccess(sessionsRepository, sid, ADMINISTRATOR);
+        validateAccess(sessionsRepository, sid, true);
         if (reservation.getId() != 0) {
             validateReservation(reservation.getId());
             return Collections.singletonList(reservedRepository.findById(reservation.getId()).get());
@@ -103,7 +102,7 @@ public class ReservationController {
 
     @PostMapping("/remove")
     public String removeReservation(@RequestBody Reservation reservation, @CookieValue(name = "sid") String sid) {
-        validateAccess(sessionsRepository, sid, ADMINISTRATOR);
+        validateAccess(sessionsRepository, sid, true);
         validateReservation(reservation.getId());
 
         reservedRepository.deleteById(reservation.getId());

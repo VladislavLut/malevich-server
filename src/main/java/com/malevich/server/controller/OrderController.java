@@ -120,7 +120,7 @@ public class OrderController {
     }
 
     @PostMapping("/update")
-    public String updateOrderStatus(@Valid @RequestBody final Order order, @CookieValue(name = SID) String sid) {
+    public Order updateOrderStatus(@Valid @RequestBody final Order order, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, TABLE, KITCHENER);
         throwIfNotExist(order.getId());
         ordersRepository.updateStatus(
@@ -128,7 +128,7 @@ public class OrderController {
                 order.getStatus().name()
         );
         adminClientService.send(JsonUtil.toJson(order));
-        return Response.UPDATED.name();
+        return order;
     }
 
     private void validateOrder(@RequestBody Order order) {

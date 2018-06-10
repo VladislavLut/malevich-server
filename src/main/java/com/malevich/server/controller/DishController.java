@@ -64,7 +64,7 @@ public class DishController {
     }
 
     @PostMapping("/add")
-    public String saveDish(@RequestBody final Dish dish, @CookieValue(name = SID) String sid) {
+    public Dish saveDish(@RequestBody final Dish dish, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         if (dishesRepository.findById(dish.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
@@ -73,7 +73,7 @@ public class DishController {
 
         dishesRepository.save(dish);
         timestamp.setTime(System.currentTimeMillis());
-        return Response.SAVED.name();
+        return dish;
     }
 
     @PostMapping("/remove")
@@ -86,7 +86,7 @@ public class DishController {
     }
 
     @PostMapping("/update")
-    public String update(@Valid @RequestBody final Dish dish, @CookieValue(name = SID) String sid) {
+    public Dish update(@Valid @RequestBody final Dish dish, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         validateDish(dish.getId());
         dishesRepository.update(
@@ -98,7 +98,7 @@ public class DishController {
                 dish.getDescription()
         );
         timestamp.setTime(System.currentTimeMillis());
-        return Response.UPDATED.name();
+        return dish;
     }
 
     private void validateDish(int id) {

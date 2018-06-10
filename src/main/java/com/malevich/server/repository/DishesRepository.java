@@ -18,7 +18,11 @@ public interface DishesRepository extends JpaRepository<Dish, Integer> {
     @Modifying(clearAutomatically = true)
     @Transactional
     @Query(value = "UPDATE dishes " +
-            "SET category = :category, price = :price, imageURL = :imageURL, rating = :rating, description = :description " +
+            "SET category = :category, " +
+            "price = :price, " +
+            "imageURL = :imageURL, " +
+            "rating = :rating, " +
+            "description = :description " +
             "WHERE id = :id", nativeQuery = true)
     int update(
             @Param("id")int id,
