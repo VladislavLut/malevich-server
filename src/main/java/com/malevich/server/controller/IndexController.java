@@ -37,4 +37,10 @@ public class IndexController {
         model.put("message", "HowToDoInJava Reader !!");
         return "profile";
     }
+
+    @GetMapping("/category")
+    public String category(Map<String, Object> model) {
+        model.put("message", "HowToDoInJava Reader !!");
+        return "category";
+    }
 }
