@@ -41,32 +41,4 @@ public class MvcConfig implements WebMvcConfigurer {
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
     }
-
-    @Bean
-    public CookieLocaleResolver cookieLocaleResolverExample() {
-        CookieLocaleResolver localeResolver
-                = new CookieLocaleResolver();
-        localeResolver.setDefaultLocale(Locale.ENGLISH);
-        localeResolver.setCookieName("locale-cookie-resolver");
-        localeResolver.setCookieMaxAge(3600);
-        return localeResolver;
-    }
-
-    @Bean
-    public LocaleResolver sessionLocaleResolver() {
-        SessionLocaleResolver localeResolver = new SessionLocaleResolver();
-        localeResolver.setDefaultLocale(Locale.US);
-        localeResolver.setDefaultTimeZone(TimeZone.getTimeZone("UTC"));
-        return localeResolver;
-    }
-
-    @Bean
-    public ResourceBundleThemeSource themeSource() {
-        ResourceBundleThemeSource themeSource
-                = new ResourceBundleThemeSource();
-        themeSource.setDefaultEncoding("UTF-8");
-        themeSource.setBasenamePrefix("themes.");
-        return themeSource;
-    }
-
 }

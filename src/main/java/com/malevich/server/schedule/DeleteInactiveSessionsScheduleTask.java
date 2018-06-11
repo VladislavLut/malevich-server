@@ -18,16 +18,16 @@ public class DeleteInactiveSessionsScheduleTask {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Scheduled(initialDelay = PERIOD, fixedDelay = PERIOD)
+    @Scheduled(fixedDelay = PERIOD)
     public void scheduledTask() {
         Time time = Time.valueOf(new Time(System.currentTimeMillis() - TIMEOUT).toString());
 
         String sql = "SELECT COUNT(*) FROM " + Session.TABLE_NAME + " s WHERE s.last_activity < ?";
         int size = jdbcTemplate.queryForObject(sql, new Object[]{time}, Integer.class);
-        ServerApplication.log.info("Inactive sessions count: " + size);
+        ServerApplication.log.info("inactive sessions count: " + size);
 
         sql = "DELETE FROM " + Session.TABLE_NAME + " s WHERE s.last_activity < ?";
         jdbcTemplate.update(sql, time);
-        ServerApplication.log.info("Inactive sessions has been closed");
+        ServerApplication.log.info("close inactive sessions");
     }
 }
