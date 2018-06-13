@@ -17,8 +17,6 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findAllByDate(String date);
 
-    List<Order> findAllByStatus(Status status);
-
     List<Order> findAllByStatusNotLike(Status status);
 
     Optional<Order> findFirstByTableItemIdAndStatusNotLike(int tableId, Status status);
@@ -32,4 +30,14 @@ public interface OrdersRepository extends JpaRepository<Order, Integer> {
     @Transactional
     @Query(value = "SELECT nextval('orders_seq') AS new_id", nativeQuery = true)
     int getNextId();
+
+    @Transactional
+    @Query("select distinct o from Order o " +
+            "where o.id in " +
+            "(select o1.id from OrderedDish od " +
+            "inner join od.order o1 " +
+            "where o1.date = current_date " +
+            "and o1.status = :status " +
+            "order by od.time desc)")
+    List<Order> findAllByStatusAndCurrentDate(@Param("status") Status status);
 }

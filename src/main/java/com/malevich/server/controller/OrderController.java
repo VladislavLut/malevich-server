@@ -78,7 +78,7 @@ public class OrderController {
     @GetMapping("/status/{status}/")
     public List<Order> findOrdersByStatusIgnoreCase(@PathVariable String status, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER);
-        return ordersRepository.findAllByStatus(Status.valueOf(status));
+        return ordersRepository.findAllByStatusAndCurrentDate(Status.valueOf(status));
     }
 
     @GetMapping("/date/{date}/")
