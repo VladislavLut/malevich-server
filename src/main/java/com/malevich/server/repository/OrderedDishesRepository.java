@@ -2,6 +2,7 @@ package com.malevich.server.repository;
 
 import com.malevich.server.entity.Order;
 import com.malevich.server.entity.OrderedDish;
+import com.malevich.server.entity.User;
 import com.malevich.server.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderedDishesRepository extends JpaRepository<OrderedDish, Integer> {
 
@@ -34,4 +36,8 @@ public interface OrderedDishesRepository extends JpaRepository<OrderedDish, Inte
     @Transactional
     @Query("select count(o) from OrderedDish o where o.order =:order")
     int countByOrder(@Param("order") Order order);
+
+    @Transactional
+    @Query(value = "select od from OrderedDish od inner join od.order o where o.date = current_date and od.kitchener = :kitchener order by od.time desc")
+    List<OrderedDish> findAllByCurrentDateAndKitchenerIdOrderByTimeDesc(@Param("kitchener") User kichener);
 }

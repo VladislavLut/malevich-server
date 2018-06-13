@@ -1,6 +1,7 @@
 package com.malevich.server.controller;
 
 import com.malevich.server.entity.OrderedDish;
+import com.malevich.server.entity.User;
 import com.malevich.server.exception.EntityAlreadyExistException;
 import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.repository.OrderedDishesRepository;
@@ -78,16 +79,12 @@ public class OrderedDishController {
     @GetMapping("/kitchener/{kitchenerId}/")
     public List<OrderedDish> findOrderDishesByKitchenerId(@PathVariable int kitchenerId, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER);
-        return orderedDishesRepository.findAllByKitchenerId(kitchenerId);
+        return orderedDishesRepository.findAllByCurrentDateAndKitchenerIdOrderByTimeDesc(new User(kitchenerId));
     }
 
     @PostMapping("/add")
     public String saveOrderedDish(@RequestBody final OrderedDish orderedDish, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, TABLE, ADMINISTRATOR);
-        if (orderedDishesRepository.findById(orderedDish.getId()).isPresent()) {
-            throw new EntityAlreadyExistException(
-                    getClass().toString(), OrderedDish.ID_COLUMN + SPACE_QUOTE + orderedDish.getId() + QUOTE);
-        }
         orderedDishesRepository.save(orderedDish);
         updateOrder(orderedDish);
         return Response.SAVED.name();
