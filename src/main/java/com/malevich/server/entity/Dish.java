@@ -74,7 +74,6 @@ public class Dish implements Serializable {
     }
 
     public Integer getId() {
-
         return id;
     }
 

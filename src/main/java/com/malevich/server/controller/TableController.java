@@ -2,6 +2,7 @@ package com.malevich.server.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.malevich.server.entity.Order;
+import com.malevich.server.entity.Reservation;
 import com.malevich.server.entity.TableItem;
 import com.malevich.server.enums.Response;
 import com.malevich.server.enums.Status;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.malevich.server.controller.SessionController.SID;
@@ -72,15 +75,28 @@ public class TableController {
         validateTable(id);
 
         TableItem table = tablesRepository.findTableById(id).get();
-        table.setOrders(new ArrayList<>());
-        table.getOrders().add(ordersRepository
-                .findFirstByTableItemIdAndStatusNotLike(id, Status.CLOSED)
-                .orElse(new Order(id)));
-        table.setReservations(reservedRepository.findAllByDateAndTableItemId(
-                new Date(System.currentTimeMillis()),
-                table.getId()
-        ).orElse(new ArrayList<>()));
+        if (!table.getOrders().isEmpty()) {
+            removeInactiveOrders(table.getOrders());
+        }
+        if (!table.getReservations().isEmpty()) {
+            removeNotActualReservations(table.getReservations());
+        }
         return table;
+    }
+
+    private void removeNotActualReservations(List<Reservation> reservations) {
+        Date currentDate = new Date(System.currentTimeMillis());
+        reservations.removeIf(
+                reservation -> !reservation.getDate().toString().equals(currentDate.toString()));
+    }
+
+    private void removeInactiveOrders(List<Order> orders) {
+        orders.sort(Comparator.comparingInt(o -> o.getStatus().getIndex()));
+        if (orders.get(0).getStatus() != Status.CLOSED) {
+            Order actualOrder = orders.get(0);
+            orders.clear();
+            orders.add(actualOrder);
+        }
     }
 
     @GetMapping("/{id}/open")

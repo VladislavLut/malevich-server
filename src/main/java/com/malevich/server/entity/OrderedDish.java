@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.malevich.server.enums.Status;
 import com.malevich.server.view.Views;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -82,6 +83,10 @@ public class OrderedDish implements Serializable {
 
     public OrderedDish(Integer orderId, Integer dishId, Integer kitchenerId, Integer quantity, String time, String comment) {
         this(new Order(orderId), new Dish(dishId), new User(kitchenerId), quantity, time, comment);
+    }
+
+    public OrderedDish(Order order, Dish dish, Integer quantity, String time, String comment) {
+        this(order, dish, null, quantity, time, comment);
     }
 
     public OrderedDish(Order order, Dish dish, User kitchener, Integer quantity, String time, String comment) {
@@ -161,5 +166,10 @@ public class OrderedDish implements Serializable {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return dish.getId().equals(((OrderedDish) obj).getDish().getId());
     }
 }

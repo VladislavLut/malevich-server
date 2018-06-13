@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.malevich.server.controller.SessionController.SID;
 import static com.malevich.server.controller.UserController.SPACE_QUOTE;
@@ -63,6 +62,13 @@ public class DishController {
         return timestamp;
     }
 
+    @PostMapping("/all/in")
+    public List<Dish> findAllIn(@RequestBody Set<Integer> ids, @CookieValue(SID) String sid) {
+        validateAccess(sessionsRepository, sid, true);
+        validateDishes(ids);
+        return dishesRepository.findAllByIdIn(ids).get();
+    }
+
     @PostMapping("/add")
     public Dish saveDish(@RequestBody final Dish dish, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
@@ -101,9 +107,23 @@ public class DishController {
         return dish;
     }
 
+    private void validateDishes(Set<Integer> ids) {
+        validateDishes(dishesRepository, ids);
+    }
+
     private void validateDish(int id) {
+        validateDish(dishesRepository, id);
+    }
+
+    public static void validateDish(DishesRepository dishesRepository, Integer id) {
         dishesRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        getClass().getSimpleName(), Dish.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+                        Dish.class.getSimpleName(), Dish.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+    }
+
+    public static void validateDishes(DishesRepository dishesRepository, Set<Integer> ids) {
+        dishesRepository.findAllByIdIn(ids)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        Dish.class.getSimpleName(), Dish.ID_COLUMN + SPACE_QUOTE + ids.toString() + QUOTE));
     }
 }

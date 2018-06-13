@@ -10,10 +10,13 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface DishesRepository extends JpaRepository<Dish, Integer> {
 
     List<Dish> findAllByCategory(String category);
+
+    Optional<List<Dish>> findAllByIdIn(Set<Integer> ids);
 
     @Modifying(clearAutomatically = true)
     @Transactional

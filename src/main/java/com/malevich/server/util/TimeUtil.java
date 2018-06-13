@@ -31,4 +31,8 @@ public class TimeUtil {
         return Time.valueOf(to.toString()).getTime() - Time.valueOf(from.toString()).getTime();
     }
 
+    public static String formatDate(Date date) {
+        DateFormat format = new SimpleDateFormat("dd-mm-yyyy");
+        return format.format(date);
+    }
 }
