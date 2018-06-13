@@ -2,7 +2,6 @@ package com.malevich.server.controller;
 
 import com.malevich.server.entity.OrderedDish;
 import com.malevich.server.entity.User;
-import com.malevich.server.exception.EntityAlreadyExistException;
 import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.repository.OrderedDishesRepository;
 import com.malevich.server.repository.OrdersRepository;
@@ -67,7 +66,7 @@ public class OrderedDishController {
     @GetMapping("/status/{status}/")
     public List<OrderedDish> findOrderDishesByStatus(@PathVariable String status, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER);
-        return orderedDishesRepository.findAllByStatus(Status.valueOf(status));
+        return orderedDishesRepository.findAllByCurrentDateAndStatusOrderByTimeDesc(Status.valueOf(status));
     }
 
     @GetMapping("/order/{orderId}/")
@@ -79,7 +78,7 @@ public class OrderedDishController {
     @GetMapping("/kitchener/{kitchenerId}/")
     public List<OrderedDish> findOrderDishesByKitchenerId(@PathVariable int kitchenerId, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR, KITCHENER);
-        return orderedDishesRepository.findAllByCurrentDateAndKitchenerIdOrderByTimeDesc(new User(kitchenerId));
+        return orderedDishesRepository.findAllByCurrentDateAndKitchenerOrderByTimeDesc(new User(kitchenerId));
     }
 
     @PostMapping("/add")

@@ -15,10 +15,8 @@ import java.util.Optional;
 
 public interface OrderedDishesRepository extends JpaRepository<OrderedDish, Integer> {
 
-    List<OrderedDish> findAllByKitchenerId(int kitchenerId);
     List<OrderedDish> findAllByOrderId(int orderId);
-    List<OrderedDish> findAllByStatus(Status status);
-    
+
     @Modifying(clearAutomatically = true)
     @Transactional
     @Query(value = "UPDATE ordered_dishes SET status = :status, kitchener_id = :kitchener WHERE id = :id",
@@ -38,6 +36,18 @@ public interface OrderedDishesRepository extends JpaRepository<OrderedDish, Inte
     int countByOrder(@Param("order") Order order);
 
     @Transactional
-    @Query(value = "select od from OrderedDish od inner join od.order o where o.date = current_date and od.kitchener = :kitchener order by od.time desc")
-    List<OrderedDish> findAllByCurrentDateAndKitchenerIdOrderByTimeDesc(@Param("kitchener") User kichener);
+    @Query(value = "select od from OrderedDish od " +
+            "inner join od.order o " +
+            "where o.date = current_date " +
+            "and od.kitchener = :kitchener " +
+            "order by od.time desc")
+    List<OrderedDish> findAllByCurrentDateAndKitchenerOrderByTimeDesc(@Param("kitchener") User kichener);
+
+    @Transactional
+    @Query(value = "select od from OrderedDish od " +
+            "inner join od.order o " +
+            "where o.date = current_date " +
+            "and od.status = :status " +
+            "order by od.time desc")
+    List<OrderedDish> findAllByCurrentDateAndStatusOrderByTimeDesc(@Param("status") Status status);
 }
