@@ -6,72 +6,62 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.malevich.server.enums.Status;
 import com.malevich.server.view.Views;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Time;
 
+import static com.malevich.server.util.Strings.*;
+
 @Entity
-@Table(name = OrderedDish.TABLE_NAME)
+@Table(name = ORDERED_DISHES_TABLE_NAME)
 public class OrderedDish implements Serializable {
-
-    public static final String TABLE_NAME = "ordered_dishes";
-
-    public static final String ID_COLUMN = "id";
-    public static final String ORDER_ID_COLUMN = "order_id";
-    public static final String DISH_ID_COLUMN = "dish_id";
-    public static final String KITCHENER_ID_COLUMN = "kitchener_id";
-    public static final String STATUS_COLUMN = "status";
-    public static final String QUANTITY_COLUMN = "quantity";
-    public static final String TIME_COLUMN = "time";
-    public static final String COMMENT_COLUMN = "comment";
 
     @JsonView(Views.Internal.class)
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    @Column(name = ID_COLUMN)
+    @Column(name = ORDERED_DISHES_ID_COLUMN)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    @JoinColumn(name = ORDER_ID_COLUMN, nullable = false)
+    @JoinColumn(name = ORDERED_DISHES_ORDER_ID_COLUMN, nullable = false)
     private Order order;
 
     @JsonView(Views.Internal.class)
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    @JoinColumn(name = DISH_ID_COLUMN, nullable = false)
+    @JoinColumn(name = ORDERED_DISHES_DISH_ID_COLUMN, nullable = false)
     private Dish dish;
 
     @JsonView(Views.Internal.class)
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    @JoinColumn(name = KITCHENER_ID_COLUMN, nullable = true)
+    @JoinColumn(name = ORDERED_DISHES_KITCHENER_ID_COLUMN, nullable = true)
     private User kitchener;
 
     @JsonView(Views.Internal.class)
     @Enumerated(EnumType.STRING)
     @NotNull
-    @Column(name = STATUS_COLUMN)
+    @Column(name = ORDERED_DISHES_STATUS_COLUMN)
     private Status status;
 
     @JsonView(Views.Internal.class)
     @NotNull
-    @Column(name = QUANTITY_COLUMN)
+    @Column(name = ORDERED_DISHES_QUANTITY_COLUMN)
     private Integer quantity;
 
     @JsonView(Views.Internal.class)
     @NotNull
-    @Column(name = TIME_COLUMN)
+    @Column(name = ORDERED_DISHES_TIME_COLUMN)
     private Time time;
 
     @JsonView(Views.Internal.class)
-    @Column(name = COMMENT_COLUMN)
+    @Column(name = ORDERED_DISHES_COMMENT_COLUMN)
     private String comment;
 
     protected OrderedDish() {

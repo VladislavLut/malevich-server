@@ -1,7 +1,6 @@
 package com.malevich.server.repository;
 
 import com.malevich.server.entity.Reservation;
-import com.malevich.server.entity.TableItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

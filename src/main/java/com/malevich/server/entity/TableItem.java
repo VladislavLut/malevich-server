@@ -8,23 +8,20 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
+import static com.malevich.server.util.Strings.*;
+
 @Entity
-@Table(name = TableItem.TABLE_NAME)
+@Table(name = TABLES_TABLE_NAME)
 public class TableItem implements Serializable {
-
-    public static final String TABLE_NAME = "tables";
-
-    public static final String ID_COLUMN = "id";
-    public static final String OPENED_COLUMN = "opened";
 
     @JsonView(Views.Public.class)
     @Id
-    @Column(name = ID_COLUMN)
+    @Column(name = TABLES_ID_COLUMN)
     private Integer id;
 
     @JsonView(Views.Public.class)
     @NotNull
-    @Column(name = OPENED_COLUMN)
+    @Column(name = TABLES_OPENED_COLUMN)
     private Boolean opened;
 
     @JsonView(Views.Internal.class)

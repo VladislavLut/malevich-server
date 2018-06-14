@@ -1,13 +1,13 @@
-package com.malevich.server.controller;
+package com.malevich.server.controller.rest;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.malevich.server.entity.User;
+import com.malevich.server.enums.Response;
+import com.malevich.server.enums.UserType;
 import com.malevich.server.exception.EntityAlreadyExistException;
 import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.repository.SessionsRepository;
 import com.malevich.server.repository.UsersRepository;
-import com.malevich.server.enums.Response;
-import com.malevich.server.enums.UserType;
 import com.malevich.server.view.Views;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-import static com.malevich.server.controller.SessionController.SID;
-import static com.malevich.server.entity.User.LOGIN_COLUMN;
-import static com.malevich.server.util.EncodeUtil.encodePassword;
+import static com.malevich.server.controller.rest.SessionController.SID;
 import static com.malevich.server.enums.UserType.*;
+import static com.malevich.server.util.EncodeUtil.encodePassword;
+import static com.malevich.server.util.Strings.USERS_LOGIN_COLUMN;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
@@ -28,10 +28,8 @@ public class UserController {
 
     public static final String SPACE_QUOTE = " '";
 
-    @Autowired
     private final UsersRepository usersRepository;
 
-    @Autowired
     private final SessionsRepository sessionsRepository;
 
     @Autowired
@@ -73,8 +71,7 @@ public class UserController {
         validateAccess(sessionsRepository, sid, true);
         if (usersRepository.findUserByLogin(user.getLogin()).isPresent()) {
             throw new EntityAlreadyExistException(
-                    getClass().toString(),
-                    LOGIN_COLUMN + SPACE_QUOTE + user.getLogin() + QUOTE);
+                    getClass().toString(), USERS_LOGIN_COLUMN + SPACE_QUOTE + user.getLogin() + QUOTE);
         }
         user.setPassword(encodePassword(user));
         usersRepository.save(user);
@@ -102,7 +99,7 @@ public class UserController {
 
     private void validateUser(User user) {
         User origin = usersRepository.findUserByLogin(user.getLogin()).orElseThrow(() -> new EntityNotFoundException(
-                User.class.getName(), LOGIN_COLUMN + SPACE_QUOTE + user.getLogin() + QUOTE));
+                User.class.getName(), USERS_LOGIN_COLUMN + SPACE_QUOTE + user.getLogin() + QUOTE));
         user.setId(origin.getId());
     }
 

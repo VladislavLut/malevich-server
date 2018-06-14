@@ -2,7 +2,47 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <!DOCTYPE html>
+<head>
+  <link type="text/css" rel="stylesheet" href="<c:url value="/resources/static/css/materialize.min.css"/>"
+        media="screen,projection"/>
 
+
+  <link href="<c:url value="/resources/static/css/wrapper.css"/>" rel="stylesheet">
+  <link href="<c:url value="/resources/static/css/footer.css"/>" rel="stylesheet">
+  <link href="<c:url value="/resources/static/css/profile.css"/>" rel="stylesheet">
+  <link href="<c:url value="/resources/static/css/header.css"/>" rel="stylesheet">
+  <link href="<c:url value="/resources/static/css/topbutton.css"/>" rel="stylesheet">
+  <link href="<c:url value="/resources/static/css/fixed_header.css"/>" rel="stylesheet">
+
+  <link href="<c:url value="/resources/static/css/busket.css"/>" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+        crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700&amp;subset=cyrillic" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Профиль | MALEVICH ресторан</title>
+  <link rel="shortcut icon" href="<c:url value="/resources/static/images/icon.ico"/>" type="image/x-icon">
+  <script>
+      $(document).ready(function () {
+          //Скрыть PopUp при загрузке страницы
+          PopUpHide();
+      });
+      //Функция отображения PopUp
+      function PopUpShow() {
+          $("#popup1").show();
+      }
+      //Функция скрытия PopUp
+      function PopUpHide() {
+          $("#popup1").hide();
+      }
+  </script>
+</head>
+
+<body>
 <header>
   <div class="firstRow">
     <div class="socIcon">
@@ -29,15 +69,15 @@
 
     <div class="ProfileAndBasket">
       <a class="temp" href="#" title="Войти в кабинет пользователя">
-        <div class="navBtn" onclick="PopUpShow()">
+        <div class="navBtn" onclick="showModalWindowOrProfile()" id="profileButton">
           <i class="fa fa-user fa-fw" aria-hidden="true"></i>
-          <span>Вход</span>
+          <span id="entryText">Профиль</span>
         </div>
 
       </a>
       <a class="temp" href="#" title="Отобразить карзину">
         <div class="navBtn">
-          <i class="fa fa-shopping-basket fa-fw" aria-hidden="true"></i>
+        <i class="fa fa-shopping-basket fa-fw" aria-hidden="true"></i>
           <span>Корзина</span>
         </div>
       </a>
@@ -53,28 +93,28 @@
           </a>
           <ul>
             <li>
-              <a href="category.jsp">Пицца</a>
+              <a href="<c:url value="category"/>?pizza">Пицца</a>
             </li>
             <li>
-              <a href="#">Бургеры</a>
+              <a href="<c:url value="category"/>?burger">Бургеры</a>
             </li>
             <li>
-              <a href="#">Суши</a>
+              <a href="<c:url value="category"/>?sushi">Суши</a>
             </li>
             <li>
-              <a href="#">Закуски</a>
+              <a href="<c:url value="category"/>?snack">Закуски</a>
             </li>
             <li>
-              <a href="#">Салаты</a>
+              <a href="<c:url value="category"/>?salad">Салаты</a>
             </li>
             <li>
-              <a href="#">Паста</a>
+              <a href="<c:url value="category"/>?pasta">Паста</a>
             </li>
             <li>
-              <a href="#">Десерты</a>
+              <a href="<c:url value="category"/>?dessert">Десерты</a>
             </li>
             <li>
-              <a href="#">Напитки</a>
+              <a href="<c:url value="category"/>?drinks">Напитки</a>
             </li>
           </ul>
         </li>
@@ -105,72 +145,72 @@
   </div>
 </header>
 
-  <div class="wrapper">
-    <div class="content">
-      <div class="card">
-        <div class="info">
-          <div class="line">
-            <p class="title">Логин</p>
+<div class="wrapper">
+  <div class="content">
+    <div class="card">
+      <div class="info">
+        <div class="line">
+          <p class="title">Логин</p>
 
-          </div>
-          <div class="line">
-            <p class="title">Имя</p>
+        </div>
+        <div class="line">
+          <p class="title">Имя</p>
 
-          </div>
-          <div class="line">
-            <p class="title">Телефон</p>
+        </div>
+        <div class="line">
+          <p class="title">Телефон</p>
 
-          </div>
-          <div class="line">
-            <p class="title">Дата рождения</p>
-
-          </div>
+        </div>
+        <div class="line">
+          <p class="title">Дата рождения</p>
 
         </div>
 
-        <div class="info">
-          <div class="line">
-            <p class="data">Логин</p>
+      </div>
 
-          </div>
-          <div class="line">
-            <p class="data">Имя</p>
+      <div class="info">
+        <div class="line">
+          <p class="data" id="profileLogin">Логин</p>
 
-          </div>
-          <div class="line">
-            <p class="data">Телефон</p>
-
-          </div>
-          <div class="line">
-            <p class="data">Дата рождения</p>
-
-          </div>
-          <div class="button" onclick="PopUpShow()">Изменить пароль</div>
         </div>
+        <div class="line">
+          <p class="data" id="profileName">Имя</p>
+
+        </div>
+        <div class="line">
+          <p class="data" id="profilePhone">Телефон</p>
+
+        </div>
+        <div class="line">
+          <p class="data" id="profileDateOfBirth">Дата рождения</p>
+
+        </div>
+        <div class="button" onclick="logOut()">Выйти</div>
       </div>
     </div>
   </div>
+</div>
 
-  </div>
+</div>
 
-  <div class="b-popup" id="popup1">
-    <div class="b-popup-content">
-      <h3>Смена пароля</h3>
-      <p>Введите старый пароль</p>
-      <input class="password" type="password">
-      <p>Новый пароль</p>
-      <input class="password" type="password">
-      <p>Повторите новый пароль</p>
-      <input class="password" type="password">
-      <div class="action-buttons">
-        <a class="cancel-button" href="javascript:PopUpHide()">Отмена</a>
-        <div class="button" onclick="">Отправить</div>
-      </div>
+<div class="b-popup" id="popup1">
+  <div class="b-popup-content">
+    <h3>Смена пароля</h3>
+    <p>Введите старый пароль</p>
+    <input class="password" type="password">
+    <p>Новый пароль</p>
+    <input class="password" type="password">
+    <p>Повторите новый пароль</p>
+    <input class="password" type="password">
+    <div class="action-buttons">
+      <a class="cancel-button" href="javascript:PopUpHide()">Отмена</a>
+      <div class="button" onclick="">Отправить</div>
     </div>
   </div>
-  <a href="#" class="scrollup">
-    <i class="fa fa-arrow-circle-up"></i>
-  </a>
+</div>
+<a href="#" class="scrollup">
+  <i class="fa fa-arrow-circle-up"></i>
+</a>
 <div class="footer">
   <img class="footer-logo" src="<c:url value="/resources/static/images/logo.png"/>" alt="Малевич">
   <div>
@@ -228,7 +268,10 @@
     </p>
   </div>
 </div>
-  <script type="text/javascript" src="<c:url value="/resources/static/js/topbutton.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/static/js/topbutton.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/static/js/authorization.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/static/js/entryform.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/static/js/profile.js"/>"></script>
 
 
 

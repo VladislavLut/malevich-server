@@ -65,11 +65,41 @@ function clearRegForm(){
 }
 
 function PopUp3Show() {
+  registrate();
     $("#popup3").show();
-  }
+}
   //Функция скрытия PopUp
-  function PopUp3Hide() {
-    $("#popup3").hide();
-  }
+function PopUp3Hide() {
 
+  $("#popup3").hide();
+}
+
+function registrate(){
+    var user = {};
+    user.birthDay = document.getElementById("birthdate").value;
+    user.login = document.getElementById("reglogin").value;
+    user.name = document.getElementById("regname").value;
+    user.phone = document.getElementById("regtel").value;
+    user.password = document.getElementById("regpassword").value;
+    user.type = "CLIENT";
+
+    fetch("/session/start",{credentials: "same-origin"}).then(() => console.warn("Cookie ok")).then(() => addUser(user));
+
+    // fetch('/users/add', {method: "POST", headers: {
+    //         Accept: "application/json",
+    //         "Content-Type": "application/json"
+    //     },
+    //     body: JSON.stringify(user)}
+    // ).catch(console.error);
+
+}
+
+function addUser(user) {
+    fetch('/users/add', {credentials: "include"}, {method: "POST", headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(user)}
+    ).catch(console.error);
+}
   

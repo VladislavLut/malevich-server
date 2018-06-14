@@ -1,4 +1,4 @@
-package com.malevich.server.controller;
+package com.malevich.server.controller.rest;
 
 import com.malevich.server.entity.Comment;
 import com.malevich.server.enums.Response;
@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-import static com.malevich.server.controller.SessionController.SID;
-import static com.malevich.server.controller.UserController.SPACE_QUOTE;
+import static com.malevich.server.controller.rest.SessionController.SID;
+import static com.malevich.server.controller.rest.UserController.SPACE_QUOTE;
 import static com.malevich.server.enums.UserType.ADMINISTRATOR;
 import static com.malevich.server.enums.UserType.TABLE;
+import static com.malevich.server.util.Strings.COMMENTS_ID_COLUMN;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
@@ -23,10 +24,8 @@ import static org.apache.logging.log4j.util.Chars.QUOTE;
 @RequestMapping("/comments")
 public class CommentController {
 
-    @Autowired
     private final CommentsRepository commentsRepository;
 
-    @Autowired
     private final SessionsRepository sessionsRepository;
 
     @Autowired
@@ -59,7 +58,7 @@ public class CommentController {
         validateAccess(sessionsRepository, sid, TABLE);
         if (commentsRepository.findById(comment.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
-                    getClass().toString(), Comment.ID_COLUMN + SPACE_QUOTE + comment.getId() + QUOTE);
+                    getClass().toString(), COMMENTS_ID_COLUMN + SPACE_QUOTE + comment.getId() + QUOTE);
         }
         commentsRepository.save(comment);
         return Response.SAVED.name();
@@ -88,6 +87,6 @@ public class CommentController {
     private void validateComment(int id) {
         commentsRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        getClass().toString(), Comment.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+                        getClass().toString(), COMMENTS_ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 }

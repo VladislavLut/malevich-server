@@ -12,10 +12,10 @@ import com.malevich.server.repository.UsersRepository;
 
 import java.sql.Time;
 
-import static com.malevich.server.controller.UserController.SPACE_QUOTE;
-import static com.malevich.server.entity.User.LOGIN_COLUMN;
+import static com.malevich.server.controller.rest.UserController.SPACE_QUOTE;
 import static com.malevich.server.enums.UserType.ADMINISTRATOR;
 import static com.malevich.server.util.EncodeUtil.encodePassword;
+import static com.malevich.server.util.Strings.USERS_LOGIN_COLUMN;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
 public class ValidationUtil {
@@ -31,7 +31,7 @@ public class ValidationUtil {
     public static void validateCredentials(UsersRepository usersRepository, String login, String password, String phone) {
         User user = usersRepository
                 .findUserByLoginOrPhoneAndPhoneIsNotNull(login, phone)
-                .orElseThrow(() -> new EntityNotFoundException(User.class.getName(), LOGIN_COLUMN + SPACE_QUOTE + login + QUOTE));
+                .orElseThrow(() -> new EntityNotFoundException(User.class.getName(), USERS_LOGIN_COLUMN + SPACE_QUOTE + login + QUOTE));
         if (!user.getPassword().equals(encodePassword(user.getLogin(), password))) {
             throw new WrongPasswordException();
         }

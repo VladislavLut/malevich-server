@@ -1,4 +1,4 @@
-package com.malevich.server.controller;
+package com.malevich.server.controller.rest;
 
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -23,10 +23,8 @@ public class SessionController {
 
     public static final String SID = "sid";
 
-    @Autowired
     private final SessionsRepository sessionsRepository;
 
-    @Autowired
     private final UsersRepository usersRepository;
 
     @Autowired
@@ -52,7 +50,7 @@ public class SessionController {
     @PostMapping(value = "/session/login")
     public User login(@RequestBody User user, @CookieValue(SID) String sid, HttpServletResponse response) {
         validateSid(sessionsRepository, sid);
-        Cookie sidCookie= openSession(user, sid);
+        Cookie sidCookie = openSession(user, sid);
         response.addCookie(sidCookie);
         return usersRepository.findUserByLogin(user.getLogin()).get();
     }

@@ -13,8 +13,9 @@
   align-items: center;
   justify-content: center;
   margin: 0px;
-  height: 176px;
+  height: auto;
   z-index: 99;
+  flex-wrap: wrap;
 }
 
 .parallax-container {

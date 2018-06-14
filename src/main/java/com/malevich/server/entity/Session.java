@@ -1,43 +1,30 @@
 package com.malevich.server.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Time;
 
-import static com.malevich.server.entity.Session.TABLE_NAME;
+import static com.malevich.server.util.Strings.*;
 
 @Entity
-@Table(name = TABLE_NAME)
+@Table(name = SESSIONS_TABLE_NAME)
 public class Session implements Serializable {
-    public static final String TABLE_NAME = "sessions";
-
-    public static final String USER_ID_COLUMN = "user_id";
-    public static final String SID_COLUMN = "sid";
-    public static final String LOGGED_IN_COLUMN = "logged_in";
-    public static final String LAST_ACTIVITY_TIME_COLUMN = "last_activity";
-    public static final String SESSION_START_TIME_COLUMN = "start_time";
 
     @Id
-    @Column(name = SID_COLUMN, unique = true)
+    @Column(name = SESSIONS_SID_COLUMN, unique = true)
     private String sid;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = USER_ID_COLUMN, unique = true)
+    @JoinColumn(name = SESSIONS_USER_ID_COLUMN, unique = true)
     private User user;
 
-    @Column(name = LOGGED_IN_COLUMN, nullable = false)
+    @Column(name = SESSIONS_LOGGED_IN_COLUMN, nullable = false)
     private Boolean loggedIn;
 
-    @Column(name = LAST_ACTIVITY_TIME_COLUMN)
+    @Column(name = SESSIONS_LAST_ACTIVITY_TIME_COLUMN)
     private Time lastActivity;
 
-    @Column(name = SESSION_START_TIME_COLUMN)
+    @Column(name = SESSIONS_SESSION_START_TIME_COLUMN)
     private Time startTime;
 
     protected Session() {

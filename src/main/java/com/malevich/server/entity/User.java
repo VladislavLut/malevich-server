@@ -11,53 +11,45 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
+import static com.malevich.server.util.Strings.*;
+
 @Entity
-@Table(name = User.TABLE_NAME)
+@Table(name = USERS_TABLE_NAME)
 public class User implements Serializable {
-
-    public static final String TABLE_NAME = "users";
-
-    public static final String ID_COLUMN = "id";
-    public static final String TYPE_COLUMN = "type";
-    public static final String LOGIN_COLUMN = "login";
-    public static final String PASSWORD_COLUMN = "password";
-    public static final String PHONE_COLUMN = "phone";
-    public static final String NAME_COLUMN = "name";
-    public static final String BIRTH_DAY_COLUMN = "birth_day";
 
     @JsonView(Views.Public.class)
     @Id
-    @Column(name = ID_COLUMN)
+    @Column(name = USERS_ID_COLUMN)
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
     @JsonView(Views.Public.class)
     @Enumerated(EnumType.STRING)
     @NotNull
-    @Column(name = TYPE_COLUMN)
+    @Column(name = USERS_TYPE_COLUMN)
     private UserType type;
 
     @JsonView(Views.Public.class)
     @NotNull
-    @Column(name = LOGIN_COLUMN, unique = true)
+    @Column(name = USERS_LOGIN_COLUMN, unique = true)
     private String login;
 
     @NotNull
-    @Column(name = PASSWORD_COLUMN)
+    @Column(name = USERS_PASSWORD_COLUMN)
     private String password;
 
     @JsonView(Views.Public.class)
     @NotNull
-    @Column(name = NAME_COLUMN)
+    @Column(name = USERS_NAME_COLUMN)
     private String name;
 
 
     @JsonView(Views.Public.class)
-    @Column(name = BIRTH_DAY_COLUMN)
+    @Column(name = USERS_BIRTH_DAY_COLUMN)
     private Date birthDay;
 
     @JsonView(Views.Public.class)
-    @Column(name = PHONE_COLUMN)
+    @Column(name = USERS_PHONE_COLUMN)
     private String phone;
 
     @JsonIgnore

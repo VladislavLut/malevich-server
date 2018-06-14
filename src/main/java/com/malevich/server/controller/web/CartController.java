@@ -1,4 +1,4 @@
-package com.malevich.server.controller;
+package com.malevich.server.controller.web;
 
 import com.malevich.server.entity.Dish;
 import com.malevich.server.entity.Order;
@@ -17,8 +17,8 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.malevich.server.controller.DishController.validateDish;
-import static com.malevich.server.controller.DishController.validateDishes;
+import static com.malevich.server.controller.rest.DishController.validateDish;
+import static com.malevich.server.controller.rest.DishController.validateDishes;
 
 @RestController
 @RequestMapping("/cart")
@@ -61,7 +61,7 @@ public class CartController {
         validateDishes(dishesRepository, cart.getDishes().keySet());
         List<Dish> dishes = dishesRepository.findAllByIdIn(cart.getDishes().keySet()).get();
         for (Dish dish : dishes) {
-            sum = sum.add(dish.getPrice()).multiply(BigDecimal.valueOf(cart.getDishes().get(dish.getId())));
+            sum = sum.add(dish.getPrice().multiply(BigDecimal.valueOf(cart.getDishes().get(dish.getId()))));
         }
         return sum;
     }

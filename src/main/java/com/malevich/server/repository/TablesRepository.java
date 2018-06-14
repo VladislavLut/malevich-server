@@ -1,7 +1,6 @@
 package com.malevich.server.repository;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.malevich.server.entity.Order;
 import com.malevich.server.entity.TableItem;
 import com.malevich.server.view.Views;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,6 +18,10 @@ public interface TablesRepository extends JpaRepository<TableItem, Integer> {
     Optional<TableItem> findTableById(int id);
 
     List<TableItem> findAllByOpenedIsTrue();
+
+    @Transactional
+    @Query("select t from TableItem t where t.id <> -1 order by t.id")
+    List<TableItem> findAllTablesExeptsDelivery();
 
     @Modifying(clearAutomatically = true)
     @Transactional

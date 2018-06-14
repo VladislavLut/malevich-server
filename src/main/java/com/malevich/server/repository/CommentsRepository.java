@@ -14,6 +14,7 @@ import java.util.Optional;
 public interface CommentsRepository extends JpaRepository<Comment, Integer> {
 
     Optional<Comment> findCommentByOrder(Order order);
+
     Optional<Comment> findCommentByOrderId(int orderId);
 
     @Modifying(clearAutomatically = true)

@@ -28,12 +28,12 @@ public interface DishesRepository extends JpaRepository<Dish, Integer> {
             "description = :description " +
             "WHERE id = :id", nativeQuery = true)
     int update(
-            @Param("id")int id,
+            @Param("id") int id,
             @Param("category") String category,
-            @Param("price")BigDecimal price,
-            @Param("imageURL")String imageURL,
-            @Param("rating")float rating,
-            @Param("description")String description
+            @Param("price") BigDecimal price,
+            @Param("imageURL") String imageURL,
+            @Param("rating") float rating,
+            @Param("description") String description
     );
 
 

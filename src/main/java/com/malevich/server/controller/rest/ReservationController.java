@@ -1,4 +1,4 @@
-package com.malevich.server.controller;
+package com.malevich.server.controller.rest;
 
 import com.malevich.server.entity.Reservation;
 import com.malevich.server.enums.Response;
@@ -6,10 +6,9 @@ import com.malevich.server.exception.EntityAlreadyExistException;
 import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.repository.ReservedRepository;
 import com.malevich.server.repository.SessionsRepository;
-import com.malevich.server.service.AdminClientService;
-import com.malevich.server.util.JsonUtil;
 import com.malevich.server.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
@@ -17,8 +16,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.malevich.server.controller.SessionController.SID;
-import static com.malevich.server.controller.UserController.SPACE_QUOTE;
+import static com.malevich.server.controller.rest.SessionController.SID;
+import static com.malevich.server.controller.rest.UserController.SPACE_QUOTE;
+import static com.malevich.server.util.Strings.*;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
@@ -26,25 +26,21 @@ import static org.apache.logging.log4j.util.Chars.QUOTE;
 @RequestMapping("/reserved")
 public class ReservationController {
 
-    private static final int SERVER_PORT = 3445;
-
     public static final String COMA_SPACE = ", ";
 
     public final int RESERVATION_RANGE_HOURS = 2;
 
-    @Autowired
     private final ReservedRepository reservedRepository;
 
-    private AdminClientService adminClientService;
-
-    @Autowired
     private final SessionsRepository sessionsRepository;
 
+    private final SimpMessageSendingOperations messagingTemplate;
+
     @Autowired
-    public ReservationController(ReservedRepository reservedRepository, SessionsRepository sessionsRepository) {
+    public ReservationController(ReservedRepository reservedRepository, SessionsRepository sessionsRepository, SimpMessageSendingOperations messagingTemplate) {
         this.reservedRepository = reservedRepository;
         this.sessionsRepository = sessionsRepository;
-        adminClientService = new AdminClientService(SERVER_PORT);
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping("/all")
@@ -77,10 +73,10 @@ public class ReservationController {
                 reservation.getPhone()
         ).orElseThrow(() -> new EntityNotFoundException(
                 getClass().toString(),
-                Reservation.DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + QUOTE +
-                        Reservation.TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE + COMA_SPACE +
-                        Reservation.NAME_COLUMN + SPACE_QUOTE + reservation.getName() + QUOTE + COMA_SPACE +
-                        Reservation.PHONE_COLUMN + SPACE_QUOTE + reservation.getPhone() + QUOTE)
+                RESERVED_DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + QUOTE +
+                        RESERVED_TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE + COMA_SPACE +
+                        RESERVED_NAME_COLUMN + SPACE_QUOTE + reservation.getName() + QUOTE + COMA_SPACE +
+                        RESERVED_PHONE_COLUMN + SPACE_QUOTE + reservation.getPhone() + QUOTE)
         );
     }
 
@@ -96,7 +92,7 @@ public class ReservationController {
         validateReservationForAdding(reservation);
 
         reservedRepository.save(reservation);
-        adminClientService.send(JsonUtil.toJson(reservation));
+        messagingTemplate.convertAndSend("/topic/public", reservation);
         return reservation;
     }
 
@@ -113,7 +109,7 @@ public class ReservationController {
     private void validateReservation(int id) {
         reservedRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        getClass().toString(), Reservation.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+                        getClass().toString(), RESERVED_ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 
     private void validateReservationForAdding(Reservation reservation) {
@@ -126,8 +122,8 @@ public class ReservationController {
                 .isPresent()) {
             throw new EntityAlreadyExistException(
                     Reservation.class.getSimpleName(),
-                    Reservation.DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + COMA_SPACE
-                            + Reservation.TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE);
+                    RESERVED_DATE_COLUMN + SPACE_QUOTE + reservation.getDate() + COMA_SPACE
+                            + RESERVED_TIME_COLUMN + SPACE_QUOTE + reservation.getTime() + QUOTE);
         }
     }
 

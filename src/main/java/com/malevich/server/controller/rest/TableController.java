@@ -1,32 +1,24 @@
-package com.malevich.server.controller;
+package com.malevich.server.controller.rest;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.malevich.server.entity.Order;
-import com.malevich.server.entity.Reservation;
 import com.malevich.server.entity.TableItem;
 import com.malevich.server.enums.Response;
-import com.malevich.server.enums.Status;
 import com.malevich.server.exception.EntityAlreadyExistException;
 import com.malevich.server.exception.EntityNotFoundException;
-import com.malevich.server.repository.OrdersRepository;
-import com.malevich.server.repository.ReservedRepository;
 import com.malevich.server.repository.SessionsRepository;
 import com.malevich.server.repository.TablesRepository;
-import com.malevich.server.service.AdminClientService;
-import com.malevich.server.util.JsonUtil;
 import com.malevich.server.view.Views;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
-import static com.malevich.server.controller.SessionController.SID;
-import static com.malevich.server.controller.UserController.SPACE_QUOTE;
+import static com.malevich.server.controller.rest.SessionController.SID;
+import static com.malevich.server.controller.rest.UserController.SPACE_QUOTE;
 import static com.malevich.server.enums.UserType.*;
+import static com.malevich.server.util.OrderUtil.removeNotActualInfo;
+import static com.malevich.server.util.Strings.TABLES_ID_COLUMN;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
@@ -34,38 +26,29 @@ import static org.apache.logging.log4j.util.Chars.QUOTE;
 @RequestMapping("/tables")
 public class TableController {
 
-    private static final int SERVER_PORT = 3444;
-
-    @Autowired
     private final TablesRepository tablesRepository;
 
-    @Autowired
-    private final OrdersRepository ordersRepository;
-
-    @Autowired
-    private final ReservedRepository reservedRepository;
-
-    @Autowired
     private final SessionsRepository sessionsRepository;
 
-    private AdminClientService adminClientService;
+    private final SimpMessageSendingOperations messagingTemplate;
 
     @Autowired
     public TableController(final TablesRepository tablesRepository,
-                           final OrdersRepository ordersRepository,
-                           final ReservedRepository reservedRepository,
-                           final SessionsRepository sessionsRepository) {
+                           final SessionsRepository sessionsRepository,
+                           final SimpMessageSendingOperations messagingTemplate) {
         this.tablesRepository = tablesRepository;
-        this.ordersRepository = ordersRepository;
-        this.reservedRepository = reservedRepository;
         this.sessionsRepository = sessionsRepository;
-        adminClientService = new AdminClientService(SERVER_PORT);
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping("/all")
     public List<TableItem> findAllTables(@CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, true);
-        return tablesRepository.findAll();
+        List<TableItem> tableItems = tablesRepository.findAllTablesExeptsDelivery();
+        for (TableItem tableItem : tableItems) {
+            removeNotActualInfo(tableItem);
+        }
+        return tableItems;
     }
 
     @JsonView(Views.Internal.class)
@@ -75,28 +58,8 @@ public class TableController {
         validateTable(id);
 
         TableItem table = tablesRepository.findTableById(id).get();
-        if (!table.getOrders().isEmpty()) {
-            removeInactiveOrders(table.getOrders());
-        }
-        if (!table.getReservations().isEmpty()) {
-            removeNotActualReservations(table.getReservations());
-        }
+        removeNotActualInfo(table);
         return table;
-    }
-
-    private void removeNotActualReservations(List<Reservation> reservations) {
-        Date currentDate = new Date(System.currentTimeMillis());
-        reservations.removeIf(
-                reservation -> !reservation.getDate().toString().equals(currentDate.toString()));
-    }
-
-    private void removeInactiveOrders(List<Order> orders) {
-        orders.sort(Comparator.comparingInt(o -> o.getStatus().getIndex()));
-        if (orders.get(0).getStatus() != Status.CLOSED) {
-            Order actualOrder = orders.get(0);
-            orders.clear();
-            orders.add(actualOrder);
-        }
     }
 
     @GetMapping("/{id}/open")
@@ -115,7 +78,7 @@ public class TableController {
         if (tablesRepository.findById(tableItem.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
                     getClass().toString(),
-                    TableItem.ID_COLUMN + SPACE_QUOTE + tableItem.getId() + QUOTE);
+                    TABLES_ID_COLUMN + SPACE_QUOTE + tableItem.getId() + QUOTE);
         }
 
         tablesRepository.save(tableItem);
@@ -128,7 +91,7 @@ public class TableController {
         validateTable(tableItem.getId());
 
         tablesRepository.updateStatus(tableItem.getId(), tableItem.isOpened());
-        adminClientService.send(JsonUtil.toJson(tableItem));
+        messagingTemplate.convertAndSend("/topic/public", tableItem);
         return tableItem;
     }
 
@@ -144,7 +107,7 @@ public class TableController {
     private void validateTable(int id) {
         tablesRepository.findTableById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        getClass().toString(), TableItem.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+                        getClass().toString(), TABLES_ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 
 }

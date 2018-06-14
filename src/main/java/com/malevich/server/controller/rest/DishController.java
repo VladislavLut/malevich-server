@@ -1,4 +1,4 @@
-package com.malevich.server.controller;
+package com.malevich.server.controller.rest;
 
 import com.malevich.server.entity.Dish;
 import com.malevich.server.enums.Response;
@@ -11,11 +11,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
-import static com.malevich.server.controller.SessionController.SID;
-import static com.malevich.server.controller.UserController.SPACE_QUOTE;
+import static com.malevich.server.controller.rest.SessionController.SID;
+import static com.malevich.server.controller.rest.UserController.SPACE_QUOTE;
 import static com.malevich.server.enums.UserType.ADMINISTRATOR;
+import static com.malevich.server.util.Strings.DISHES_ID_COLUMN;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
@@ -23,10 +26,8 @@ import static org.apache.logging.log4j.util.Chars.QUOTE;
 @RequestMapping("/menu")
 public class DishController {
 
-    @Autowired
     private final DishesRepository dishesRepository;
 
-    @Autowired
     private final SessionsRepository sessionsRepository;
 
     private Timestamp timestamp;
@@ -74,7 +75,7 @@ public class DishController {
         validateAccess(sessionsRepository, sid, ADMINISTRATOR);
         if (dishesRepository.findById(dish.getId()).isPresent()) {
             throw new EntityAlreadyExistException(
-                    getClass().toString(), Dish.ID_COLUMN + SPACE_QUOTE + dish.getId() + QUOTE);
+                    getClass().toString(), DISHES_ID_COLUMN + SPACE_QUOTE + dish.getId() + QUOTE);
         }
 
         dishesRepository.save(dish);
@@ -118,12 +119,12 @@ public class DishController {
     public static void validateDish(DishesRepository dishesRepository, Integer id) {
         dishesRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        Dish.class.getSimpleName(), Dish.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+                        Dish.class.getSimpleName(), DISHES_ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 
     public static void validateDishes(DishesRepository dishesRepository, Set<Integer> ids) {
         dishesRepository.findAllByIdIn(ids)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        Dish.class.getSimpleName(), Dish.ID_COLUMN + SPACE_QUOTE + ids.toString() + QUOTE));
+                        Dish.class.getSimpleName(), DISHES_ID_COLUMN + SPACE_QUOTE + ids.toString() + QUOTE));
     }
 }

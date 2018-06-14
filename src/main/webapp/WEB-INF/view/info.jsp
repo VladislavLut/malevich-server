@@ -16,6 +16,7 @@
   <link href="<c:url value="/resources/static/css/busket.css"/>" rel="stylesheet">
 
 
+
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
     crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700&amp;subset=cyrillic" rel="stylesheet">
@@ -82,9 +83,9 @@
 
     <div class="ProfileAndBasket">
       <a class="temp" href="#" title="Войти в кабинет пользователя">
-        <div class="navBtn" onclick="PopUpShow()">
-          <i class="fa fa-user fa-fw" aria-hidden="true"></i>
-          <span>Вход</span>
+        <div class="navBtn" onclick="showModalWindowOrProfile()" id="profileButton">
+        <i class="fa fa-user fa-fw" aria-hidden="true"></i>
+          <span id="entryText">Вход</span>
         </div>
 
       </a>
@@ -109,25 +110,25 @@
               <a href="<c:url value="category"/>?pizza">Пицца</a>
             </li>
             <li>
-              <a href="<c:url value="category"/>" onclick="ChangeCategory('burger')">Бургеры</a>
+              <a href="<c:url value="category"/>?burger">Бургеры</a>
             </li>
             <li>
-              <a href="<c:url value="category"/>" onclick="ChangeCategory('sushi')">Суши</a>
+              <a href="<c:url value="category"/>?sushi">Суши</a>
             </li>
             <li>
-              <a href="<c:url value="category"/>" onclick="ChangeCategory('snack')">Закуски</a>
+              <a href="<c:url value="category"/>?snack">Закуски</a>
             </li>
             <li>
-              <a href="<c:url value="category"/>" onclick="ChangeCategory('salad')">Салаты</a>
+              <a href="<c:url value="category"/>?salad">Салаты</a>
             </li>
             <li>
-              <a href="<c:url value="category"/>" onclick="ChangeCategory('pasta')">Паста</a>
+              <a href="<c:url value="category"/>?pasta">Паста</a>
             </li>
             <li>
-              <a href="<c:url value="category"/>" onclick="ChangeCategory('dessert')">Десерты</a>
+              <a href="<c:url value="category"/>?dessert">Десерты</a>
             </li>
             <li>
-              <a href="<c:url value="category"/>" onclick="ChangeCategory('drinks')">Напитки</a>
+              <a href="<c:url value="category"/>?drinks">Напитки</a>
             </li>
           </ul>
         </li>
@@ -230,7 +231,7 @@
               <label for="entry-password">Пароль</label>
             </div>
           </div>
-          <div class="entry-button">ВОЙТИ</div>
+          <div class="entry-button" onclick="LogIn()">ВОЙТИ</div>
         </div>
         <div>
           <p class="entry-label">Впервые на сайте?</p>
@@ -365,6 +366,8 @@
 <script type="text/javascript" src="<c:url value="/resources/static/js/busket.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/resources/static/js/cart.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/resources/static/js/menu.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/static/js/authorization.js"/>"></script>
+
 
 </body>
 

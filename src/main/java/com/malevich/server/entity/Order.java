@@ -10,45 +10,39 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
+import static com.malevich.server.util.Strings.*;
+
 @Entity
-@Table(name = Order.TABLE_NAME)
+@Table(name = ORDERS_TABLE_NAME)
 public class Order implements Serializable {
-
-    public static final String TABLE_NAME = "orders";
-
-    public static final String ID_COLUMN = "id";
-    public static final String TABLE_ID_COLUMN = "table_id";
-    public static final String STATUS_COLUMN = "status";
-    public static final String DATE_COLUMN = "date";
-    public static final String COMMENT_COLUMN = "comment";
 
     @JsonView(Views.Public.class)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orders_generator")
     @SequenceGenerator(name = "orders_generator", sequenceName = "orders_seq")
-    @Column(name = ID_COLUMN)
+    @Column(name = ORDERS_ID_COLUMN)
     private Integer id;
 
     @JsonView(Views.Public.class)
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = ID_COLUMN)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = ORDERS_ID_COLUMN)
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne
-    @JoinColumn(name = TABLE_ID_COLUMN)
+    @JoinColumn(name = ORDERS_TABLE_ID_COLUMN)
     private TableItem tableItem;
 
     @JsonView(Views.Public.class)
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = STATUS_COLUMN)
+    @Column(name = ORDERS_STATUS_COLUMN)
     private Status status;
 
     @JsonView(Views.Public.class)
     @NotNull
-    @Column(name = DATE_COLUMN)
+    @Column(name = ORDERS_DATE_COLUMN)
     private Date date;
 
     @JsonView(Views.Public.class)
-    @Column(name = COMMENT_COLUMN)
+    @Column(name = ORDERS_COMMENT_COLUMN)
     private String comment;
 
     @JsonView(Views.Public.class)

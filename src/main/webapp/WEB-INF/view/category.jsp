@@ -31,6 +31,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>Меню ресторана | MALEVICH ресторан</title>
 	<link rel="shortcut icon" href="<c:url value="/resources/static/images/icon.ico"/>" type="image/x-icon">
+
+	<script>
+
+	</script>
 </head>
 
 <body>
@@ -44,7 +48,7 @@
       </div>
       <div class="cart-title">Заказ</div>
     </div>
-    <div class="cart-list">
+    <div class="cart-list" id="cart-list">
 
     </div>
     <div class="cart-footer">
@@ -84,13 +88,13 @@
 
 			<div class="ProfileAndBasket">
 				<a class="temp" href="#" title="Войти в кабинет пользователя">
-					<div class="navBtn"  onclick="PopUpShow()">
-						<i class="fa fa-user fa-fw" aria-hidden="true"></i>
-						<span>Вход</span>
+					<div class="navBtn" onclick="showModalWindowOrProfile()" id="profileButton">
+					<i class="fa fa-user fa-fw" aria-hidden="true"></i>
+						<span id="entryText">Вход</span>
 					</div>
 
 				</a>
-				<a class="temp" href="#" title="Отобразить карзину">
+				<a class="temp" href="#" title="Отобразить корзину">
 					<div class="navBtn busket-btn">
 						<i class="fa fa-shopping-basket fa-fw" aria-hidden="true"></i>
 						<span>Корзина</span>
@@ -108,28 +112,28 @@
 						</a>
 						<ul>
 							<li>
-								<a href="<c:url value="category"/>">Пицца</a>
+								<a href="<c:url value="category"/>?pizza">Пицца</a>
 							</li>
 							<li>
-								<a href="#">Бургеры</a>
+								<a href="<c:url value="category"/>?burger">Бургеры</a>
 							</li>
 							<li>
-								<a href="#">Суши</a>
+								<a href="<c:url value="category"/>?sushi">Суши</a>
 							</li>
 							<li>
-								<a href="#">Закуски</a>
+								<a href="<c:url value="category"/>?snack">Закуски</a>
 							</li>
 							<li>
-								<a href="#">Салаты</a>
+								<a href="<c:url value="category"/>?salad">Салаты</a>
 							</li>
 							<li>
-								<a href="#">Паста</a>
+								<a href="<c:url value="category"/>?pasta">Паста</a>
 							</li>
 							<li>
-								<a href="#">Десерты</a>
+								<a href="<c:url value="category"/>?dessert">Десерты</a>
 							</li>
 							<li>
-								<a href="#">Напитки</a>
+								<a href="<c:url value="category"/>?drinks">Напитки</a>
 							</li>
 						</ul>
 					</li>
@@ -176,31 +180,28 @@
 						</a>
 						<ul>
 							<li>
-								<a href="<c:url value="category"/>">Пицца</a>
+								<a href="<c:url value="category"/>?pizza">Пицца</a>
 							</li>
 							<li>
-								<a href="#">Фастфуд</a>
+								<a href="<c:url value="category"/>?burger">Бургеры</a>
 							</li>
 							<li>
-								<a href="#">Суши</a>
+								<a href="<c:url value="category"/>?sushi">Суши</a>
 							</li>
 							<li>
-								<a href="#">Закуски</a>
+								<a href="<c:url value="category"/>?snack">Закуски</a>
 							</li>
 							<li>
-								<a href="#">Паста</a>
+								<a href="<c:url value="category"/>?salad">Салаты</a>
 							</li>
 							<li>
-								<a href="#">Бизнес-ланч</a>
+								<a href="<c:url value="category"/>?pasta">Паста</a>
 							</li>
 							<li>
-								<a href="#">Супы</a>
+								<a href="<c:url value="category"/>?dessert">Десерты</a>
 							</li>
 							<li>
-								<a href="#">Десерты</a>
-							</li>
-							<li>
-								<a href="#">Напитки</a>
+								<a href="<c:url value="category"/>?drinks">Напитки</a>
 							</li>
 						</ul>
 					</li>
@@ -240,38 +241,54 @@
 	<div class="wrapper">
 		<div class="content">
 			<div class="block-menu">
+				<a href="<c:url value="category"/>?snack">
 				<div class="category">
 					<img class="category-icon" src="images/cat_snacks.png">
 					<p class="category-name">Закуски</p>
 				</div>
+				</a>
+				<a href="<c:url value="category"/>?pasta">
 				<div class="category">
 					<img src="<c:url value="/resources/static/images/cat_pasta.png"/>">
 					<p class="category-name">Паста</p>
 				</div>
+				</a>
+				<a href="<c:url value="category"/>?sushi">
 				<div class="category">
 					<img src="<c:url value="/resources/static/images/cat_sushi.png"/>">
 					<p class="category-name">Суши</p>
 				</div>
+				</a>
+				<a href="<c:url value="category"/>?pizza">
 				<div class="category">
 					<img src="<c:url value="/resources/static/images/cat_pizza.png"/>">
 					<p class="category-name">Пицца</p>
 				</div>
+				</a>
+				<a href="<c:url value="category"/>?burger">
 				<div class="category">
 					<img src="<c:url value="/resources/static/images/cat_burgers.png"/>">
 					<p class="category-name">Бургеры</p>
 				</div>
+				</a>
+				<a href="<c:url value="category"/>?salad">
 				<div class="category">
 					<img src="<c:url value="/resources/static/images/cat_salats.png"/>">
 					<p class="category-name">Салаты</p>
 				</div>
+				</a>
+				<a href="<c:url value="category"/>?dessert">
 				<div class="category">
 					<img src="<c:url value="/resources/static/images/cat_desserts.png"/>">
 					<p class="category-name">Десерты</p>
 				</div>
+				</a>
+				<a href="<c:url value="category"/>?drinks">
 				<div class="category">
 					<img src="<c:url value="/resources/static/images/cat_drinks.png"/>">
 					<p class="category-name">Напитки</p>
 				</div>
+				</a>
 			</div>
 			<div class="category-bar">
 				<div class="breadcrumbs">
@@ -280,11 +297,11 @@
 				</div>
 				<div class="sort">
 					<p>Сортировать :</p>
-					<select>
-						<option value="Sony">По популярности</option>
-						<option value="Toshiba">По возрастанию цен</option>
-						<option value="Acer">По убыванию цен</option>
-						<option value="Asus">По алфавиту</option>
+					<select id="sorting" onchange="loadGoods()">
+						<option value="popular">По популярности</option>
+						<option value="priceAsc">По возрастанию цен</option>
+						<option value="priceDec">По убыванию цен</option>
+						<option value="lexic">По алфавиту</option>
 					</select>
 				</div>
 			</div>
@@ -295,54 +312,11 @@
 					<img class="dish-img" src="<c:url value="/resources/static/images/dish4.jpg"/>">
 					<p class="dish-title">Название</p>
 					<div class="dish-description">
-						Описание арполл порлд рол рол рпол
+						Описание
 					</div>
-					<p class="dish-cost">568
+					<p class="dish-cost">0
 					</p>
-							<div class="order-button" id="button_1" onclick="addToBasket(1, 1)">Заказать</div>
-				</div>
-				<div class="dish-card">
-					<img class="dish-img" src="images/dish4.jpg">
-					<p class="dish-title">Название</p>
-					<div class="dish-description">
-						Описание арполл порлд рол рол рпол
-					</div>
-					<p class="dish-cost">568
-					</p>
-							<div class="order-button" id="button_2" onclick="addToBasket(2, 1)">Заказать</div>
-				</div>
-				<div class="dish-card">
-					<img class="dish-img" src="images/dish4.jpg">
-					<p class="dish-title">Название</p>
-					<div class="dish-description">
-						Описание арполл порлд рол рол рпол fghjdkfhgl;jk dsfghjkl sdfghjk sadfhj asdfghj asdfghjk asdtyghujk sdfghjkc gvhjbkl sdfghj
-						sdfghj sdfghg vhjbkl vhbjkml,dfghj ::before is exactly the same only it inserts the content before any other content
-						in the HTML instead of after. The only reasons to use one over the other are: You want the generated content to come
-						before the element content, positionally.
-					</div>
-					<p class="dish-cost">568
-					</p>
-							<div class="order-button" id="button_3" onclick="addToBasket(3, 1)">Заказать</div>
-				</div>
-				<div class="dish-card">
-					<img class="dish-img" src="images/dish4.jpg">
-					<p class="dish-title">Название</p>
-					<div class="dish-description">
-						Описание арполл порлд рол рол рпол
-					</div>
-					<p class="dish-cost">568
-					</p>
-							<div class="order-button" id="button_4" onclick="addToBasket(4, 1)">Заказать</div>
-				</div>
-				<div class="dish-card">
-					<img class="dish-img" src="images/dish4.jpg">
-					<p class="dish-title">Название</p>
-					<div class="dish-description">
-						Описание арполл порлд рол рол рпол
-					</div>
-					<p class="dish-cost">568
-					</p>
-							<div class="order-button" id="button_20" onclick="addToBasket(20, 2)">Заказать</div>
+					<div class="order-button" data-id="0">Заказать</div>
 				</div>
 			</div>
 		</div>
@@ -372,7 +346,7 @@
 					  <label for="entry-password">Пароль</label>
 					</div>
 				  </div>
-				  <div class="entry-button">ВОЙТИ</div>
+					<div class="entry-button" onclick="LogIn()">ВОЙТИ</div>
 				</div>
 				<div>
 				  <p class="entry-label">Впервые на сайте?</p>
@@ -451,9 +425,9 @@
 							<i class="fas fa-times"></i>
 						</a>
 					</p>
-					<img class="dishcard-img" src="images/dish4.jpg">
-					<p class="dishcard-title">Название fdghjklkjhgfdsdfghj dfghjkgfds fdg dfghjk sdfghjk sdfghj</p>
-					<div class="dishcard-description">Описание арполл порлд рол рол рпол</div>
+					<img class="dishcard-img" src="images/dish4.jpg" id="pop-dishcard-img">
+					<p class="dishcard-title" id="pop-dishcard-title">Название fdghjklkjhgfdsdfghj dfghjkgfds fdg dfghjk sdfghjk sdfghj</p>
+					<div class="dishcard-description" id="pop-dishcard-description">Описание арполл порлд рол рол рпол</div>
 				</div>
 			</div>
 
@@ -514,15 +488,19 @@
 				</p>
 			</div>
 		</div>
-
-		<script src="js/fixed_header.js"></script>
-		<script type="text/javascript" src="<c:url value="/resources/static/js/menu.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/resources/static/js/authorization.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/resources/static/js/fixed_header.js"/>"></script>
 		<script type="text/javascript" src="<c:url value="/resources/static/js/topbutton.js"/>"></script>
 		<script type="text/javascript" src="<c:url value="/resources/static/js/entryform.js"/>"></script>
 		<script type="text/javascript" src="<c:url value="/resources/static/js/registrationform.js"/>"></script>
 		<script type="text/javascript" src="<c:url value="/resources/static/js/modal_dishcard.js"/>"></script>
 		<script type="text/javascript" src="<c:url value="/resources/static/js/busket.js"/>"></script>
+
 		<script type="text/javascript" src="<c:url value="/resources/static/js/cart.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/resources/static/js/menu.js"/>"></script>
+
+
+
 
 </body>
 

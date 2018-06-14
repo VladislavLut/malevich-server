@@ -85,11 +85,10 @@
 
         <div class="ProfileAndBasket">
             <a class="temp" href="#" title="Войти в кабинет пользователя">
-                <div class="navBtn" onclick="PopUpShow()">
+                <div class="navBtn" onclick="showModalWindowOrProfile()" id="profileButton">
                     <i class="fa fa-user fa-fw" aria-hidden="true"></i>
-                    <span>Вход</span>
+                    <span id="entryText">Вход</span>
                 </div>
-
             </a>
             <a class="temp" href="#" title="Отобразить карзину">
                 <div class="navBtn busket-btn">
@@ -109,28 +108,28 @@
                     </a>
                     <ul>
                         <li>
-                            <a href="<c:url value="category"/>">Пицца</a>
+                            <a href="<c:url value="category"/>?pizza">Пицца</a>
                         </li>
                         <li>
-                            <a href="#">Бургеры</a>
+                            <a href="<c:url value="category"/>?burger">Бургеры</a>
                         </li>
                         <li>
-                            <a href="#">Суши</a>
+                            <a href="<c:url value="category"/>?sushi">Суши</a>
                         </li>
                         <li>
-                            <a href="#">Закуски</a>
+                            <a href="<c:url value="category"/>?snack">Закуски</a>
                         </li>
                         <li>
-                            <a href="#">Салаты</a>
+                            <a href="<c:url value="category"/>?salad">Салаты</a>
                         </li>
                         <li>
-                            <a href="#">Паста</a>
+                            <a href="<c:url value="category"/>?pasta">Паста</a>
                         </li>
                         <li>
-                            <a href="#">Десерты</a>
+                            <a href="<c:url value="category"/>?dessert">Десерты</a>
                         </li>
                         <li>
-                            <a href="#">Напитки</a>
+                            <a href="<c:url value="category"/>?drinks">Напитки</a>
                         </li>
                     </ul>
                 </li>
@@ -177,28 +176,28 @@
                     </a>
                     <ul>
                         <li>
-                            <a href="<c:url value="category"/>">Пицца</a>
+                            <a href="<c:url value="category"/>?pizza">Пицца</a>
                         </li>
                         <li>
-                            <a href="#">Бургеры</a>
+                            <a href="<c:url value="category"/>?burger">Бургеры</a>
                         </li>
                         <li>
-                            <a href="#">Суши</a>
+                            <a href="<c:url value="category"/>?sushi">Суши</a>
                         </li>
                         <li>
-                            <a href="#">Закуски</a>
+                            <a href="<c:url value="category"/>?snack">Закуски</a>
                         </li>
                         <li>
-                            <a href="#">Салаты</a>
+                            <a href="<c:url value="category"/>?salad">Салаты</a>
                         </li>
                         <li>
-                            <a href="#">Паста</a>
+                            <a href="<c:url value="category"/>?pasta">Паста</a>
                         </li>
                         <li>
-                            <a href="#">Десерты</a>
+                            <a href="<c:url value="category"/>?dessert">Десерты</a>
                         </li>
                         <li>
-                            <a href="#">Напитки</a>
+                            <a href="<c:url value="category"/>?drinks">Напитки</a>
                         </li>
                     </ul>
                 </li>
@@ -389,7 +388,7 @@
                             <label for="entry-password">Пароль</label>
                         </div>
                     </div>
-                    <div class="entry-button">ВОЙТИ</div>
+                    <div class="entry-button" onclick="LogIn()">ВОЙТИ</div>
                 </div>
                 <div>
                     <p class="entry-label">Впервые на сайте?</p>
@@ -535,6 +534,8 @@
     <script type="text/javascript" src="<c:url value="/resources/static/js/registrationform.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/resources/static/js/busket.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/resources/static/js/cart.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/resources/static/js/authorization.js"/>"></script>
+
 
 </body>
 

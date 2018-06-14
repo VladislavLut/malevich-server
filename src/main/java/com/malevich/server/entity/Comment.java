@@ -1,32 +1,27 @@
 package com.malevich.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.malevich.server.view.Views;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
+import static com.malevich.server.util.Strings.*;
+
 @Entity
-@Table(name = Comment.TABLE_NAME)
+@Table(name = COMMENTS_TABLE_NAME)
 public class Comment implements Serializable {
-
-    public static final String TABLE_NAME = "comments";
-
-    public static final String ID_COLUMN = "id";
-    public static final String ORDER_ID_COLUMN = "order_id";
-    public static final String COMMENT_COLUMN = "comment";
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    @Column(name = ID_COLUMN)
+    @Column(name = COMMENTS_ID_COLUMN)
     private Integer id;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = ORDER_ID_COLUMN, nullable = false)
+    @JoinColumn(name = COMMENTS_ORDER_ID_COLUMN, nullable = false)
     private Order order;
 
-    @Column(name = COMMENT_COLUMN)
+    @Column(name = COMMENTS_COMMENT_COLUMN)
     private String comment;
 
     protected Comment() {

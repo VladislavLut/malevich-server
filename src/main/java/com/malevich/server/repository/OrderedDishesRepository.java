@@ -11,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 public interface OrderedDishesRepository extends JpaRepository<OrderedDish, Integer> {
 

@@ -8,45 +8,37 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.malevich.server.util.Strings.*;
+
 @Entity
-@Table(name = Dish.TABLE_NAME)
+@Table(name = DISHES_TABLE_NAME)
 public class Dish implements Serializable {
-
-    public static final String TABLE_NAME = "dishes";
-
-    public static final String ID_COLUMN = "id";
-    public static final String CATEGORY_COLUMN = "category";
-    public static final String NAME_COLUMN = "name";
-    public static final String DESCRIPTION_COLUMN = "description";
-    public static final String IMAGE_URL_COLUMN = "imageurl";
-    public static final String PRICE_COLUMN = "price";
-    public static final String RATING_COLUMN = "rating";
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    @Column(name = ID_COLUMN)
+    @Column(name = DISHES_ID_COLUMN)
     private Integer id;
 
     @NotNull
-    @Column(name = CATEGORY_COLUMN)
+    @Column(name = DISHES_CATEGORY_COLUMN)
     private String category;
 
     @NotNull
-    @Column(name = NAME_COLUMN)
+    @Column(name = DISHES_NAME_COLUMN)
     private String name;
 
     @NotNull
-    @Column(name = DESCRIPTION_COLUMN)
+    @Column(name = DISHES_DESCRIPTION_COLUMN)
     private String description;
 
-    @Column(name = IMAGE_URL_COLUMN)
+    @Column(name = DISHES_IMAGE_URL_COLUMN)
     private String imageURL;
 
     @NotNull
-    @Column(name = PRICE_COLUMN)
+    @Column(name = DISHES_PRICE_COLUMN)
     private BigDecimal price;
 
-    @Column(name = RATING_COLUMN)
+    @Column(name = DISHES_RATING_COLUMN)
     private Float rating;
 
     @JsonIgnore

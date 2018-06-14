@@ -1,4 +1,4 @@
-package com.malevich.server.controller;
+package com.malevich.server.controller.rest;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.malevich.server.entity.Order;
@@ -11,10 +11,9 @@ import com.malevich.server.exception.OrderIsClosedEception;
 import com.malevich.server.repository.OrderedDishesRepository;
 import com.malevich.server.repository.OrdersRepository;
 import com.malevich.server.repository.SessionsRepository;
-import com.malevich.server.service.AdminClientService;
-import com.malevich.server.util.JsonUtil;
 import com.malevich.server.view.Views;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,9 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.malevich.server.controller.SessionController.SID;
-import static com.malevich.server.controller.UserController.SPACE_QUOTE;
+import static com.malevich.server.controller.rest.SessionController.SID;
+import static com.malevich.server.controller.rest.UserController.SPACE_QUOTE;
 import static com.malevich.server.enums.UserType.*;
+import static com.malevich.server.util.Strings.ORDERS_ID_COLUMN;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
@@ -34,25 +34,22 @@ public class OrderController {
 
     private static final int SERVER_PORT = 3443;
 
-    @Autowired
     private final OrdersRepository ordersRepository;
 
-    @Autowired
     private final SessionsRepository sessionsRepository;
 
-    @Autowired
     private final OrderedDishesRepository orderedDishesRepository;
 
-    private AdminClientService adminClientService;
+    private final SimpMessageSendingOperations messagingTemplate;
 
     @Autowired
     public OrderController(final OrdersRepository ordersRepository,
                            final SessionsRepository sessionsRepository,
-                           final OrderedDishesRepository orderedDishesRepository) {
+                           final OrderedDishesRepository orderedDishesRepository, SimpMessageSendingOperations messagingTemplate) {
         this.ordersRepository = ordersRepository;
         this.sessionsRepository = sessionsRepository;
         this.orderedDishesRepository = orderedDishesRepository;
-        adminClientService = new AdminClientService(SERVER_PORT);
+        this.messagingTemplate = messagingTemplate;
     }
 
     @JsonView(Views.Internal.class)
@@ -107,6 +104,7 @@ public class OrderController {
         saveOrderedDishesList(dishes, order);
 
         order.setOrderedDishes(orderedDishesRepository.findAllByOrderId(order.getId()));
+        messagingTemplate.convertAndSend("/topic/public", order);
         return order;
     }
 
@@ -127,7 +125,7 @@ public class OrderController {
                 order.getId(),
                 order.getStatus().name()
         );
-        adminClientService.send(JsonUtil.toJson(order));
+        messagingTemplate.convertAndSend("/topic/public", order);
         return order;
     }
 
@@ -173,7 +171,7 @@ public class OrderController {
     private void throwIfNotExist(int id) {
         ordersRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        getClass().toString(), Order.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+                        getClass().toString(), ORDERS_ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 
 

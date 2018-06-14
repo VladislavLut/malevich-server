@@ -64,4 +64,12 @@ public interface SessionsRepository extends JpaRepository<Session, Integer> {
             @Param("new_sid") String newSid,
             @Param("sid") String sid);
 
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("update Session s " +
+            "set s.lastActivity = localtime, " +
+            "s.startTime = localtime " +
+            "where s.sid like :sid")
+    int update(@Param("sid") String sid);
+
 }

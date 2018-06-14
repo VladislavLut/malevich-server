@@ -9,56 +9,48 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Time;
 
+import static com.malevich.server.util.Strings.*;
+
 @Entity
-@Table(name = Reservation.TABLE_NAME)
+@Table(name = RESERVED_TABLE_NAME)
 public class Reservation implements Serializable {
-
-    public static final String TABLE_NAME = "reserved";
-
-    public static final String ID_COLUMN = "id";
-    public static final String TABLE_ID_COLUMN = "table_id";
-    public static final String DATE_COLUMN = "date";
-    public static final String TIME_COLUMN = "time";
-    public static final String PHONE_COLUMN = "phone";
-    public static final String NAME_COLUMN = "name";
-    public static final String COMMENT_COLUMN = "comment";
 
     @JsonView(Views.Public.class)
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    @Column(name = ID_COLUMN)
+    @Column(name = RESERVED_ID_COLUMN)
     private Integer id;
 
     @JsonView(Views.Public.class)
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = RESERVED_ID_COLUMN)
     @JsonIdentityReference(alwaysAsId = true)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne
-    @JoinColumn(name = TABLE_ID_COLUMN, nullable = false)
+    @JoinColumn(name = RESERVED_TABLE_ID_COLUMN, nullable = false)
     private TableItem tableItem;
 
     @JsonView(Views.Public.class)
     @NotNull
-    @Column(name = DATE_COLUMN)
+    @Column(name = RESERVED_DATE_COLUMN)
     private Date date;
 
     @JsonView(Views.Public.class)
     @NotNull
-    @Column(name = TIME_COLUMN)
+    @Column(name = RESERVED_TIME_COLUMN)
     private Time time;
 
     @JsonView(Views.Public.class)
     @NotNull
-    @Column(name = PHONE_COLUMN)
+    @Column(name = RESERVED_PHONE_COLUMN)
     private String phone;
 
     @JsonView(Views.Public.class)
     @NotNull
-    @Column(name = NAME_COLUMN)
+    @Column(name = RESERVED_NAME_COLUMN)
     private String name;
 
     @JsonView(Views.Public.class)
-    @Column(name = COMMENT_COLUMN)
+    @Column(name = RESERVED_COMMENT_COLUMN)
     private String comment;
 
     protected Reservation() {

@@ -1,53 +1,49 @@
-package com.malevich.server.controller;
+package com.malevich.server.controller.rest;
 
 import com.malevich.server.entity.OrderedDish;
 import com.malevich.server.entity.User;
+import com.malevich.server.enums.Response;
+import com.malevich.server.enums.Status;
 import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.repository.OrderedDishesRepository;
 import com.malevich.server.repository.OrdersRepository;
 import com.malevich.server.repository.SessionsRepository;
-import com.malevich.server.service.AdminClientService;
-import com.malevich.server.util.JsonUtil;
-import com.malevich.server.enums.Response;
-import com.malevich.server.enums.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
-import static com.malevich.server.controller.SessionController.SID;
-import static com.malevich.server.controller.UserController.SPACE_QUOTE;
+import static com.malevich.server.controller.rest.SessionController.SID;
+import static com.malevich.server.controller.rest.UserController.SPACE_QUOTE;
 import static com.malevich.server.enums.Status.*;
 import static com.malevich.server.enums.UserType.*;
+import static com.malevich.server.util.Strings.ORDERED_DISHES_ID_COLUMN;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
 @RestController
 @RequestMapping("/dishes")
 public class OrderedDishController {
-    private static final int SERVER_PORT = 3446;
 
-    @Autowired
     private final OrderedDishesRepository orderedDishesRepository;
 
-    @Autowired
     private final OrdersRepository ordersRepository;
 
-    @Autowired
     private final SessionsRepository sessionsRepository;
 
-    private AdminClientService adminClientService;
+    private final SimpMessageSendingOperations messagingTemplate;
 
     @Autowired
     public OrderedDishController(final OrderedDishesRepository orderedDishesRepository,
                                  final SessionsRepository sessionsRepository,
-                                 final OrdersRepository ordersRepository) {
+                                 final OrdersRepository ordersRepository, SimpMessageSendingOperations messagingTemplate) {
         this.orderedDishesRepository = orderedDishesRepository;
         this.sessionsRepository = sessionsRepository;
         this.ordersRepository = ordersRepository;
-        adminClientService = new AdminClientService(SERVER_PORT);
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping("/{id}/")
@@ -86,6 +82,7 @@ public class OrderedDishController {
         validateAccess(sessionsRepository, sid, TABLE, ADMINISTRATOR);
         orderedDishesRepository.save(orderedDish);
         updateOrder(orderedDish);
+        messagingTemplate.convertAndSend("/topic/public", orderedDish);
         return Response.SAVED.name();
     }
 
@@ -109,7 +106,7 @@ public class OrderedDishController {
                 orderedDish.getKitchener().getId()
         );
         updateOrder(orderedDish);
-        adminClientService.send(JsonUtil.toJson(orderedDish));
+        messagingTemplate.convertAndSend("/topic/public", orderedDish);
         return orderedDish;
     }
 
@@ -129,6 +126,6 @@ public class OrderedDishController {
     private void validateOrderedDish(int id) {
         orderedDishesRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        getClass().toString(), OrderedDish.ID_COLUMN + SPACE_QUOTE + id + QUOTE));
+                        getClass().toString(), ORDERED_DISHES_ID_COLUMN + SPACE_QUOTE + id + QUOTE));
     }
 }
