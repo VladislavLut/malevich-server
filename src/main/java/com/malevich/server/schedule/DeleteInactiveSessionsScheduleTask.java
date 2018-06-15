@@ -27,12 +27,15 @@ public class DeleteInactiveSessionsScheduleTask {
     public void scheduledTask() {
         Time time = Time.valueOf(new Time(System.currentTimeMillis() - TIMEOUT).toString());
 
-        String sql = "SELECT COUNT(*) FROM " + SESSIONS_TABLE_NAME + " s WHERE s.last_activity < ?";
-        int size = jdbcTemplate.queryForObject(sql, new Object[]{time}, Integer.class);
-        ServerApplication.log.info("inactive sessions count: " + size);
+        String sql = "SELECT COUNT(*) FROM " + SESSIONS_TABLE_NAME;
+        int size = jdbcTemplate.queryForObject(sql, new Object[]{}, Integer.class);
 
         sql = "DELETE FROM " + SESSIONS_TABLE_NAME + " s WHERE s.last_activity < ?";
         jdbcTemplate.update(sql, time);
-        ServerApplication.log.info("close inactive sessions");
+        ServerApplication.log.info("close inactive sessions...");
+
+        sql = "SELECT COUNT(*) FROM " + SESSIONS_TABLE_NAME;
+        size -= jdbcTemplate.queryForObject(sql, new Object[]{}, Integer.class);
+        ServerApplication.log.info(size + "  sessions closed");
     }
 }

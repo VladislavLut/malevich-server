@@ -43,7 +43,6 @@ public class User implements Serializable {
     @Column(name = USERS_NAME_COLUMN)
     private String name;
 
-
     @JsonView(Views.Public.class)
     @Column(name = USERS_BIRTH_DAY_COLUMN)
     private Date birthDay;

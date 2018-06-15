@@ -42,8 +42,8 @@ public class Session implements Serializable {
         this.user = user;
         this.sid = sid;
         this.loggedIn = loggedIn;
-        lastActivity = new Time(System.currentTimeMillis());
-        startTime = new Time(System.currentTimeMillis());
+        lastActivity = Time.valueOf(new Time(System.currentTimeMillis()).toString());
+        startTime = lastActivity;
     }
 
     public User getUser() {
