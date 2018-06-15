@@ -28,7 +28,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
   <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
   <script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
-  <script type="text/javascript" src="<c:url value="/resources/static/js/materialize.min.js"/>"></script>
+  <script type="text/javascript" src="<c:url value="/resources/static/js/materialize.js"/>"></script>
 
   <title>Бронирование | MALEVICH ресторан</title>
   <link rel="shortcut icon" href="<c:url value="/resources/static/images/icon.ico"/>" type="image/x-icon">
@@ -171,21 +171,17 @@
             <p>Забронировать стол</p>
           </div>
           <div class="date_picker">
-            <input type="date" name="Дата" id="date" placeholder="Выберите дату" value="">
+            <input type="date" name="Дата" id="date" placeholder="Выберите дату" value="" min="" onchange="changed_date()">
           </div>
           <div class="time_pick">
-            <input type="text" class="timepicker" id="time" name="Время" placeholder="Выбрать время" readonly>
+            <input type="text" class="timepicker" id="time" name="Время" placeholder="Выбрать время" onchange="changed_time()" readonly>
           </div>
           <div class="pretty-line">
             <hr>
           </div>
           <div class="select_free">
-            <select class="browser-default">
-              <option value="" disabled selected>Выбрать столик</option>
-              <option value="1">1 столик</option>
-              <option value="2">2 столик</option>
-              <option value="3">3 столик</option>
-              <option value="4">4 столик</option>
+            <select class="browser-default" id="my_select" name="my_select" onchange="setRadioButtonFromSelect()">
+
             </select>
           </div>
           <div class="comments">
@@ -202,7 +198,7 @@
               <a onclick="PopUpShow()">Войти в профиль</a>
             </p>
           </div>
-          <div class="sendReservation">
+          <div class="sendReservation" onclick="test()">
             ЗАБРОНИРОВАТЬ
           </div>
         </div>
@@ -215,88 +211,88 @@
 
           <div class="radio_buttons">
             <div class="table1">
-              <input class="rb" type="radio" name="option" id="radio1" />
-              <label for="radio1">1</label>
+              <input class="rb" type="radio" name="option" id="radio1" value="1" onclick="setOptionToSelect()"/>
+              <label for="radio1"><span class="x1">1</span></label>
             </div>
             <div class="table2">
-              <input class="rb" type="radio" name="option" id="radio2" />
-              <label for="radio2">2</label>
+              <input class="rb" type="radio" name="option" id="radio2" value="2" onclick="setOptionToSelect()"/>
+              <label for="radio2"><span class="x">2</span></label>
             </div>
             <div class="table3">
-              <input class="rb" type="radio" name="option" id="radio3" />
-              <label for="radio3">3</label>
+              <input class="rb" type="radio" name="option" id="radio3" value="3" onclick="setOptionToSelect()"/>
+              <label for="radio3"><span class="x">3</span></label>
             </div>
             <div class="table4">
-              <input class="rb" type="radio" name="option" id="radio4" />
-              <label for="radio4">4</label>
+              <input class="rb" type="radio" name="option" id="radio4" value="4" onclick="setOptionToSelect()"/>
+              <label for="radio4"><span class="x">4</span></label>
             </div>
             <div class="table5">
-              <input class="rb" type="radio" name="option" id="radio5" />
-              <label for="radio5">5</label>
+              <input class="rb" type="radio" name="option" id="radio5" value="5" onclick="setOptionToSelect()"/>
+              <label for="radio5"><span class="x">5</span></label>
             </div>
             <div class="table6">
-              <input class="rb" type="radio" name="option" id="radio6" />
-              <label for="radio6">6</label>
+              <input class="rb" type="radio" name="option" id="radio6" value="6" onclick="setOptionToSelect()"/>
+              <label for="radio6"><span class="x">6</span></label>
             </div>
             <div class="table7">
-              <input class="rb" type="radio" name="option" id="radio7" />
-              <label for="radio7">7</label>
+              <input class="rb" type="radio" name="option" id="radio7" value="7" onclick="setOptionToSelect()"/>
+              <label for="radio7"><span class="x1">7</span></label>
             </div>
             <div class="table8">
-              <input class="rb" type="radio" name="option" id="radio8" />
-              <label for="radio8">8</label>
+              <input class="rb" type="radio" name="option" id="radio8" value="8" onclick="setOptionToSelect()"/>
+              <label for="radio8"><span class="x">8</span></label>
             </div>
             <div class="table9">
-              <input class="rb" type="radio" name="option" id="radio9" />
-              <label for="radio9">9</label>
+              <input class="rb" type="radio" name="option" id="radio9" value="9" onclick="setOptionToSelect()"/>
+              <label for="radio9"><span class="x">9</span></label>
             </div>
             <div class="table10">
-              <input class="rb" type="radio" name="option" id="radio10" />
-              <label for="radio10">10</label>
+              <input class="rb" type="radio" name="option" id="radio10" value="10" onclick="setOptionToSelect()"/>
+              <label for="radio10"><span class="xx">10</span></label>
             </div>
             <div class="table11">
-              <input class="rb" type="radio" name="option" id="radio11" />
-              <label for="radio11">11</label>
+              <input class="rb" type="radio" name="option" id="radio11" value="11" onclick="setOptionToSelect()"/>
+              <label for="radio11"><span class="xx">11</span></label>
             </div>
             <div class="table12">
-              <input class="rb" type="radio" name="option" id="radio12" />
-              <label for="radio12">12</label>
+              <input class="rb" type="radio" name="option" id="radio12" value="12" onclick="setOptionToSelect()"/>
+              <label for="radio12"><span class="xx">12</span></label>
             </div>
             <div class="table13">
-              <input class="rb" type="radio" name="option" id="radio13" />
-              <label for="radio13">13</label>
+              <input class="rb" type="radio" name="option" id="radio13" value="13" onclick="setOptionToSelect()"/>
+              <label for="radio13"><span class="xx">13</span></label>
             </div>
             <div class="table14">
-              <input class="rb" type="radio" name="option" id="radio14" />
-              <label for="radio14">14</label>
+              <input class="rb" type="radio" name="option" id="radio14" value="14" onclick="setOptionToSelect()"/>
+              <label for="radio14"><span class="xx">14</span></label>
             </div>
             <div class="table15">
-              <input class="rb" type="radio" name="option" id="radio15" />
-              <label for="radio15">15</label>
+              <input class="rb" type="radio" name="option" id="radio15" value="15" onclick="setOptionToSelect()"/>
+              <label for="radio15"><span class="xx">15</span></label>
             </div>
             <div class="table16">
-              <input class="rb" type="radio" name="option" id="radio16" />
-              <label for="radio16">16</label>
+              <input class="rb" type="radio" name="option" id="radio16" value="16" onclick="setOptionToSelect()"/>
+              <label for="radio16"><span class="xx">16</span></label>
             </div>
             <div class="table17">
-              <input class="rb" type="radio" name="option" id="radio17" />
-              <label for="radio17">17</label>
+              <input class="rb" type="radio" name="option" id="radio17" value="17" onclick="setOptionToSelect()"/>
+              <label for="radio17"><span class="xx">17</span></label>
             </div>
             <div class="table18">
-              <input class="rb" type="radio" name="option" id="radio18" />
-              <label for="radio18">18</label>
+              <input class="rb" type="radio" name="option" id="radio18" value="18" onclick="setOptionToSelect()"/>
+              <label for="radio18"><span class="xx">18</span></label>
             </div>
             <div class="table19">
-              <input class="rb" type="radio" name="option" id="radio19" />
-              <label for="radio19">19</label>
+              <input class="rb" type="radio" name="option" id="radio19" value="19" onclick="setOptionToSelect()"/>
+              <label for="radio19"><span class="xx">19</span></label>
             </div>
             <div class="table20">
-              <input class="rb" type="radio" name="option" id="radio20" />
-              <label for="radio20">20</label>
+              <input class="rb" type="radio" name="option" id="radio20" value="20" onclick="setOptionToSelect()"/>
+              <label for="radio20"><span class="xx">20</span></label>
             </div>
             <div class="table21">
-              <input class="rb" type="radio" name="option" id="radio21" />
-              <label for="radio21">21</label>
+              <input class="rb" type="radio" name="option" id="radio21" value="21" onclick="setOptionToSelect()"/>
+              <label for="radio21"><span class="xx">21</span></label>
             </div>
 
           </div>
