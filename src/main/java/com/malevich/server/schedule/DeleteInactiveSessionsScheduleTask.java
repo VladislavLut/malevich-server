@@ -31,7 +31,7 @@ public class DeleteInactiveSessionsScheduleTask {
         int size = jdbcTemplate.queryForObject(sql, new Object[]{}, Integer.class);
 
         sql = "DELETE FROM " + SESSIONS_TABLE_NAME + " s WHERE s.last_activity < ? and s.logged_in = false";
-        jdbcTemplate.update(sql, time);
+        //jdbcTemplate.update(sql, time);
         ServerApplication.log.info("close inactive sessions...");
 
         sql = "SELECT COUNT(*) FROM " + SESSIONS_TABLE_NAME;
