@@ -8,6 +8,7 @@ import com.malevich.server.enums.Response;
 import com.malevich.server.enums.Status;
 import com.malevich.server.exception.EntityNotFoundException;
 import com.malevich.server.exception.OrderIsClosedEception;
+import com.malevich.server.model.Message;
 import com.malevich.server.repository.OrderedDishesRepository;
 import com.malevich.server.repository.OrdersRepository;
 import com.malevich.server.repository.SessionsRepository;
@@ -25,6 +26,7 @@ import static com.malevich.server.controller.rest.SessionController.SID;
 import static com.malevich.server.controller.rest.UserController.SPACE_QUOTE;
 import static com.malevich.server.enums.UserType.*;
 import static com.malevich.server.util.Strings.ORDERS_ID_COLUMN;
+import static com.malevich.server.util.Strings.ORDERS_TABLE_NAME;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
@@ -104,7 +106,7 @@ public class OrderController {
         saveOrderedDishesList(dishes, order);
 
         order.setOrderedDishes(orderedDishesRepository.findAllByOrderId(order.getId()));
-        messagingTemplate.convertAndSend("/topic/public", order);
+        messagingTemplate.convertAndSend("/topic/notifications", new Message(ORDERS_TABLE_NAME, order.getId()));
         return order;
     }
 
@@ -125,7 +127,7 @@ public class OrderController {
                 order.getId(),
                 order.getStatus().name()
         );
-        messagingTemplate.convertAndSend("/topic/public", order);
+        messagingTemplate.convertAndSend("/topic/notifications", new Message(ORDERS_TABLE_NAME, order.getId()));
         return order;
     }
 

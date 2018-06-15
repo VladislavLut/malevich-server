@@ -5,6 +5,7 @@ import com.malevich.server.entity.TableItem;
 import com.malevich.server.enums.Response;
 import com.malevich.server.exception.EntityAlreadyExistException;
 import com.malevich.server.exception.EntityNotFoundException;
+import com.malevich.server.model.Message;
 import com.malevich.server.repository.SessionsRepository;
 import com.malevich.server.repository.TablesRepository;
 import com.malevich.server.view.Views;
@@ -19,6 +20,7 @@ import static com.malevich.server.controller.rest.UserController.SPACE_QUOTE;
 import static com.malevich.server.enums.UserType.*;
 import static com.malevich.server.util.OrderUtil.removeNotActualInfo;
 import static com.malevich.server.util.Strings.TABLES_ID_COLUMN;
+import static com.malevich.server.util.Strings.TABLES_TABLE_NAME;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
@@ -91,7 +93,7 @@ public class TableController {
         validateTable(tableItem.getId());
 
         tablesRepository.updateStatus(tableItem.getId(), tableItem.isOpened());
-        messagingTemplate.convertAndSend("/topic/public", tableItem);
+        messagingTemplate.convertAndSend("/topic/notifications", new Message(TABLES_TABLE_NAME, tableItem.getId()));
         return tableItem;
     }
 

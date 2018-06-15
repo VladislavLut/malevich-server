@@ -9,17 +9,17 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import java.util.logging.Logger;
 
 @Component
-public class OrderWebSocketListener {
+public class NotificationWebSocketListener {
 
-    private static Logger logger = Logger.getLogger(OrderWebSocketListener.class.getSimpleName());
+    private static Logger logger = Logger.getLogger(NotificationWebSocketListener.class.getSimpleName());
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
-        logger.info("Received a new order web socket connection: " + event.getUser());
+        logger.info("Received a new notification web socket connection: " + event.getUser());
     }
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-        logger.info("Android Disconnected (o)");
+        logger.info("Client Disconnected");
     }
 }

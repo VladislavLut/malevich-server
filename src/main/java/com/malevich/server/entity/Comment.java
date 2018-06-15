@@ -18,7 +18,7 @@ public class Comment implements Serializable {
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = COMMENTS_ORDER_ID_COLUMN, nullable = false)
+    @JoinColumn(name = COMMENTS_ORDER_ID_COLUMN, nullable = false, unique = true)
     private Order order;
 
     @Column(name = COMMENTS_COMMENT_COLUMN)

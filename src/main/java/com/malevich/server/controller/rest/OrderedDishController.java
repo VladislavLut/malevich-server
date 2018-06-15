@@ -5,6 +5,7 @@ import com.malevich.server.entity.User;
 import com.malevich.server.enums.Response;
 import com.malevich.server.enums.Status;
 import com.malevich.server.exception.EntityNotFoundException;
+import com.malevich.server.model.Message;
 import com.malevich.server.repository.OrderedDishesRepository;
 import com.malevich.server.repository.OrdersRepository;
 import com.malevich.server.repository.SessionsRepository;
@@ -21,6 +22,7 @@ import static com.malevich.server.controller.rest.UserController.SPACE_QUOTE;
 import static com.malevich.server.enums.Status.*;
 import static com.malevich.server.enums.UserType.*;
 import static com.malevich.server.util.Strings.ORDERED_DISHES_ID_COLUMN;
+import static com.malevich.server.util.Strings.ORDERED_DISHES_TABLE_NAME;
 import static com.malevich.server.util.ValidationUtil.validateAccess;
 import static org.apache.logging.log4j.util.Chars.QUOTE;
 
@@ -78,11 +80,11 @@ public class OrderedDishController {
     }
 
     @PostMapping("/add")
-    public String saveOrderedDish(@RequestBody final OrderedDish orderedDish, @CookieValue(name = SID) String sid) {
+    public String saveOrderedDish(@RequestBody OrderedDish orderedDish, @CookieValue(name = SID) String sid) {
         validateAccess(sessionsRepository, sid, TABLE, ADMINISTRATOR);
-        orderedDishesRepository.save(orderedDish);
+        orderedDish = orderedDishesRepository.save(orderedDish);
         updateOrder(orderedDish);
-        messagingTemplate.convertAndSend("/topic/public", orderedDish);
+        messagingTemplate.convertAndSend("/topic/notifications", new Message(ORDERED_DISHES_TABLE_NAME, orderedDish.getId()));
         return Response.SAVED.name();
     }
 

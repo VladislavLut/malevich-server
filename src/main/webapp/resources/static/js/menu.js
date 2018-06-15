@@ -250,7 +250,7 @@ async function printCartDishes(serverDish, cartData) {
 async function CalcOrderSum() {
     var cartData = getCartData() || {}
     var sum = 0;
-    if(cartData.getItem() !== null){
+    if(localStorage.getItem("cart") !== null){
         sum = await GetSumFromServerCart(cartData);
     }
     document.getElementById("cart-sum-value").innerHTML = sum;

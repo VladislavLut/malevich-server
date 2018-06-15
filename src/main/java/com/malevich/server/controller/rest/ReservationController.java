@@ -4,6 +4,7 @@ import com.malevich.server.entity.Reservation;
 import com.malevich.server.enums.Response;
 import com.malevich.server.exception.EntityAlreadyExistException;
 import com.malevich.server.exception.EntityNotFoundException;
+import com.malevich.server.model.Message;
 import com.malevich.server.repository.ReservedRepository;
 import com.malevich.server.repository.SessionsRepository;
 import com.malevich.server.util.TimeUtil;
@@ -91,8 +92,8 @@ public class ReservationController {
         validateAccess(sessionsRepository, sid, true);
         validateReservationForAdding(reservation);
 
-        reservedRepository.save(reservation);
-        messagingTemplate.convertAndSend("/topic/public", reservation);
+        reservation = reservedRepository.save(reservation);
+        messagingTemplate.convertAndSend("/topic/notifications", new Message(RESERVED_TABLE_NAME, reservation.getId()));
         return reservation;
     }
 
