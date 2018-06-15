@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class SocketOrderedDishController {
     @MessageMapping("/dishes.sendMessage")
-    @SendTo("/topic/public")
+    @SendTo("/topic/ordered_dish")
     public OrderedDish sendMessage(@Payload OrderedDish orderedDish) {
         return orderedDish;
     }

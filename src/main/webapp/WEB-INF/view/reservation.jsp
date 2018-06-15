@@ -165,33 +165,34 @@
 
   <div class="wrapper">
     <div class="content">
+      <form id="formForReservation">
       <div class="inputfields">
         <div class="input_container">
           <div class="caption">
             <p>Забронировать стол</p>
           </div>
           <div class="date_picker">
-            <input type="date" name="Дата" id="date" placeholder="Выберите дату" value="" min="" onchange="changed_date()">
+            <input type="date" name="Дата" id="date" class="validate" placeholder="Выберите дату" value="" min="" onchange="changed_date()">
           </div>
           <div class="time_pick">
-            <input type="text" class="timepicker" id="time" name="Время" placeholder="Выбрать время" onchange="changed_time()" readonly>
+            <input type="text" class="timepicker" id="time" class="validate" name="Время" placeholder="Выбрать время" onchange="changed_time()" readonly>
           </div>
           <div class="pretty-line">
             <hr>
           </div>
           <div class="select_free">
-            <select class="browser-default" id="my_select" name="my_select" onchange="setRadioButtonFromSelect()">
+            <select class="browser-default" id="my_select" class="validate" name="my_select" onchange="setRadioButtonFromSelect()">
 
             </select>
           </div>
           <div class="comments">
-            <textarea name="Коментарии" id="comments" cols="20" rows="30" maxlength="150" placeholder="Можете оставить комментрий к бронированию"></textarea>
+            <textarea name="Коментарии" id="comments" class="validate" cols="20" rows="30" maxlength="256" placeholder="Можете оставить комментрий к бронированию"></textarea>
           </div>
           <div class="pretty-line">
             <hr>
           </div>
           <div class="phone_number">
-            <input type="tel" name="Телефон" id="phone" maxlength="13" value="" placeholder="Номер телефона" onclick="showSample()">
+            <input type="tel" name="Телефон" id="phone" class="validate" maxlength="13" value="" pattern="380-[0-9]{2}-[0-9]{3}-[0-9]{2}-[0-9]{2}" required placeholder="Номер телефона" onclick="showSample()">
           </div>
           <div class="enter_to_profile">
             <p>или
@@ -203,6 +204,7 @@
           </div>
         </div>
       </div>
+      </form>
 
 
       <div class="map">
@@ -317,7 +319,7 @@
           <div class="row">
             <div class="input-field col s12">
               <input class="input-user-data" id="entrylogin" type="email" class="validate">
-              <label for="entrylogin">Логин или телефон</label>
+              <label for="entrylogin">Логин</label>
             </div>
           </div>
           <div class="row">
@@ -365,7 +367,7 @@
         </div>
         <div class="row">
           <div class="input-field col s12">
-            <input class="new-input-user-data" id="birthdate" type="date" class="datepicker" name="birthdate">
+            <input class="new-input-user-data" id="birthdate" type="date" class="datepicker" min="1900-10-10" max="2018-06-06" name="birthdate">
             <label for="birthdate" class="" required="required" aria-required="true">Дата рождения</label>
           </div>
         </div>
@@ -381,7 +383,7 @@
             <label for="confirmpassword" required="required" aria-required="true">Подтвердите пароль</label>
           </div>
         </div>
-        <div class="entry-button" onclick="PopUp3Show(); PopUp2Hide(); clearRegForm();">ОТПРАВИТЬ</div>
+        <div class="entry-button" onclick="registrate()">ОТПРАВИТЬ</div>
       </form>
     </div>
   </div>
@@ -397,6 +399,38 @@
       <p class="entry-label">Подтверждение будет отправлено на указанный телефон в ближайшее время</p>
     </div>
   </div>
+
+<div class="b-popup" id="popup-order">
+  <div class="b-popup-content-order">
+    <p>
+      <a class="close-button" href="#" onclick="PopUpOrderHide()">
+        <i class="fas fa-times"></i>
+      </a>
+    </p>
+    <p id="OrderTitle">Оформление заказа</p>
+
+    <form id="form-order">
+      <div class="row">
+        <div id = "numOr" class="input-field col s12">
+          <input class="new-user-data" id="telOrder" type="tel" class="validate" name="regtel">
+          <label for="regtel" required="required" aria-required="true">Номер телефона</label>
+        </div>
+      </div>
+      <div class="row">
+        <div id = "ComOr" class="input-field col s12">
+          <textarea id="textarea2" class="materialize-textarea" data-length="256"></textarea>
+          <label for="textarea2">Ваш комментарий к заказу</label>
+        </div>
+      </div>
+
+    </form>
+
+    <p class="orderP">Сумма заказа: <span class="orderP" id="order-sum">0</span> грн</p>
+    <p class="orderP">Доставка: <span class="orderP" id="order-del">50</span> грн</p>
+    <p class="orderP">Всего: <span class="orderP" id="order-amount">0</span> грн</p>
+    <div class="send-order-button" onclick="SendOrder();PopUpOrderHide()">ОТПРАВИТЬ</div>
+  </div>
+</div>
 
 <div class="footer">
   <img class="footer-logo" src="<c:url value="/resources/static/images/logo.png"/>" alt="Малевич">
@@ -452,10 +486,10 @@
       <a href="https://www.facebook.com/">
         <i class="fab fa-google-plus-square"></i>
       </a>
-    </p>s
+    </p>
   </div>
 </div>
-
+<script type="text/javascript" src="<c:url value="/resources/static/js/authorization.js"/>"></script>
   <script src="<c:url value="/resources/static/js/date_picker.js"/>"></script>
   <script src="<c:url value="/resources/static/js/time_picker.js"/>"></script>
   <script type="text/javascript" src="<c:url value="/resources/static/js/topbutton.js"/>"></script>
@@ -465,8 +499,13 @@
 <script type="text/javascript" src="<c:url value="/resources/static/js/cart.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/resources/static/js/reservation.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/resources/static/js/show_sapmle_for_reservation_field.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/resources/static/js/authorization.js"/>"></script>
 
+<script type="text/javascript" src="<c:url value="/resources/static/js/menu.js"/>"></script>
+<script>
+    $(document).ready(function() {
+        $('input#input_text, textarea#textarea2').characterCounter();
+    });
+</script>
 </body>
 
 </html>

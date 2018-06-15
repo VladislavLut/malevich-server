@@ -12,7 +12,7 @@ import static com.malevich.server.util.OrderUtil.removeNotActualInfo;
 public class SocketTableController {
 
     @MessageMapping("/tables.sendMessage")
-    @SendTo("/topic/public")
+    @SendTo("/topic/table_item")
     public TableItem sendMessage(@Payload TableItem tableItem) {
         removeNotActualInfo(tableItem);
         return tableItem;

@@ -67,7 +67,7 @@ public class CartController {
     }
 
     @PostMapping("/confirm")
-    public void confirm(@RequestBody Cart cart) {
+    public Integer confirm(@RequestBody Cart cart) {
         validateDishes(dishesRepository, cart.getDishes().keySet());
         Date date = new Date(System.currentTimeMillis());
         List<OrderedDish> orderedDishes = createOrderedDishListFromCart(cart);
@@ -78,6 +78,14 @@ public class CartController {
             orderedDish.setKitchener(null);
         }
         orderedDishesRepository.saveAll(orderedDishes);
+        return order.getId();
+    }
+
+    @PostMapping("/{id}/setcomment")
+    public Order setcomment(@RequestBody String comment, @PathVariable Integer id) {
+        Order order = ordersRepository.findById(id).get();
+        order.setComment(comment);
+        return order;
     }
 
     private List<OrderedDish> createOrderedDishListFromCart(@RequestBody Cart cart) {

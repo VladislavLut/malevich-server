@@ -54,9 +54,9 @@
     <div class="cart-footer">
       <div class="cart-sum">
         <p>Сумма:</p>
-        <p>0</p>
+        <p id="cart-sum-value">0</p>
       </div>
-      <div class="cart-button">
+      <div class="cart-button" onclick="PopUpOrderShow()">
         Оформить
       </div>
     </div>
@@ -243,7 +243,7 @@
 			<div class="block-menu">
 				<a href="<c:url value="category"/>?snack">
 				<div class="category">
-					<img class="category-icon" src="images/cat_snacks.png">
+					<img src="<c:url value="/resources/static/images/cat_snacks.png"/>">
 					<p class="category-name">Закуски</p>
 				</div>
 				</a>
@@ -293,7 +293,7 @@
 			<div class="category-bar">
 				<div class="breadcrumbs">
 					<a href="#">Меню</a>
-					<a class="active" href="#">Паста</a>
+					<a class="active" href="#" id="breadCategory">Паста</a>
 				</div>
 				<div class="sort">
 					<p>Сортировать :</p>
@@ -337,7 +337,7 @@
 				  <div class="row">
 					<div class="input-field col s12">
 					  <input class="input-user-data" id="entrylogin" type="email" class="validate">
-					  <label for="entrylogin">Логин или телефон</label>
+					  <label for="entrylogin">Логин</label>
 					</div>
 				  </div>
 				  <div class="row">
@@ -385,7 +385,7 @@
 				</div>
 				<div class="row">
 				  <div class="input-field col s12">
-					<input class="new-input-user-data" id="birthdate" type="date" class="datepicker" name="birthdate">
+					<input class="new-input-user-data" id="birthdate" type="date" class="datepicker" min="1900-10-10" max="2018-06-06" name="birthdate">
 					<label for="birthdate" class="" required="required" aria-required="true">Дата рождения</label>
 				  </div>
 				</div>
@@ -401,7 +401,7 @@
 					<label for="confirmpassword" required="required" aria-required="true">Подтвердите пароль</label>
 				  </div>
 				</div>
-				<div class="entry-button" onclick="PopUp3Show(); PopUp2Hide(); clearRegForm();">ОТПРАВИТЬ</div>
+				  <div class="entry-button" onclick="registrate()">ОТПРАВИТЬ</div>
 			  </form>
 			</div>
 		  </div>
@@ -419,17 +419,53 @@
 			</div>
 			
 			<div class="b-popup" id="popup-dishcard">
-				<div class="b-popup-content-dishcard">
-					<p>
-						<a class="close-button" href="#" onclick="PopUpDishCardHide()">
-							<i class="fas fa-times"></i>
-						</a>
-					</p>
-					<img class="dishcard-img" src="images/dish4.jpg" id="pop-dishcard-img">
-					<p class="dishcard-title" id="pop-dishcard-title">Название fdghjklkjhgfdsdfghj dfghjkgfds fdg dfghjk sdfghjk sdfghj</p>
-					<div class="dishcard-description" id="pop-dishcard-description">Описание арполл порлд рол рол рпол</div>
-				</div>
+		<div class="b-popup-content-dishcard">
+			<p>
+				<a class="close-button" href="#" onclick="PopUpDishCardHide()">
+					<i class="fas fa-times"></i>
+				</a>
+			</p>
+			<img class="dishcard-img" src="images/dish4.jpg" id="pop-dishcard-img">
+			<p class="dishcard-title" id="pop-dishcard-title">Название fdghjklkjhgfdsdfghj dfghjkgfds fdg dfghjk sdfghjk sdfghj</p>
+			<div class="dishcard-description" id="pop-dishcard-description">Описание арполл порлд рол рол рпол</div>
+		</div>
+	</div>
+
+
+
+		<div class="b-popup" id="popup-order">
+			<div class="b-popup-content-order">
+				<p>
+					<a class="close-button" href="#" onclick="PopUpOrderHide()">
+						<i class="fas fa-times"></i>
+					</a>
+				</p>
+				<p id="OrderTitle">Оформление заказа</p>
+
+				<form id="form-order">
+					<div class="row">
+						<div id = "numOr" class="input-field col s12">
+							<input class="new-user-data" id="telOrder" type="tel" class="validate" name="regtel">
+							<label for="regtel" required="required" aria-required="true">Номер телефона</label>
+						</div>
+					</div>
+					<div class="row">
+						<div id = "ComOr" class="input-field col s12">
+							<textarea id="textarea2" class="materialize-textarea" data-length="256"></textarea>
+							<label for="textarea2">Ваш комментарий к заказу</label>
+						</div>
+					</div>
+
+				</form>
+
+				<p class="orderP">Сумма заказа: <span class="orderP" id="order-sum">0</span> грн</p>
+				<p class="orderP">Доставка: <span class="orderP" id="order-del">50</span> грн</p>
+				<p class="orderP">Всего: <span class="orderP" id="order-amount">0</span> грн</p>
+				<div class="send-order-button" onclick="SendOrder();PopUpOrderHide()">ОТПРАВИТЬ</div>
 			</div>
+		</div>
+
+
 
 		<div class="footer">
 			<img class="footer-logo" src="<c:url value="/resources/static/images/logo.png"/>" alt="Малевич">
@@ -498,6 +534,11 @@
 
 		<script type="text/javascript" src="<c:url value="/resources/static/js/cart.js"/>"></script>
 		<script type="text/javascript" src="<c:url value="/resources/static/js/menu.js"/>"></script>
+		<script>
+            $(document).ready(function() {
+                $('input#input_text, textarea#textarea2').characterCounter();
+            });
+		</script>
 
 
 

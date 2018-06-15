@@ -1,5 +1,5 @@
 $("document").ready(function () {
-   isSidCreate();
+    isSidCreate();
 });
 
 function isSidCreate(){
@@ -23,19 +23,18 @@ function StartSession() {
 function LogIn(){
     var login = document.getElementById("entrylogin").value;
     var password = document.getElementById("entry-password").value;
-    startSession();
     getUser(login, password);
 }
 
 function getUser(login, password) {
     fetch('/login', {method: "POST", headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({login, password})}
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({login, password})}
     ).then(res => res.json()).then(res => {
         localStorage.setItem("user", JSON.stringify(res));
-    }).then(continueLogIning).catch(console.error);
+}).then(continueLogIning).catch(console.error);
 }
 
 function isLogedIn() {
@@ -69,11 +68,9 @@ function showModalWindowOrProfile() {
 }
 
 function showProfile() {
-    //showProfile
     var location = window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: '');
 
     document.location.href = location + "/profile#";
-
 }
 
 function PopUpShow() {
@@ -87,7 +84,6 @@ function logOut() {
         fetch("/logout").then(() => console.log(JSON.parse(localStorage.getItem("user"))));
 
         localStorage.removeItem("user");
-        console.log(localStorage.getItem("user"));
         var location = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
 
         document.location.href = location;

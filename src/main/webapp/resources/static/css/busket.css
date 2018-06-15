@@ -190,6 +190,78 @@ right: 5px;
 .cart-dish-cost {
   font-weight: 500;
   font-size: 18px;
-
 }
-   
+
+  .b-popup .b-popup-content-order {
+    margin: 40px auto 0px auto;
+    width: 480px;
+    height: 480px;
+    padding: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 0 16px  rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    padding: 16px;
+    position: relative;
+  }
+
+  .body {
+    position: absolute;
+  }
+
+  .send-order-button {
+    cursor: pointer;
+    background: white;
+    border: 1px solid #ea2727;
+    color: #ea2727;
+    font-size: 24px;
+    line-height: 20px;
+    width: 80%;
+    margin: 8px auto;
+    text-align: center;
+    padding: 10px 30px;
+    text-decoration: none;
+    border-radius: 3px;
+    padding: 16px 0;
+    height: auto;
+    font-weight: 300;
+  }
+
+  .send-order-button:hover {
+    background: #ea2727;
+    color: white;
+  }
+
+  #textarea2 {
+    height: 160px;
+    max-height: 200px;
+  }
+
+
+  #numOr {
+    height: 64px;
+  }
+
+  #ComOr{
+    height: 200px;
+  }
+
+  #OrderTitle {
+    margin: 4px 0 0 0;
+    width: 100%;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 2;
+    text-align: center;
+
+  }
+
+  .orderP{
+    margin: 4px 0 0 0;
+    width: 100%;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1;
+    text-align: center;
+
+  }
+

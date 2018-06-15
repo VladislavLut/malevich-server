@@ -379,7 +379,7 @@
                     <div class="row">
                         <div class="input-field col s12">
                             <input class="input-user-data" id="entrylogin" type="email" class="validate">
-                            <label for="entrylogin">Логин или телефон</label>
+                            <label for="entrylogin">Логин</label>
                         </div>
                     </div>
                     <div class="row">
@@ -427,7 +427,7 @@
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
-                        <input class="new-input-user-data" id="birthdate" type="date" class="datepicker"
+                        <input class="new-input-user-data" id="birthdate" type="date" class="datepicker" min="1900-10-10" max="2018-06-06"
                                name="birthdate">
                         <label for="birthdate" class="" required="required" aria-required="true">Дата рождения</label>
                     </div>
@@ -446,7 +446,7 @@
                         <label for="confirmpassword" required="required" aria-required="true">Подтвердите пароль</label>
                     </div>
                 </div>
-                <div class="entry-button" onclick="PopUp3Show(); PopUp2Hide(); clearRegForm();">ОТПРАВИТЬ</div>
+                <div class="entry-button" onclick="registrate()">ОТПРАВИТЬ</div>
             </form>
         </div>
     </div>
@@ -460,6 +460,38 @@
             </p>
             <h3 class="entry-title">Спасибо за регистрацию</h3>
             <p class="entry-label">Подтверждение будет отправлено на указанный телефон в ближайшее время</p>
+        </div>
+    </div>
+
+    <div class="b-popup" id="popup-order">
+        <div class="b-popup-content-order">
+            <p>
+                <a class="close-button" href="#" onclick="PopUpOrderHide()">
+                    <i class="fas fa-times"></i>
+                </a>
+            </p>
+            <p id="OrderTitle">Оформление заказа</p>
+
+            <form id="form-order">
+                <div class="row">
+                    <div id = "numOr" class="input-field col s12">
+                        <input class="new-user-data" id="telOrder" type="tel" class="validate" name="regtel">
+                        <label for="regtel" required="required" aria-required="true">Номер телефона</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id = "ComOr" class="input-field col s12">
+                        <textarea id="textarea2" class="materialize-textarea" data-length="256"></textarea>
+                        <label for="textarea2">Ваш комментарий к заказу</label>
+                    </div>
+                </div>
+
+            </form>
+
+            <p class="orderP">Сумма заказа: <span class="orderP" id="order-sum">0</span> грн</p>
+            <p class="orderP">Доставка: <span class="orderP" id="order-del">50</span> грн</p>
+            <p class="orderP">Всего: <span class="orderP" id="order-amount">0</span> грн</p>
+            <div class="send-order-button" onclick="SendOrder();PopUpOrderHide()">ОТПРАВИТЬ</div>
         </div>
     </div>
 
@@ -528,67 +560,21 @@
             });
         });
     </script>
+    <script type="text/javascript" src="<c:url value="/resources/static/js/authorization.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/resources/static/js/topbutton.js"/>"></script>
     <script src="<c:url value="/resources/static/js/fixed_header.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/resources/static/js/entryform.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/resources/static/js/registrationform.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/resources/static/js/busket.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/resources/static/js/cart.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/resources/static/js/authorization.js"/>"></script>
 
+    <script type="text/javascript" src="<c:url value="/resources/static/js/menu.js"/>"></script>
+    <script>
+        $(document).ready(function() {
+            $('input#input_text, textarea#textarea2').characterCounter();
+        });
+    </script>
 
 </body>
 
 <footer></footer>
-
-$("document").ready(function() {
-loadGoods();
-});
-
-var host = window.location.hostname.toString();
-function loadGoods() {
-var requestOpenSession =
-"/session/start";
-
-var request = new XMLHttpRequest();
-request.responseType = "text";
-request.open("GET", requestOpenSession);
-request.send();
-console.log(request.response);
-
-var requestMenuURL =  "/menu/all";
-
-var requestMenu = new XMLHttpRequest();
-requestMenu.responseType = "json";
-requestMenu.withCredentials = true;
-requestMenu.open("GET", requestMenuURL);
-requestMenu.send();
-
-requestMenu.onload = function() {
-var dishList = requestMenu.response;
-console.log(dishList);
-parseDishList(dishList);
-};
-
-
-
-}
-
-function parseDishList(jsonObj) {
-var out = "";
-for (var key in jsonObj) {
-out +=
-'<div class="dish-card">' +
-'<img class="dish-img" src="' +
-jsonObj[key]["imageURL"] +
-'"onclick="PopUpDishCardShow()">';
-out += '<p class="dish-title" onclick="PopUpDishCardShow()">' + jsonObj[key]["name"] + "</p>";
-out +=
-'<div class="dish-description" onclick="PopUpDishCardShow()">' +
-jsonObj[key]["description"] +
-"</div>";
-out += '<p class="dish-cost">' + jsonObj[key]["price"] + " ₴</p>";
-out += '<div class="order-button">Заказать</div></div>';
-}
-$("#goods").html(out);
-}

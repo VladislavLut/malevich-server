@@ -1,7 +1,10 @@
 $("document").ready(function() {
+    breadTitle();
+    $("#popup-order").hide();
     const b = loadGoods();
+    const a = showCart();
 });
-
+var currentScroll=0;
 var host = window.location.hostname.toString();
 
 async function loadGoods() {
@@ -79,7 +82,7 @@ function parseDishList(jsonObj) {
     }
 }
 
-function removeQuantityOfDish(id) {
+async function removeQuantityOfDish(id) {
     var cartData = getCartData();
     if(cartData.dishes[id] > 1){
         cartData.dishes[id] = cartData.dishes[id] - 1;
@@ -87,14 +90,16 @@ function removeQuantityOfDish(id) {
     setCartData(cartData);
     var idStr = "qunt_" + id;
     document.getElementById(idStr).innerHTML = cartData.dishes[id];
+    await CalcOrderSum();
 }
 
-function addQuantityOfDish(id) {
+async function addQuantityOfDish(id) {
     var cartData = getCartData();
     cartData.dishes[id] = cartData.dishes[id] + 1;
     setCartData(cartData);
     var idStr = "qunt_" + id;
     document.getElementById(idStr).innerHTML = cartData.dishes[id];
+    CalcOrderSum();
 }
 
 async function delete_from_basket(id) {
@@ -239,8 +244,148 @@ async function printCartDishes(serverDish, cartData) {
             '<p class="cart-dish-cost">' + serverDish[i]["price"] + ' грн</p></div></div>';
     }
     document.getElementById("cart-list").innerHTML = totalItems;
+    await CalcOrderSum();
+}
+
+async function CalcOrderSum() {
+    var cartData = getCartData() || {}
+    var sum = 0;
+    if(cartData.getItem() !== null){
+        sum = await GetSumFromServerCart(cartData);
+    }
+    document.getElementById("cart-sum-value").innerHTML = sum;
+}
+
+async function GetSumFromServerCart(cart, index) {
+    var myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+
+    var myInit = { method: 'POST',
+        headers: myHeaders,
+        mode: 'same-origin',
+        credentials: 'include',
+        body: JSON.stringify(cart)};
+
+    var myRequest = new Request("cart/sum");
+
+    return fetch(myRequest,myInit).then((response) => { return response.json()});
+
 }
 
 
+//Функция отображения PopUp
+function PopUpOrderShow() {
+    if(localStorage.getItem('user')!= null){
+        document.getElementById("telOrder").value = JSON.parse(localStorage.getItem("user")).phone;
+    }
+    var sum = document.getElementById("cart-sum-value").innerHTML;
+    document.getElementById("order-sum").innerHTML = sum;
+    var del = 50;
+    if(sum > 200) {
+        del = 0;
+    }
+    document.getElementById("order-del").innerHTML = del;
+    document.getElementById("order-amount").innerHTML = Number(del) + Number(sum);
+    $("#popup-order").show();
+    currentScroll=$(window).scrollTop();
+    $(window).bind('scroll', lockscroll);
+}
+//Функция скрытия PopUp
+function PopUpOrderHide() {
 
+    $("#popup-order").hide();
+    $(window).unbind('scroll');
+    scrollCur();
+    return;
+}
+
+
+function lockscroll(){
+    $(window).scrollTop(currentScroll);
+}
+
+function scrollCur() {
+    $("html, body").animate({
+        scrollTop: currentScroll
+    }, 6);
+}
+
+async function SendOrder() {
+    var cartData = getCartData() || {};
+    await sendOrderAtServer(cartData, document.getElementById('textarea2').value);
+
+
+}
+
+async function sendOrderAtServer(cart, comment) {
+    var myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+
+
+
+    var myInit = { method: 'POST',
+        headers: myHeaders,
+        mode: 'same-origin',
+        credentials: 'include',
+        body: JSON.stringify(cart)};
+
+    var myRequest = new Request("cart/confirm");
+
+    var orId = await fetch(myRequest,myInit).then((response) => { return response.json()});
+
+    var myInit2 = { method: 'POST',
+        headers: myHeaders,
+        mode: 'same-origin',
+        credentials: 'include',
+        body: JSON.stringify(comment)};
+    var url = "cart/" + orId + "/setcomment";
+    var myRequest2 = new Request(url);
+
+    var order = await fetch(myRequest2,myInit2).then((response) => { return response.json()});
+    console.log(order);
+    await ClearCart();
+    alert("Заказ принят! В ближайшее время с Вами свяжутся по указанному телефону");
+}
+
+async function ClearCart() {
+    await localStorage.removeItem("cart");
+    await showCart();
+}
+
+
+function breadTitle() {
+    var title = '';
+    var category = location.search.toString().substring(1);
+    switch (category) {
+        case "pizza":
+            title = "Пицца";
+            break;
+        case "burger":
+            title = "Бургеры";
+            break;
+        case "sushi":
+            title = "Суши";
+            break;
+        case "snack":
+            title = "Закуски";
+            break;
+        case "salad":
+            title = "Салаты";
+            break;
+        case "pasta":
+            title = "Паста";
+            break;
+        case "dessert":
+            title = "Десерты";
+            break;
+        case "drinks":
+            title = "Напитки";
+            break;
+        default:
+            title = "Категория";
+    }
+    document.getElementById("breadCategory").innerHTML = title;
+
+
+}
 

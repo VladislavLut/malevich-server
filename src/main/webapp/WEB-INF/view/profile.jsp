@@ -193,6 +193,38 @@
 
 </div>
 
+<div class="b-popup" id="popup-order">
+  <div class="b-popup-content-order">
+    <p>
+      <a class="close-button" href="#" onclick="PopUpOrderHide()">
+        <i class="fas fa-times"></i>
+      </a>
+    </p>
+    <p id="OrderTitle">Оформление заказа</p>
+
+    <form id="form-order">
+      <div class="row">
+        <div id = "numOr" class="input-field col s12">
+          <input class="new-user-data" id="telOrder" type="tel" class="validate" name="regtel">
+          <label for="regtel" required="required" aria-required="true">Номер телефона</label>
+        </div>
+      </div>
+      <div class="row">
+        <div id = "ComOr" class="input-field col s12">
+          <textarea id="textarea2" class="materialize-textarea" data-length="256"></textarea>
+          <label for="textarea2">Ваш комментарий к заказу</label>
+        </div>
+      </div>
+
+    </form>
+
+    <p class="orderP">Сумма заказа: <span class="orderP" id="order-sum">0</span> грн</p>
+    <p class="orderP">Доставка: <span class="orderP" id="order-del">50</span> грн</p>
+    <p class="orderP">Всего: <span class="orderP" id="order-amount">0</span> грн</p>
+    <div class="send-order-button" onclick="SendOrder();PopUpOrderHide()">ОТПРАВИТЬ</div>
+  </div>
+</div>
+
 <div class="b-popup" id="popup1">
   <div class="b-popup-content">
     <h3>Смена пароля</h3>
@@ -272,7 +304,12 @@
 <script type="text/javascript" src="<c:url value="/resources/static/js/authorization.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/resources/static/js/entryform.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/resources/static/js/profile.js"/>"></script>
-
+<script type="text/javascript" src="<c:url value="/resources/static/js/menu.js"/>"></script>
+<script>
+    $(document).ready(function() {
+        $('input#input_text, textarea#textarea2').characterCounter();
+    });
+</script>
 
 
 </body>

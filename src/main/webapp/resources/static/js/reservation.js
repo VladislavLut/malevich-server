@@ -5,6 +5,10 @@ $("document").ready(function () {
     var time = document.getElementById("time").value = hours + ':00';
     document.getElementById("date").min = document.getElementById("date").value;
     console.log(time);
+
+
+
+
 });
 
 async function Reservation() {
@@ -111,6 +115,18 @@ function setRadioButtonFromSelect() {
     var y = $("#my_select option:selected").val();
     console.log(y)
     $('#radio'+y).prop('checked', true);
+}
+
+function test() {
+    var Date = document.getElementById("date").value;
+    console.log(Date);
+    var Time = document.getElementById("time").value;
+    console.log(Time);
+    var table = $("#my_select option:selected").val();
+    var comments = document.getElementById("comments").value;
+    var phone = document.getElementById("phone").value;
+    var item = '{"date":"'+Date+'","time":"'+Time+'","tableItem": { "id":'+ table+'},"phone":"'+phone+'","name":"Vadim","comment":"'+comments+'"}';
+    console.log(item);
 }
 
 

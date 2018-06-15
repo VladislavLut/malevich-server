@@ -1,5 +1,3 @@
-document.getElementById("profileLogin").textContent="IHOR";
-
 $(document).ready(function() {
     var user = JSON.parse(localStorage.getItem("user"))
     if (user.login){
@@ -9,7 +7,8 @@ $(document).ready(function() {
     }
 
     if (user.birthDay){
-        document.getElementById("profileDateOfBirth").textContent = user.birthDay;
+        var d = new Date(user.birthDay);
+        document.getElementById("profileDateOfBirth").textContent = d.toLocaleDateString();
     }else {
         document.getElementById("profileDateOfBirth").textContent = "   ---   ";
     }
@@ -20,11 +19,9 @@ $(document).ready(function() {
         document.getElementById("profilePhone").textContent = "   ---   ";
     }
 
-
     if (user.name){
         document.getElementById("profileName").textContent = user.name;
     }else {
         document.getElementById("profileName").textContent = "   ---   ";
     }
-
 });

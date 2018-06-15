@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 public class SocketOrderController
 {
     @MessageMapping("/orders.sendMessage")
-    @SendTo("/topic/public")
+    @SendTo("/topic/order")
     public Order sendMessage(@Payload Order order) {
         return order;
     }
